@@ -41,21 +41,21 @@
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                             <div class="row row-cols-xs-1 row-cols-sm-6 g-1">
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Almendra', 10);">
+                                    <div class="card" onclick="agregarArticulo(1,'Almendra', 10);">
                                         <div class="card-body">
                                             <p class="card-text">Almendra<br />10 Bs.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Amaranto', 5);">
+                                    <div class="card" onclick="agregarArticulo(2,'Amaranto', 5);">
                                         <div class="card-body">
                                             <p class="card-text">Amaranto<br />5 Bs.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Arvejas', 10);">
+                                    <div class="card" onclick="agregarArticulo(3,'Arvejas', 10);">
                                         <!-- <img src="..." class="card-img-top" alt="..."> -->
                                         <div class="card-body">
                                             <p class="card-text">Arvejas<br />10 Bs.</p>
@@ -63,35 +63,35 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Camote', 5);">
+                                    <div class="card" onclick="agregarArticulo(4,'Camote', 5);">
                                         <div class="card-body">
                                             <p class="card-text">Camote <br />5 Bs.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Camote', 10);">
+                                    <div class="card" onclick="agregarArticulo(5,'Camote', 10);">
                                         <div class="card-body">
                                             <p class="card-text">Camote <br />10 Bs.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Cayu P', 10);">
+                                    <div class="card" onclick="agregarArticulo(6,'Cayu P', 10);">
                                         <div class="card-body">
                                             <p class="card-text">Cayu<br />10 Bs.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Cayu M', 20);">
+                                    <div class="card" onclick="agregarArticulo(7,'Cayu M', 20);">
                                         <div class="card-body">
                                             <p class="card-text">Cayu <br />20 Bs.</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <div class="card" onclick="articulocanasta('Barra Maní M', 1.5);">
+                                    <div class="card" onclick="agregarArticulo(8,'Barra Maní M', 1.5);">
                                         <div class="card-body">
                                             <p class="card-text">Barra Maní <br />1.5 Bs.</p>
                                         </div>
@@ -109,9 +109,9 @@
                 <div class="row">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="d-flex justify-content-between align-items-center"><span>Order</span><button onclick="articulosCanastaLimpiar()" class="btn bt-sm btn-danger">Limpiar</button></h5>
+                            <h5 class="d-flex justify-content-between align-items-center"><span>Order</span><button onclick="limpiarCanasta()" class="btn bt-sm btn-danger">Limpiar</button></h5>
                             <hr>
-                            <ul id="articuloslista" class="list-unstyled">
+                            <ul id="articulosLista" class="list-unstyled">
                                 <li class="d-flex justify-content-between align-items-center"><span class="text-success">2 </span>Papa Sal <span class="text-danger">10 Bs</span><span>hola</span></li>
                             </ul>
                             <hr>
@@ -134,118 +134,66 @@
     </div>
     <h1>Hello, world!</h1>
 
-    <!-- SUMA DE LOS PRODUCTOS -->
+    <!-- JAvascript hace la venta -->
+
     <script>
-        const ordenIdArray = [];
-        const totalArticulosArray = [];
-        const totalCostoArray = [];
-        let i = 0;
-
-        // funcion para agregar articulos a la canasta
-        function articulocanasta(nombreArticulo, precioArticulo) {
-            ordenIdArray.push(i);
-            totalArticulosArray.push(nombreArticulo);
-            totalCostoArray.push(precioArticulo);
+        var ARTICULOS = [];
+        var PRODUCTOS = {};
 
 
-
-            //selecciona el ul con id articuloslista 
-            let articuloslista = document.getElementById('articuloslista');
-
-            // crea la etiqueta li
-            const articuloVendido = document.createElement('li');
-            // crea la clase de li
-            articuloVendido.className = 'm-1 d-flex justify-content-between align-items-center';
-            articuloVendido.setAttribute('onclick', 'borrarItem(' + i + ')');
-
-            // Crea el span para el color rojo
-            const articuloVendidoPrecioSpan = document.createElement('span');
-
-            // Crea un nodo de texto con el nombreArticulo y el precioArticulo
-            const articuloVendidoNombre = document.createTextNode(nombreArticulo);
-            const articuloVendidoPrecio = document.createTextNode(' ' + precioArticulo + ' Bs.  ')
-            // Ajusta el color a text-danger
-            articuloVendidoPrecioSpan.className = 'text-danger';
-            // Agregar articuloVendidoPrecio a el SPAN
-            articuloVendidoPrecioSpan.appendChild(articuloVendidoPrecio);
-            // Agregar articuloVendidoNombre a la etiqueta LI
-            articuloVendido.appendChild(articuloVendidoNombre);
-            // Agregar articuloVendidoPrecioSpan a la etiqueta LI
-
-            articuloVendido.appendChild(articuloVendidoPrecioSpan);
-            // Agregar la etiqueta LI a el padre id=ORDERLIST 
-            articuloslista.appendChild(articuloVendido);
+        function agregarArticulo(idProducto, nombreProducto, precioProducto) {
 
 
+            // alert(idArticulo + " - " + nombreArticulo + " - " + precioArticulo);
+            PRODUCTOS = {
+                idProducto: idProducto,
+                nombreProducto: nombreProducto,
+                precioProducto: precioProducto
+            };
+            //ver si el articulo se repite en la canasta
+            for (let i = ARTICULOS.length - 1; i >= 0; i--) {
+                //alert(PRODUCTOS[0]);
 
-
-            // crea el boton de borrar
-            const articuloVendidoBotonBorrar = document.createElement('button');
-            const botonEliminar = document.createTextNode('-');
-            articuloVendidoBotonBorrar.className = 'btn btn-danger';
-            articuloVendidoBotonBorrar.appendChild(botonEliminar);
-            articuloVendidoPrecioSpan.appendChild(articuloVendidoBotonBorrar);
-
-
-
-            // Muestra la cantidad de articulos en el totalArticulosArray en el ID totalArticulos
-            sumaCantidadArticulos();
-            // Muestra la suma de articulos en el totalCostoArray en el ID costoTotal
-            sumaCostoArticulos();
-
-
-            i++;
-
-            console.log(ordenIdArray);
-
-
-
-        }
-
-
-        function sumaCantidadArticulos() {
-            document.getElementById('totalArticulos').innerText = totalArticulosArray.length;
-        }
-
-        function sumaCostoArticulos() {
-            if (totalCostoArray.length === 0) {
-                document.getElementById('costoTotal').innerText = 0;
-            } else {
-                document.getElementById('costoTotal').innerText = totalCostoArray.reduce(sumaCostoArray).toFixed(2);
-
-                //  suma el array sumaCostoArray y luego devuelve el resultado
-                function sumaCostoArray(total, num) {
-                    return total + num;
-                }
             }
+
+
+
+
+            ARTICULOS.push(PRODUCTOS);
+            refrescarVistaItems();
+            console.log(ARTICULOS);
+            console.log(PRODUCTOS);
+
         }
 
-        function articulosCanastaLimpiar() {
-            let articuloslista = document.getElementById('articuloslista');
-            articuloslista.innerHTML = '';
-            totalArticulosArray.length = 0;
-            totalCostoArray.length = 0;
-            ordenIdArray.length = 0;
-            i = 0;
-            // Muestra la cantidad de articulos en el totalArticulosArray en el ID totalArticulos
-            sumaCantidadArticulos();
-            // Muestra la suma de articulos en el totalCostoArray en el ID costoTotal
-            sumaCostoArticulos();
+        function refrescarVistaItems() {
+            // Incrementamos el total de articulos en totalArticulos
+            var contadorArticulos = document.getElementById("totalArticulos");
+            contadorArticulos.innerHTML = ARTICULOS.length;
+            // Agregamos el producto al UL articulosLista
+            var articuloCanasta = document.getElementById("articulosLista")
+            articuloCanasta.innerHTML = "";
+            for (let i = ARTICULOS.length - 1; i >= 0; i--) {
+                articuloCanasta.innerHTML += agregarArticuloHtml(ARTICULOS[i]);
+            }
+
         }
 
-        function borrarItem(itemId) {
-            const indexNumero = ordenIdArray.indexOf(itemId);
-            ordenIdArray.splice(indexNumero, 1);
-            // totalArticulosArray.splice(indexNumero, 1);
-            // totalCostoArray.splice(indexNumero, 1);
-            sumaCantidadArticulos();
-            sumaCostoArticulos();
-            console.log(ordenIdArray);
+        function agregarArticuloHtml(datos) {
+            return ` 
+            <li class = "d-flex justify-content-between align-items-center"> <span class = "text-success"> - </span>${datos.nombreProducto}<span class="text-danger">${datos.precioProducto} Bs</span> <span> hola </span></li >
+                `;
+        }
 
-
-
+        function limpiarCanasta() {
+            ARTICULOS.length = 0;
+            refrescarVistaItems();
+            alert('Limpiar Canasta');
         }
     </script>
+
+
+
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

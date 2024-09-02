@@ -2,10 +2,18 @@
 
 namespace App\Controllers;
 
+use App\Models\ProductosModel;
+
+
 class Home extends BaseController
 {
-    public function index(): string
+    public function index()
     {
-        return view('welcome_message');
+        $modelo = new ProductosModel();
+        $productos = $modelo->findAll();
+
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['productos'] = $productos;
+        echo view('dashboard/pos2', $datos);
     }
 }
