@@ -40,63 +40,20 @@
                     <div class="tab-content" id="pills-tabContent">
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                             <div class="row row-cols-xs-1 row-cols-sm-6 g-1">
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(1,'Almendra', 10);">
-                                        <div class="card-body">
-                                            <p class="card-text">Almendra<br />10 Bs.</p>
+                                <?php
+                                foreach ($productos as $producto) {
+                                ?>
+                                    <div class="col">
+                                        <div class="card" onclick="agregarArticulo(<?= $producto['id']; ?>,'<?= $producto['nombre']; ?>', <?= $producto['precio_venta']; ?>);">
+                                            <div class="card-body">
+                                                <p class="card-text"><?= $producto['nombre']; ?><br /><?= $producto['precio_venta']; ?> Bs.</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(2,'Amaranto', 5);">
-                                        <div class="card-body">
-                                            <p class="card-text">Amaranto<br />5 Bs.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(3,'Arvejas', 10);">
-                                        <!-- <img src="..." class="card-img-top" alt="..."> -->
-                                        <div class="card-body">
-                                            <p class="card-text">Arvejas<br />10 Bs.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(4,'Camote', 5);">
-                                        <div class="card-body">
-                                            <p class="card-text">Camote <br />5 Bs.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(5,'Camote', 10);">
-                                        <div class="card-body">
-                                            <p class="card-text">Camote <br />10 Bs.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(6,'Cayu P', 10);">
-                                        <div class="card-body">
-                                            <p class="card-text">Cayu<br />10 Bs.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(7,'Cayu M', 20);">
-                                        <div class="card-body">
-                                            <p class="card-text">Cayu <br />20 Bs.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card" onclick="agregarArticulo(8,'Barra Maní M', 1.5);">
-                                        <div class="card-body">
-                                            <p class="card-text">Barra Maní <br />1.5 Bs.</p>
-                                        </div>
-                                    </div>
-                                </div>
+
+                                <?php
+                                }
+                                ?>
 
                             </div>
                         </div>
@@ -133,28 +90,28 @@
         </div>
     </div>
     <h1>Hello, world!</h1>
+    <?= "<pre>" ?>
+    <?php print_r($productos); ?>
+    <?= "</pre>" ?>
+    <?php echo "</br>" . json_encode($productos); ?>
 
     <!-- JAvascript hace la venta -->
 
     <script>
         var ARTICULOS = [];
-        var PRODUCTOS = {};
-
+        //var PRODUCTOS = {};
+        var PRODUCTOS = <?php echo  json_encode($productos); ?>;
 
         function agregarArticulo(idProducto, nombreProducto, precioProducto) {
 
 
             // alert(idArticulo + " - " + nombreArticulo + " - " + precioArticulo);
-            PRODUCTOS = {
-                idProducto: idProducto,
-                nombreProducto: nombreProducto,
-                precioProducto: precioProducto
-            };
+            // PRODUCTOS = {
+            //     idProducto: idProducto,
+            //     nombreProducto: nombreProducto,
+            //     precioProducto: precioProducto
+            // };
             //ver si el articulo se repite en la canasta
-            for (let i = ARTICULOS.length - 1; i >= 0; i--) {
-                //alert(PRODUCTOS[0]);
-
-            }
 
 
 
@@ -162,7 +119,7 @@
             ARTICULOS.push(PRODUCTOS);
             refrescarVistaItems();
             console.log(ARTICULOS);
-            console.log(PRODUCTOS);
+            //console.log(PRODUCTOS);
 
         }
 
@@ -175,13 +132,14 @@
             articuloCanasta.innerHTML = "";
             for (let i = ARTICULOS.length - 1; i >= 0; i--) {
                 articuloCanasta.innerHTML += agregarArticuloHtml(ARTICULOS[i]);
+                alert(ARTICULOS[i]);
             }
 
         }
 
         function agregarArticuloHtml(datos) {
             return ` 
-            <li class = "d-flex justify-content-between align-items-center"> <span class = "text-success"> - </span>${datos.nombreProducto}<span class="text-danger">${datos.precioProducto} Bs</span> <span> hola </span></li >
+            <li class = "d-flex justify-content-between align-items-center"> <span class = "text-success"> - </span>${datos.nombre}<span class="text-danger">${datos.precioProducto} Bs</span> <span> hola </span></li >
                 `;
         }
 
