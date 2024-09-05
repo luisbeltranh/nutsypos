@@ -41,10 +41,11 @@
                         <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                             <div class="row row-cols-xs-1 row-cols-sm-6 g-1">
                                 <?php
+                                $index = 0;
                                 foreach ($productos as $producto) {
                                 ?>
                                     <div class="col">
-                                        <div class="card" onclick="agregarArticulo(<?= $producto['id']; ?>,'<?= $producto['nombre']; ?>', <?= $producto['precio_venta']; ?>);">
+                                        <div class="card" onclick="agregarArticulo(<?= $producto['id']; ?>,'<?= $producto['nombre']; ?>', <?= $producto['precio_venta']; ?>, <?= $index ?>);">
                                             <div class="card-body">
                                                 <p class="card-text"><?= $producto['nombre']; ?><br /><?= $producto['precio_venta']; ?> Bs.</p>
                                             </div>
@@ -52,6 +53,7 @@
                                     </div>
 
                                 <?php
+                                    $index++;
                                 }
                                 ?>
 
@@ -76,7 +78,7 @@
                                 <big>Total Articulos: </big><big id="totalArticulos" class="card-text fw-bold">0</big>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
-                                <big>Monto Total: </big> <big class="card-text fw-bold"><span id="costoTotal">0</span> Bs.</big>
+                                <big>Monto Total: </big> <big class="card-text fw-bold" id="valorTotal"><span>0</span> Bs.</big>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between align-items-center">
@@ -90,58 +92,69 @@
         </div>
     </div>
     <h1>Hello, world!</h1>
-    <?= "<pre>" ?>
-    <?php print_r($productos); ?>
-    <?= "</pre>" ?>
-    <?php echo "</br>" . json_encode($productos); ?>
 
     <!-- JAvascript hace la venta -->
 
     <script>
-        var ARTICULOS = [];
         //var PRODUCTOS = {};
-        var PRODUCTOS = <?php echo  json_encode($productos); ?>;
+        var result = <?php echo json_encode($productos); ?>;
+        //var obj = JSON.parse(result);
+        //var PRODUCTOS = [];
+        var PRODUCTOS = result;
+        var ARTICULOS = [];
+        var compraTotal = 0;
 
-        function agregarArticulo(idProducto, nombreProducto, precioProducto) {
-
-
-            // alert(idArticulo + " - " + nombreArticulo + " - " + precioArticulo);
-            // PRODUCTOS = {
-            //     idProducto: idProducto,
-            //     nombreProducto: nombreProducto,
-            //     precioProducto: precioProducto
-            // };
-            //ver si el articulo se repite en la canasta
+        function agregarArticulo(idProducto, nombreProducto, precioProducto, index) {
 
 
+            for (let i = ARTICULOS.length - 1; i >= 0; i--) {
+                if (isNaN(ARTICULOS[i].cantidad)) {
+                    ARTICULOS[i].cantidad = 0;
+                }
+                if (ARTICULOS[i].id == idProducto) {
+                    ARTICULOS[i].cantidad += 1;
+                    console.log(ARTICULOS);
+                    alert("cantidad: " + ARTICULOS[i].cantidad);
+                    return;
+                };
+            }
 
-
-            ARTICULOS.push(PRODUCTOS);
-            refrescarVistaItems();
             console.log(ARTICULOS);
+            ARTICULOS.push(PRODUCTOS[index]);
+            //compraTotal += Number(PRODUCTOS[index].precio_venta);
+            refrescarVistaItems();
+            //console.log(compraTotal);
             //console.log(PRODUCTOS);
 
         }
 
         function refrescarVistaItems() {
+            var compraTotal = 0;
             // Incrementamos el total de articulos en totalArticulos
             var contadorArticulos = document.getElementById("totalArticulos");
             contadorArticulos.innerHTML = ARTICULOS.length;
+
             // Agregamos el producto al UL articulosLista
             var articuloCanasta = document.getElementById("articulosLista")
             articuloCanasta.innerHTML = "";
             for (let i = ARTICULOS.length - 1; i >= 0; i--) {
                 articuloCanasta.innerHTML += agregarArticuloHtml(ARTICULOS[i]);
-                alert(ARTICULOS[i]);
+                compraTotal += Number(ARTICULOS[i].precio_venta);
             }
+            // sumar el total de la venta
+            valorTotal = document.getElementById("valorTotal");
+            valorTotal.innerHTML = compraTotal;
+
 
         }
 
         function agregarArticuloHtml(datos) {
             return ` 
-            <li class = "d-flex justify-content-between align-items-center"> <span class = "text-success"> - </span>${datos.nombre}<span class="text-danger">${datos.precioProducto} Bs</span> <span> hola </span></li >
+            <li class = "d-flex justify-content-between align-items-center"> <span class = "text-success"> - </span>${datos.nombre}<span class="text-danger">${datos.precio_venta} Bs</span> <span> hola </span></li >
                 `;
         }
+
+        function sumarArticulos(costoArticulo) {}
 
         function limpiarCanasta() {
             ARTICULOS.length = 0;
