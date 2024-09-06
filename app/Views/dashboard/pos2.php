@@ -106,7 +106,6 @@
 
         function agregarArticulo(idProducto, nombreProducto, precioProducto, index) {
 
-
             for (let i = ARTICULOS.length - 1; i >= 0; i--) {
                 if (isNaN(ARTICULOS[i].cantidad)) {
                     ARTICULOS[i].cantidad = 0;
@@ -115,12 +114,16 @@
                     ARTICULOS[i].cantidad += 1;
                     console.log(ARTICULOS);
                     alert("cantidad: " + ARTICULOS[i].cantidad);
+                    refrescarVistaItems();
                     return;
                 };
             }
 
+            var temp = PRODUCTOS[index];
+            temp.cantidad = 1;
+            ARTICULOS.push(temp);
             console.log(ARTICULOS);
-            ARTICULOS.push(PRODUCTOS[index]);
+
             //compraTotal += Number(PRODUCTOS[index].precio_venta);
             refrescarVistaItems();
             //console.log(compraTotal);
