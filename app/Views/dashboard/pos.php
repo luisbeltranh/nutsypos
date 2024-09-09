@@ -21,7 +21,7 @@
         <div class="row bg-light">
             <div class="col-sm-8">
                 <div class="row">
-                    <div class="col-sm-6">Venta: 35</div>
+                    <div class="col-sm-6">Venta: <?= $numero_venta ?></div>
                     <div class="col-sm-6">Fecha: 12 de octubre de 2024</div>
 
                 </div>
@@ -51,9 +51,9 @@
 
                                 ?>
                                         <div class="col">
-                                            <div class="card" onclick="agregarArticulo(<?= $producto['id']; ?>,'<?= $producto['nombre']; ?>', <?= $producto['precio_venta']; ?>, <?= $producto['arrayIndex'] ?>);">
+                                            <div class="card" onclick="agregarArticulo(<?= $producto['id']; ?>,'<?= $numero_venta; ?>', <?= $producto['arrayIndex'] ?>);">
                                                 <div class="card-body">
-                                                    <p class="card-text text-nowrap overflow-hidden"><?= $producto['arrayIndex'] . "-" . $producto['nombre']; ?><br /><?= $producto['precio_venta']; ?> Bs.</p>
+                                                    <p class="card-text text-nowrap overflow-hidden"><?= $producto['nombre']; ?><br /><?= $producto['precio_venta']; ?> Bs.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -70,9 +70,9 @@
                                     if ($producto['categoria'] == 'bebidas') {
                                 ?>
                                         <div class="col">
-                                            <div class="card" onclick="agregarArticulo(<?= $producto['id']; ?>,'<?= $producto['nombre']; ?>', <?= $producto['precio_venta']; ?>, <?= $producto['arrayIndex'] ?>);">
+                                            <div class="card" onclick="agregarArticulo(<?= $producto['id']; ?>,'<?= $numero_venta ?>', <?= $producto['arrayIndex'] ?>);">
                                                 <div class="card-body">
-                                                    <p class="card-text text-nowrap overflow-hidden"><?= $producto['arrayIndex'] . "-" . $producto['nombre']; ?><br /><?= $producto['precio_venta']; ?> Bs.</p>
+                                                    <p class="card-text text-nowrap overflow-hidden"><?= $producto['nombre']; ?><br /><?= $producto['precio_venta']; ?> Bs.</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -127,13 +127,14 @@
         var compraTotal = 0;
         // console.log(PRODUCTOS);
 
-        function agregarArticulo(idProducto, nombreProducto, precioProducto, index) {
+        function agregarArticulo(idProducto, numeroVenta, index) {
             for (let i = ARTICULOS.length - 1; i >= 0; i--) {
                 if (isNaN(ARTICULOS[i].cantidad)) {
                     ARTICULOS[i].cantidad = 0;
                 }
                 if (ARTICULOS[i].id == idProducto) {
                     ARTICULOS[i].cantidad += 1;
+                    ARTICULOS[i].numero_venta = numeroVenta;
                     refrescarVistaItems();
                     return;
                 };
@@ -141,6 +142,7 @@
 
             var temp = PRODUCTOS[index];
             temp.cantidad = 1;
+            temp.numero_venta = numeroVenta;
             ARTICULOS.push(temp);
             //compraTotal += Number(PRODUCTOS[index].precio_venta);
             // console.log(ARTICULOS);
@@ -183,18 +185,23 @@
         }
 
         function guardarDatos($datos) {
-            alert("guardar datos");
-            fetch("https://localhost/dashboard/ventaproducto", {
-                method: "POST",
-                body: JSON.stringify({
-                    userId: 1,
-                    title: "Fix my bugs",
-                    completed: false
-                }),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8"
-                }
-            });
+            console.log(ARTICULOS);
+            let mensaje = "Guardar Venta?";
+            if (confirm(mensaje) == true) {
+
+                fetch("http://localhost/dashboard/ventaproducto", {
+                    method: "POST",
+                    body: JSON.stringify(ARTICULOS),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8"
+                    }
+                });
+                location.reload();
+                //limpiarCanasta();
+
+            } else {
+                return;
+            }
         }
     </script>
 

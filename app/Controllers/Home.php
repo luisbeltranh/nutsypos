@@ -14,6 +14,6 @@ class Home extends BaseController
 
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['productos'] = $productos;
-        echo view('dashboard/pos2', $datos);
+        echo view('dashboard/pos', $datos);
     }
 }

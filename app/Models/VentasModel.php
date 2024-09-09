@@ -13,7 +13,7 @@ class VentasModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['producto_id', 'monto', 'cantidad', 'total', 'user_id'];
+    protected $allowedFields = ['numero_venta', 'producto_id', 'monto', 'cantidad', 'total', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

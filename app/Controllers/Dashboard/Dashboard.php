@@ -5,6 +5,7 @@ namespace App\Controllers\Dashboard;
 use App\Controllers\BaseController;
 use App\Models\ProductosModel;
 use App\Models\MovimientosModel;
+use App\Models\VentasModel;
 
 class Dashboard extends BaseController
 {
@@ -26,9 +27,16 @@ class Dashboard extends BaseController
     {
         $modelo = new ProductosModel();
         $productos = $modelo->findAll();
-
+        $modeloVentas = new VentasModel();
+        $numero_venta = $modeloVentas->orderBy('numero_venta', 'desc')->first();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['productos'] = $productos;
+        if ($numero_venta != null) {
+            $datos['numero_venta'] = $numero_venta['numero_venta'] + 1;
+        } else {
+            $datos['numero_venta'] = 0;
+        }
+
 
         echo view('dashboard/pos', $datos);
 
@@ -142,6 +150,25 @@ class Dashboard extends BaseController
     }
     function ventaProducto()
     {
-        die("hola mundo");
+        helper('form');
+        $usuario['id'] = auth()->getUser()->id;
+        $modelo = new ProductosModel();
+        $modeloMovimientos = new VentasModel();
+
+        if ($this->request->getMethod() == 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $indice = 0;
+            foreach ($data as $valor) {
+                $venta[$indice]['producto_id'] = $valor['id'];
+                $venta[$indice]['numero_venta'] = $valor['numero_venta'];
+                $venta[$indice]['monto'] = $valor['precio_venta'];
+                $venta[$indice]['cantidad'] = $valor['cantidad'];
+                $venta[$indice]['total'] = $valor['precio_venta'] * $valor['cantidad'];
+                $venta[$indice]['user_id'] = $usuario['id'];
+                $indice++;
+            }
+            $modeloMovimientos->insertBatch($venta);
+            // print_r($data);
+        }
     }
 }
