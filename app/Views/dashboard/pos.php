@@ -104,7 +104,7 @@
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between align-items-center">
-                                <button class="btn btn-primary btn-lg w-100">PAGAR</button>
+                                <button class="btn btn-primary btn-lg w-100" onclick="guardarDatos('asd')">PAGAR</button>
                             </div>
 
                         </div>
@@ -125,29 +125,25 @@
         var PRODUCTOS = result;
         var ARTICULOS = [];
         var compraTotal = 0;
-        console.log(PRODUCTOS);
-
+        // console.log(PRODUCTOS);
 
         function agregarArticulo(idProducto, nombreProducto, precioProducto, index) {
-            alert("id: " + idProducto + " - nombre: " + nombreProducto + " - index:" + index);
-            // for (let i = ARTICULOS.length - 1; i >= 0; i--) {
-            //     if (isNaN(ARTICULOS[i].cantidad)) {
-            //         ARTICULOS[i].cantidad = 0;
-            //     }
-            //     alert(ARTICULOS[i].id + " = " + idProducto + " = " + index);
-            //     if (ARTICULOS[i].id == idProducto) {
-            //         ARTICULOS[i].cantidad += 1;
-            //         refrescarVistaItems();
-            //         return;
-            //     };
-            // }
+            for (let i = ARTICULOS.length - 1; i >= 0; i--) {
+                if (isNaN(ARTICULOS[i].cantidad)) {
+                    ARTICULOS[i].cantidad = 0;
+                }
+                if (ARTICULOS[i].id == idProducto) {
+                    ARTICULOS[i].cantidad += 1;
+                    refrescarVistaItems();
+                    return;
+                };
+            }
 
             var temp = PRODUCTOS[index];
             temp.cantidad = 1;
             ARTICULOS.push(temp);
             //compraTotal += Number(PRODUCTOS[index].precio_venta);
-            console.log(ARTICULOS);
-            alert("articulos");
+            // console.log(ARTICULOS);
             refrescarVistaItems();
             //console.log(compraTotal);
 
@@ -184,6 +180,21 @@
         function limpiarCanasta() {
             ARTICULOS.length = 0;
             refrescarVistaItems();
+        }
+
+        function guardarDatos($datos) {
+            alert("guardar datos");
+            fetch("https://localhost/dashboard/ventaproducto", {
+                method: "POST",
+                body: JSON.stringify({
+                    userId: 1,
+                    title: "Fix my bugs",
+                    completed: false
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            });
         }
     </script>
 

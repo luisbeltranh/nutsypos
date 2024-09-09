@@ -4,16 +4,16 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class MovimientosModel extends Model
+class VentasModel extends Model
 {
-    protected $table = 'movimientos';
+    protected $table = 'ventas';
     protected $primary_key = 'id';
     protected $useAutoIncrement = true;
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['producto_id', 'tipo', 'cantidad', 'monto', 'user_id'];
+    protected $allowedFields = ['producto_id', 'monto', 'cantidad', 'total', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

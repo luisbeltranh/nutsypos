@@ -110,9 +110,9 @@ class Dashboard extends BaseController
                 'user_id' => [],
             ];
 
-            $productos_id = $modelo->orderBy('id', 'desc')->first();
+            $producto_id = $modelo->orderBy('id', 'desc')->first();
             $data = $this->request->getPost(array_keys($rules));
-            $datoMovimiento['productos_id'] = $productos_id['id'] + 1;
+            $datoMovimiento['producto_id'] = $producto_id['id'] + 1;
             $datoMovimiento['tipo'] = '0'; //0 es tipo NUEVO
             $datoMovimiento['cantidad'] = $data['cantidad'];
             $datoMovimiento['monto'] = $data['precio_venta'];
@@ -126,11 +126,6 @@ class Dashboard extends BaseController
             // return redirect()->to('/dashboard/new_link')->withInput();
             //return redirect()->back()->withInput();
         }
-
-
-
-
-        $movimientos = $modeloMovimientos->findAll();
         $productos = $modelo->findAll();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
@@ -144,5 +139,9 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/nuevo_producto');
         echo view('dashboard/templates/footer');
+    }
+    function ventaProducto()
+    {
+        die("hola mundo");
     }
 }
