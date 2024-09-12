@@ -195,8 +195,11 @@
                     headers: {
                         "Content-type": "application/json; charset=UTF-8"
                     }
+                }).then(response => {
+                    return response.json();
                 });
-                location.reload();
+
+                window.location.reload();
                 //limpiarCanasta();
 
             } else {

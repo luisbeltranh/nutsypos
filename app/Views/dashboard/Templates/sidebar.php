@@ -29,6 +29,11 @@
                         <p>Nuevo</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'verventas' ? '#' : base_url('dashboard/verventas'); ?>" class="nav-link <?php echo $menu_activo == 'verventas' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
+                        <p>Ver Ventas</p>
+                    </a>
+                </li>
 
                 <li class="nav-header">Tienda</li>
 

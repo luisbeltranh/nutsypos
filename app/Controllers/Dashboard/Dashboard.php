@@ -26,9 +26,9 @@ class Dashboard extends BaseController
     public function pos()
     {
         $modelo = new ProductosModel();
-        $productos = $modelo->findAll();
+        $productos = $modelo->select('id, categoria, nombre, costo, precio_venta, cantidad_total')->orderBy('nombre', 'ASC')->findAll();
         $modeloVentas = new VentasModel();
-        $numero_venta = $modeloVentas->orderBy('numero_venta', 'desc')->first();
+        $numero_venta = $modeloVentas->select('numero_venta')->orderBy('numero_venta', 'desc')->first();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['productos'] = $productos;
         if ($numero_venta != null) {
@@ -170,5 +170,24 @@ class Dashboard extends BaseController
             $modeloMovimientos->insertBatch($venta);
             // print_r($data);
         }
+    }
+    function verVentas()
+    {
+        $modelo = new VentasModel();
+        //$ventas = $modelo->findAll();
+        $ventas = $modelo->selectCount('cantidad')->select('producto_id, monto')->groupBy('producto_id, monto')->findAll();
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Productos";
+        $datos['menu_activo'] = "verventas";
+        $datos['ventas'] = $ventas;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        print_r($ventas);
+        // echo view('dashboard/ventas');
+        echo view('dashboard/templates/footer');
     }
 }
