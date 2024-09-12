@@ -174,20 +174,43 @@ class Dashboard extends BaseController
     function verVentas()
     {
         $modelo = new VentasModel();
+        $ventas = $modelo->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
         //$ventas = $modelo->findAll();
-        $ventas = $modelo->selectCount('cantidad')->select('producto_id, monto')->groupBy('producto_id, monto')->findAll();
+
+        $result = array();
+        $suma = 0;
+        $resultado = array();
+        foreach ($ventas as $element) {
+            $result[$element['producto_id']]['nombre'][] = $element['nombre'];
+            $result[$element['producto_id']]['monto'][] = $element['monto'];
+            $result[$element['producto_id']]['cantidad'][] = $element['cantidad'];
+            $result[$element['producto_id']]['total'][] = $element['cantidad'] * $element['monto'];
+            $result[$element['producto_id']]['created_at'][] = $element['created_at'];
+        }
+        $inter = 0;
+        $monto_total = 0;
+        foreach ($result as $key => $vector) {
+            $datos['ventas'][$inter]['producto_id'] = $key;
+            $datos['ventas'][$inter]['nombre'] = $vector['nombre'][0];
+            $datos['ventas'][$inter]['cantidad'] = array_sum($vector['cantidad']);
+            $datos['ventas'][$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
+            $datos['ventas'][$inter]['total'] = array_sum($vector['total']);
+            $inter++;
+            $monto_total += array_sum($vector['total']);
+        }
+        $datos['monto_total'] = $monto_total;
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
-        $datos['titulo_breadcrumbs'] = "Productos";
+        $datos['titulo_breadcrumbs'] = "Ventas";
         $datos['menu_activo'] = "verventas";
-        $datos['ventas'] = $ventas;
+
+        //$datos['ventas'] = $ventas;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
-        print_r($ventas);
-        // echo view('dashboard/ventas');
+        echo view('dashboard/ventas');
         echo view('dashboard/templates/footer');
     }
 }

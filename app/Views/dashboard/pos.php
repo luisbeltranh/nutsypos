@@ -188,7 +188,6 @@
             console.log(ARTICULOS);
             let mensaje = "Guardar Venta?";
             if (confirm(mensaje) == true) {
-
                 fetch("http://localhost/dashboard/ventaproducto", {
                     method: "POST",
                     body: JSON.stringify(ARTICULOS),
@@ -196,10 +195,12 @@
                         "Content-type": "application/json; charset=UTF-8"
                     }
                 }).then(response => {
-                    return response.json();
-                });
+                    if (response.status === 200) {
+                        window.location.reload();
 
-                window.location.reload();
+                        return response.json();
+                    }
+                });
                 //limpiarCanasta();
 
             } else {

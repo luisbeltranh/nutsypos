@@ -4,17 +4,17 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">
-                        Lista de Productos <span> <a class="btn btn-primary" href="/dashboard/nuevoproducto">Nuevo</a></span>
+                        Reporte de ventas <span> </span>
                     </div>
                 </div>
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th># Venta</th>
                                 <th>Producto Id</th>
-                                <th>Monto</th>
+                                <th>Producto</th>
                                 <th>Cantidad</th>
+                                <th>Monto</th>
                                 <th>Total</th>
                             </tr>
                         </thead>
@@ -24,18 +24,23 @@
                             ?>
 
                                 <tr>
-                                    <td><?= $venta['numero_venta']; ?></td>
                                     <td><?= $venta['producto_id']; ?></td>
-                                    <td><?= $venta['monto']; ?></td>
+                                    <td><?= $venta['nombre']; ?></td>
                                     <td><?= $venta['cantidad']; ?></td>
+                                    <td><?= $venta['monto']; ?></td>
                                     <td><?= $venta['total']; ?></td>
-                                    <td><a href="/dashboard/editar" class="btn btn-primary"><i class="bi bi-pencil"></i></a><a href="/dashboard/editar" class="btn btn-danger"><i class="bi bi-trash"></i></a></td>
                                 </tr>
 
                             <?php
                             }
                             ?>
-
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>Total</td>
+                                <td> <?= $monto_total ?></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
