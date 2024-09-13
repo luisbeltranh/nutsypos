@@ -217,11 +217,15 @@ class Dashboard extends BaseController
     function ver_inventario()
     {
         $modelo_productos = new ProductosModel();
-        $ventas = $modelo_productos->findAll();
+        $productos = $modelo_productos->findAll();
+        $modelo_ventas = new VentasModel();
+        $ventas = $modelo_ventas->selectSum('cantidad')->select('producto_id, sum(cantidad * monto) AS canti')->groupBy('producto_id')->findAll();
 ?>
         <pre>
         <?php
+        print_r($productos);
         print_r($ventas);
+
         ?>
         </pre>
 <?php

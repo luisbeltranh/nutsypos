@@ -42,7 +42,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo $menu_activo == 'agregar_inventario' ? '#' : base_url('dashboard/agregarinventario'); ?>" class="nav-link <?php echo $menu_activo == 'agregar_inventario' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
+                    <a href="<?php echo $menu_activo == 'agregar_ingreso' ? '#' : base_url('dashboard/agregaringreso'); ?>" class="nav-link <?php echo $menu_activo == 'agregar_ingreso' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
                         <p>Agregar</p>
                     </a>
                 </li>

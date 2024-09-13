@@ -13,7 +13,9 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('pos', 'Dashboard\Dashboard::pos');
     $routes->add('ventaproducto', 'Dashboard\Dashboard::ventaProducto');
     $routes->add('verventas', 'Dashboard\Dashboard::verVentas');
-    $routes->add('verinventario', 'Dashboard\Dashboard::ver_inventario');
+    $routes->add('verinventario', 'Dashboard\Inventario::index');
+    $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
+    $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
     // $routes->add('shop', 'Dashboard\Dashboard::shop');
     // $routes->add('new_link', 'Dashboard\Dashboard::new_link');
     // $routes->add('erase_link/(:num)', 'Dashboard\Dashboard::erase_link/$1');
