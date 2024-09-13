@@ -118,19 +118,21 @@ class Inventario extends BaseController
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
         $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, monto, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        foreach ($ventas as $key => $venta) {
+            print_r($venta);
+            echo '<br>';
+        }
         $modelo_ingresos = new IngresosModel();
-        $ingresos = $modelo_ingresos->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, monto, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
 ?>
         <pre>
         <?php
-        print_r($productos);
-        echo '<hr>';
-        print_r($ventas);
-        echo '<hr>';
-        print_r($ingresos);
-
-
+        // print_r($productos);
+        // echo '<hr>';
+        // print_r($ventas);
+        // echo '<hr>';
+        // print_r($ingresos);
         ?>
         </pre>
 <?php
