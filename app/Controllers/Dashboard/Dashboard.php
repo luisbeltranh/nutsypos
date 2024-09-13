@@ -152,7 +152,7 @@ class Dashboard extends BaseController
     {
         helper('form');
         $usuario['id'] = auth()->getUser()->id;
-        $modelo = new ProductosModel();
+        $modeloProductos = new ProductosModel();
         $modeloMovimientos = new VentasModel();
 
         if ($this->request->getMethod() == 'POST') {
@@ -168,6 +168,7 @@ class Dashboard extends BaseController
                 $indice++;
             }
             $modeloMovimientos->insertBatch($venta);
+
             // print_r($data);
         }
     }
@@ -212,5 +213,17 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/ventas');
         echo view('dashboard/templates/footer');
+    }
+    function ver_inventario()
+    {
+        $modelo_productos = new ProductosModel();
+        $ventas = $modelo_productos->findAll();
+?>
+        <pre>
+        <?php
+        print_r($ventas);
+        ?>
+        </pre>
+<?php
     }
 }

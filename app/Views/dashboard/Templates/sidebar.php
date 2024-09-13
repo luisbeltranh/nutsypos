@@ -35,6 +35,18 @@
                     </a>
                 </li>
 
+                <li class="nav-header">Inventario</li>
+                <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'ver_inventario' ? '#' : base_url('dashboard/verinventario'); ?>" class="nav-link <?php echo $menu_activo == 'ver_inventario' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
+                        <p>Ver Inventario</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'agregar_inventario' ? '#' : base_url('dashboard/agregarinventario'); ?>" class="nav-link <?php echo $menu_activo == 'agregar_inventario' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
+                        <p>Agregar</p>
+                    </a>
+                </li>
+
                 <li class="nav-header">Tienda</li>
 
                 <li class="nav-item"> <a href="<?php echo $menu_activo == 'tienda' ? '#' : base_url('dashboard/pos'); ?>" class="nav-link <?php echo $menu_activo == 'tienda' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-shop"></i>
