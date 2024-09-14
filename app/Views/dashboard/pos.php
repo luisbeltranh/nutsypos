@@ -114,7 +114,10 @@
         </div>
     </div>
     <h1>Hello, world!</h1>
-
+    <div class="spinner-border" role="status" id="spinner">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    sdgsd
     <!-- JAvascript hace la venta -->
 
     <script>
