@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\ProductosModel;
 use App\Models\MovimientosModel;
 use App\Models\VentasModel;
+use App\Models\IngresosModel;
 
 class Dashboard extends BaseController
 {
@@ -76,7 +77,8 @@ class Dashboard extends BaseController
     {
         helper('form');
         $modelo = new ProductosModel();
-        $modeloMovimientos = new MovimientosModel();
+        $modelo_movimientos = new MovimientosModel();
+        $modelo_ingresos = new IngresosModel();
         if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'categoria' => [
@@ -120,15 +122,32 @@ class Dashboard extends BaseController
 
             $producto_id = $modelo->orderBy('id', 'desc')->first();
             $data = $this->request->getPost(array_keys($rules));
-            $datoMovimiento['producto_id'] = $producto_id['id'] + 1;
-            $datoMovimiento['tipo'] = '0'; //0 es tipo NUEVO
-            $datoMovimiento['cantidad'] = $data['cantidad'];
-            $datoMovimiento['monto'] = $data['precio_venta'];
-            $datoMovimiento['user_id'] = $data['user_id'];
+            $dato_movimiento['productos_id'] = $producto_id['id'] + 1;
+            $dato_movimiento['tipo'] = '0'; //0 es tipo NUEVO
+            $dato_movimiento['cantidad'] = $data['cantidad'];
+            $dato_movimiento['monto'] = $data['precio_venta'];
+            $dato_movimiento['user_id'] = $data['user_id'];
+            // datos para insertar en la tabla de ingresos
+            $numero_ingreso = $modelo_ingresos->select('numero_ingreso')->orderBy('numero_ingreso', 'desc')->first();
+            if ($numero_ingreso != null) {
+                $datos['numero_ingreso'] = $numero_ingreso['numero_ingreso'] + 1;
+            } else {
+                $datos['numero_ingreso'] = 0;
+            }
+            $dato_ingreso['monto'] = $data['costo'];
+            $dato_ingreso['cantidad'] = $data['cantidad'];
+            $dato_ingreso['total'] = $data['cantidad'] * $data['costo'];
+            $dato_ingreso['user_id'] = $data['user_id'];
+            // si se validan los datos del formulario se guardan los datos
+            // Hay que hacer algo para validar el ingreso a las 3 tablas, caso contrario se deberia realizar un rollback o algo asi para las tablas en las que se realizo el insert
             if ($this->validateData($data, $rules)) {
                 $validData = $this->validator->getValidated();
                 $modelo->insert($validData);
-                $modeloMovimientos->insert($datoMovimiento);
+
+                $dato_ingreso['producto_id'] = $modelo->getInsertID();
+
+                //$modelo_movimientos->insert($dato_movimiento);
+                $modelo_ingresos->insert($dato_ingreso);
                 return redirect()->to('/dashboard/productos');
             }
             // return redirect()->to('/dashboard/new_link')->withInput();
@@ -175,7 +194,8 @@ class Dashboard extends BaseController
     function verVentas()
     {
         $modelo = new VentasModel();
-        $ventas = $modelo->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        $fecha_hoy = date('Y-m-d 00:00:00');
+        $ventas = $modelo->where('ventas.created_at >', $fecha_hoy,)->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
         //$ventas = $modelo->findAll();
 
         $result = array();

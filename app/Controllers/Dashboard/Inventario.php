@@ -15,15 +15,30 @@ class Inventario extends BaseController
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
-        $datos['titulo_breadcrumbs'] = "Enlaces";
+        $datos['titulo_breadcrumbs'] = "Inventario";
         $datos['menu_activo'] = "dashboard";
+        $datos['productos'] = $this->saldoInventario();
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
-        $this->saldoInventario();
 
-        //echo view('dashboard/dashboard');
+
+
+?>
+        <pre>
+        <?php
+        // echo 'suma total';
+        // print_r($datos['productos']);
+        // echo '<hr>';
+        ?>
+        </pre>
+    <?php
+
+
+
+
+        echo view('dashboard/ver_inventario');
         echo view('dashboard/templates/footer');
     }
 
@@ -44,7 +59,7 @@ class Inventario extends BaseController
         $numero_ingreso = $modelo_ingresos->select('numero_ingreso')->orderBy('numero_ingreso', 'desc')->first();
         $datos['estaLogeado'] = auth()->loggedIn();
         if ($numero_ingreso != null) {
-            $datos['numero_ingreso'] = $numero_ingreso['numero_venta'] + 1;
+            $datos['numero_ingreso'] = $numero_ingreso['numero_ingreso'] + 1;
         } else {
             $datos['numero_ingreso'] = 0;
         }
@@ -118,51 +133,65 @@ class Inventario extends BaseController
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
         $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, monto, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
-        $nuevo_array = $this->sumarArray($ventas);
-
-        foreach ($ventas as $key => $venta) {
-        }
-        print_r($nuevo_array);
-        echo '<br>';
-
+        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, monto, costo, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ventas_array = $this->sumarArray($ventas, -1);
         $modelo_ingresos = new IngresosModel();
-        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, monto, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
-?>
+        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, monto, costo, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ingresos_array = $this->sumarArray($ingresos, 1);
+        $total_array = array_merge_recursive($ventas_array, $ingresos_array);
+        $suma_total = $this->sumarArray($total_array, 1);
+        return $suma_total;
+
+
+    ?>
         <pre>
         <?php
-        // print_r($productos);
+        // echo 'ventas_array';
+        // print_r($ventas_array);
         // echo '<hr>';
-        //print_r($ventas);
+        // echo 'ingresos_array';
+        // print_r($ingresos_array);
         // echo '<hr>';
-        // print_r($ingresos);
+        // echo 'array_merge';
+        // print_r(array_merge_recursive($ventas_array, $ingresos_array));
+        // echo '<hr>';
+        // echo 'suma total';
+        // print_r($suma_total);
+        // echo '<hr>';
+        // echo 'suma total';
+        // print_r($suma_total);
+        // echo '<hr>';
         ?>
         </pre>
 <?php
-
     }
-    function sumarArray($array_datos)
+    function sumarArray($array_datos, $factor)
     {
         $result = array();
         $suma = 0;
         $resultado = array();
         foreach ($array_datos as $element) {
+            $result[$element['producto_id']]['categoria'][] = $element['categoria'];
             $result[$element['producto_id']]['nombre'][] = $element['nombre'];
             $result[$element['producto_id']]['monto'][] = $element['monto'];
+            $result[$element['producto_id']]['costo'][] = $element['costo'];
             $result[$element['producto_id']]['cantidad'][] = $element['cantidad'];
-            $result[$element['producto_id']]['total'][] = $element['cantidad'] * $element['monto'];
-            $result[$element['producto_id']]['created_at'][] = $element['created_at'];
+            $result[$element['producto_id']]['total'][] = $element['cantidad'] * $element['costo'];
+            // $result[$element['producto_id']]['updated_at'][] = $element['updated_at'];
         }
         $inter = 0;
         $monto_total = 0;
         foreach ($result as $key => $vector) {
-            $datos['ventas'][$inter]['producto_id'] = $key;
-            $datos['ventas'][$inter]['nombre'] = $vector['nombre'][0];
-            $datos['ventas'][$inter]['cantidad'] = array_sum($vector['cantidad']);
-            $datos['ventas'][$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
-            $datos['ventas'][$inter]['total'] = array_sum($vector['total']);
+            $datos[$inter]['producto_id'] = $key;
+            $datos[$inter]['categoria'] = $vector['categoria'][0];
+            $datos[$inter]['nombre'] = $vector['nombre'][0];
+            $datos[$inter]['cantidad'] = $factor * array_sum($vector['cantidad']);
+            $datos[$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
+            $datos[$inter]['costo'] = array_sum($vector['costo']) / count($vector['costo']);
+            $datos[$inter]['total'] = array_sum($vector['total']);
             $inter++;
             $monto_total += array_sum($vector['total']);
         }
+        return $datos;
     }
 }
