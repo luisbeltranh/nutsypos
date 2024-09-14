@@ -13,7 +13,7 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
         crossorigin="anonymous" />
     <link rel="stylesheet" href="/assets/css/estilo-pos.css">
-    <title>Hello, world!</title>
+    <title>Caja - NutsyPOS</title>
 </head>
 
 <body>
@@ -22,7 +22,7 @@
             <div class="col-sm-8">
                 <div class="row">
                     <div class="col-sm-6">Venta: <?= $numero_venta ?></div>
-                    <div class="col-sm-6">Fecha: 12 de octubre de 2024</div>
+                    <div class="col-sm-6">Fecha: <?= date('d-m-y h:m:s'); ?></div>
 
                 </div>
                 <div class="row">
@@ -104,7 +104,10 @@
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between align-items-center">
-                                <button class="btn btn-primary btn-lg w-100" onclick="guardarDatos('asd')">PAGAR</button>
+                                <button class="btn btn-primary btn-lg w-100" onclick="guardarDatos('asd')" id="boton_pagar">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="spinner"></span>
+                                    PAGAR
+                                </button>
                             </div>
 
                         </div>
@@ -114,10 +117,6 @@
         </div>
     </div>
     <h1>Hello, world!</h1>
-    <div class="spinner-border" role="status" id="spinner">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-    sdgsd
     <!-- JAvascript hace la venta -->
 
     <script>
@@ -190,6 +189,10 @@
         function guardarDatos($datos) {
             console.log(ARTICULOS);
             let mensaje = "Guardar Venta?";
+            let spinner = document.getElementById("spinner");
+            let boton_pagar = document.getElementById("boton_pagar");
+            boton_pagar.disabled = true;
+            spinner.style.display = "inline-block";
             if (confirm(mensaje) == true) {
                 fetch("http://localhost/dashboard/ventaproducto", {
                     method: "POST",
