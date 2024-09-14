@@ -119,10 +119,13 @@ class Inventario extends BaseController
         $productos = $modelo_productos->findAll();
         $modelo_ventas = new VentasModel();
         $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, monto, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        $nuevo_array = $this->sumarArray($ventas);
+
         foreach ($ventas as $key => $venta) {
-            print_r($venta);
-            echo '<br>';
         }
+        print_r($nuevo_array);
+        echo '<br>';
+
         $modelo_ingresos = new IngresosModel();
         $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, monto, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
 ?>
@@ -130,12 +133,36 @@ class Inventario extends BaseController
         <?php
         // print_r($productos);
         // echo '<hr>';
-        // print_r($ventas);
+        //print_r($ventas);
         // echo '<hr>';
         // print_r($ingresos);
         ?>
         </pre>
 <?php
 
+    }
+    function sumarArray($array_datos)
+    {
+        $result = array();
+        $suma = 0;
+        $resultado = array();
+        foreach ($array_datos as $element) {
+            $result[$element['producto_id']]['nombre'][] = $element['nombre'];
+            $result[$element['producto_id']]['monto'][] = $element['monto'];
+            $result[$element['producto_id']]['cantidad'][] = $element['cantidad'];
+            $result[$element['producto_id']]['total'][] = $element['cantidad'] * $element['monto'];
+            $result[$element['producto_id']]['created_at'][] = $element['created_at'];
+        }
+        $inter = 0;
+        $monto_total = 0;
+        foreach ($result as $key => $vector) {
+            $datos['ventas'][$inter]['producto_id'] = $key;
+            $datos['ventas'][$inter]['nombre'] = $vector['nombre'][0];
+            $datos['ventas'][$inter]['cantidad'] = array_sum($vector['cantidad']);
+            $datos['ventas'][$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
+            $datos['ventas'][$inter]['total'] = array_sum($vector['total']);
+            $inter++;
+            $monto_total += array_sum($vector['total']);
+        }
     }
 }
