@@ -12,11 +12,18 @@ class Dashboard extends BaseController
 {
     public function index()
     {
+        $productos_model = new ProductosModel();
+        $cantidad_productos = $productos_model->countAllResults();
+        $ventas_model = new VentasModel();
+        $cantidad_ventas = $ventas_model->countAllResults();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Enlaces";
         $datos['menu_activo'] = "dashboard";
+        $datos['cantidad_productos'] = "$cantidad_productos";
+        $datos['cantidad_ventas'] = "$cantidad_ventas";
+
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
