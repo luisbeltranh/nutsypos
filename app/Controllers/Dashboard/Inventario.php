@@ -167,6 +167,7 @@ class Inventario extends BaseController
     }
     function sumarArray($array_datos, $factor)
     {
+        $datos = array();
         $result = array();
         $suma = 0;
         $resultado = array();
