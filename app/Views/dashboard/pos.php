@@ -21,12 +21,7 @@
         <div class="row bg-light">
             <div class="col-sm-8">
                 <div class="row">
-                    <div class="col-sm-6">Venta: <?= $numero_venta ?></div>
-                    <div class="col-sm-6">Fecha: <?= date('d-m-y h:m:s'); ?></div>
-
-                </div>
-                <div class="row">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <ul class="nav nav-pills m-1" id="pills-tab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Snacks</button>
                         </li>
@@ -89,6 +84,12 @@
             </div>
             <div class="col-sm-4">
                 <div class="row">
+                    <div class="col-sm-3">Venta: <?= $numero_venta ?></div>
+                    <div class="col-sm-9">Fecha: <?= date('d-m-y h:m:s'); ?></div>
+
+                </div>
+
+                <div class="row">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="d-flex justify-content-between align-items-center"><a href="/dashboard" class="btn bt-sm btn-warning">SALIR</a><button onclick="limpiarCanasta()" class="btn bt-sm btn-danger">Limpiar</button></h5>
@@ -116,7 +117,6 @@
             </div>
         </div>
     </div>
-    <h1>Hello, world!</h1>
     <!-- JAvascript hace la venta -->
 
     <script>
