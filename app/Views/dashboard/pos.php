@@ -194,7 +194,7 @@
             boton_pagar.disabled = true;
             spinner.style.display = "inline-block";
             if (confirm(mensaje) == true) {
-                fetch("http://localhost/dashboard/ventaproducto", {
+                fetch("<?= base_url('dashboard/ventaproducto') ?>", {
                     method: "POST",
                     body: JSON.stringify(ARTICULOS),
                     headers: {
@@ -203,7 +203,6 @@
                 }).then(response => {
                     if (response.status === 200) {
                         window.location.reload();
-
                         return response.json();
                     }
                 });
