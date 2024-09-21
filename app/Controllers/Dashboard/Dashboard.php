@@ -75,6 +75,10 @@ class Dashboard extends BaseController
     }
     function productos()
     {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
         $modelo = new ProductosModel();
         $productos = $modelo->findAll();
         $datos['estaLogeado'] = auth()->loggedIn();
@@ -92,6 +96,10 @@ class Dashboard extends BaseController
     }
     function nuevoproducto()
     {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
         helper('form');
         $modelo = new ProductosModel();
         $modelo_movimientos = new MovimientosModel();
@@ -210,6 +218,10 @@ class Dashboard extends BaseController
     }
     function verVentas()
     {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
         helper('form');
         $modelo = new VentasModel();
         $fecha_hoy = date('Y-m-d');

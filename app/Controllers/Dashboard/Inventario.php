@@ -12,6 +12,10 @@ class Inventario extends BaseController
 {
     function index() //verInventario
     {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
@@ -41,6 +45,11 @@ class Inventario extends BaseController
 
     function formIngreso($producto_id)
     {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+
         helper('form');
         $modelo_ingresos = new IngresosModel();
         $modelo_productos = new ProductosModel();
@@ -73,6 +82,11 @@ class Inventario extends BaseController
 
     function guardarIngreso()
     {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+
         helper('form');
         $modelo_ingresos = new IngresosModel();
         $modelo_productos = new ProductosModel();

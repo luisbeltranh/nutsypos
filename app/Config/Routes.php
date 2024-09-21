@@ -16,6 +16,8 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verinventario', 'Dashboard\Inventario::index');
     $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
+    $routes->add('verusuarios', 'Dashboard\Usuarios::verUsuarios');
+
     // $routes->add('shop', 'Dashboard\Dashboard::shop');
     // $routes->add('new_link', 'Dashboard\Dashboard::new_link');
     // $routes->add('erase_link/(:num)', 'Dashboard\Dashboard::erase_link/$1');

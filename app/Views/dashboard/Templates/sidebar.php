@@ -59,7 +59,7 @@
                 ?>
                     <li class="nav-header">Administrador</li>
 
-                    <li class="nav-item"> <a href="<?php echo $menu_activo == 'tienda' ? '#' : base_url('dashboard/pos'); ?>" class="nav-link <?php echo $menu_activo == 'tienda' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-shop"></i>
+                    <li class="nav-item"> <a href="<?php echo $menu_activo == 'verusuarios' ? '#' : base_url('dashboard/verusuarios'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-people"></i>
                             <p>Usuarios
                             </p>
                         </a> </li>
