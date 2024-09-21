@@ -7,6 +7,7 @@ use App\Models\ProductosModel;
 use App\Models\MovimientosModel;
 use App\Models\VentasModel;
 use App\Models\IngresosModel;
+use App\Models\UsuariosModel;
 
 class Usuarios extends BaseController
 {
@@ -39,6 +40,10 @@ class Usuarios extends BaseController
         if (auth()->getUser()->inGroup('admin')) {
             $datos['is_admin'] = true;
         }
+        $usuario_model = new UsuariosModel();
+        $usuarios = $usuario_model->select('nombres, apellido_paterno, apellido_materno, documento_ci, telefono, telefono_emergencia, contacto_emergencia, direccion')->findAll();
+        print_r($usuarios);
+        die();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
