@@ -54,6 +54,20 @@
                         </p>
                     </a> </li>
                 </li>
+                <?php
+                if ($is_admin) {
+                ?>
+                    <li class="nav-header">Administrador</li>
+
+                    <li class="nav-item"> <a href="<?php echo $menu_activo == 'tienda' ? '#' : base_url('dashboard/pos'); ?>" class="nav-link <?php echo $menu_activo == 'tienda' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-shop"></i>
+                            <p>Usuarios
+                            </p>
+                        </a> </li>
+                    </li>
+                <?php
+                }
+                ?>
+
             </ul> <!--end::Sidebar Menu-->
         </nav>
     </div> <!--end::Sidebar Wrapper-->

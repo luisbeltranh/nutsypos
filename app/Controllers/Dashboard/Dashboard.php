@@ -15,7 +15,17 @@ class Dashboard extends BaseController
         $productos_model = new ProductosModel();
         $cantidad_productos = $productos_model->countAllResults();
         $ventas_model = new VentasModel();
-        $cantidad_ventas = $ventas_model->countAllResults();
+        //$cantidad_ventas = $ventas_model->countAllResults();
+
+        $fecha_inicio = date('Y-m-d 00:00:00');
+        $fecha_fin = date('Y-m-d 23:59:59');
+        $cantidad_ventas = $ventas_model->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->countAllResults();
+        $datos['grupo_usuario'] = auth()->getUser()->getGroups();
+        //auth()->getUser()->syncGroups('superadmin', 'admin', 'user');
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
@@ -200,9 +210,18 @@ class Dashboard extends BaseController
     }
     function verVentas()
     {
+        helper('form');
         $modelo = new VentasModel();
-        $fecha_hoy = date('Y-m-d 00:00:00');
-        $ventas = $modelo->where('ventas.created_at >', $fecha_hoy,)->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        $fecha_hoy = date('Y-m-d');
+        $fecha_inicio = date('Y-m-d 00:00:00');
+        $fecha_fin = date('Y-m-d 23:59:59');
+        if ($this->request->getMethod() == 'POST') {
+            $data = $this->request->getPost('fecha');
+            $fecha_hoy = date('Y-m-d', strtotime($data));
+            $fecha_inicio = date('Y-m-d 00:00:0', strtotime($data));
+            $fecha_fin = date('Y-m-d 23:59:59', strtotime($data));
+        }
+        $ventas = $modelo->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
         //$ventas = $modelo->findAll();
 
         $result = array();
@@ -232,8 +251,8 @@ class Dashboard extends BaseController
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Ventas";
         $datos['menu_activo'] = "verventas";
-
-        $datos['ventas'] = $ventas;
+        $datos['fecha_hoy'] = $fecha_hoy;
+        //$datos['ventas'] = $ventas;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');

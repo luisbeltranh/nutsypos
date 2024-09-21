@@ -22,9 +22,6 @@ class Inventario extends BaseController
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
-
-
-
 ?>
         <pre>
         <?php

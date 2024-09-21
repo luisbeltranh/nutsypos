@@ -3,8 +3,19 @@
         <div class="row"> <!--begin::Col-->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">
-                        Reporte de ventas <span> </span>
+                    <div class="">
+                        <div class="input-group">
+                            <div class="col-sm-4">
+                                Elegir fecha:
+                            </div>
+                            <div cls="col-sm-6">
+                                <?= form_open('dashboard/verventas') ?>
+                                <input type="date" name="fecha" value="<?= $fecha_hoy ?>">
+                                <input type="submit" class="btn btn-primary">
+                                <?= form_close() ?>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <div class="card-body table-responsive p-0">
@@ -49,12 +60,3 @@
     </div>
 </div>
 </main> <!--end::App Main--> <!--begin::Footer-->
-<footer class="app-footer"> <!--begin::To the end-->
-    <div class="float-end d-none d-sm-inline">Anything you want</div> <!--end::To the end--> <!--begin::Copyright--> <strong>
-        Copyright &copy; 2014-2024&nbsp;
-        <a href="https://adminlte.io" class="text-decoration-none">AdminLTE.io</a>.
-    </strong>
-    All rights reserved.
-    <!--end::Copyright-->
-</footer> <!--end::Footer-->
-</div> <!--end::App Wrapper--> <!--begin::Script-->
