@@ -58,11 +58,17 @@
                 if ($is_admin) {
                 ?>
                     <li class="nav-header">Administrador</li>
-
-                    <li class="nav-item"> <a href="<?php echo $menu_activo == 'verusuarios' ? '#' : base_url('dashboard/verusuarios'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-people"></i>
-                            <p>Usuarios
-                            </p>
-                        </a> </li>
+                    <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'verusuarios' ? '#' : base_url('dashboard/verusuarios'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
+                            <i class="nav-icon bi bi-people"></i>
+                            <p>Usuarios</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'nuevousuario' ? '#' : base_url('dashboard/nuevousuario'); ?>" class="nav-link <?php echo $menu_activo == 'nuevousuario' ? 'active' : ''; ?>">
+                            <i class="nav-icon bi bi-people"></i>
+                            <p>Nuevo Usuario</p>
+                        </a>
                     </li>
                 <?php
                 }
