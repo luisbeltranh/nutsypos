@@ -32,7 +32,7 @@
                                     <td><?= $producto['precio_venta']; ?></td>
                                     <td><?= $producto['descripcion']; ?></td>
                                     <td>
-                                        <a href="/dashboard/editar" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
+                                        <a href="/dashboard/editarproducto/<?= $producto['id'] ?>" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
                                         <a href="/dashboard/agregaringreso/<?= $producto['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
                                         <a href="/dashboard/editar" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                     </td>

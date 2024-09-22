@@ -288,4 +288,73 @@ class Dashboard extends BaseController
         </pre>
 <?php
     }
+    function editarproducto($producto_id = null)
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        helper('form');
+        $modelo_producto = new ProductosModel();
+        $producto = $modelo_producto->find($producto_id);
+
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'categoria' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Categoría" es requerido',
+                    ]
+                ],
+                'nombre' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Nombre" es requerido',
+                    ]
+                ],
+                'descripcion' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Descripcion" es requerido',
+                    ]
+                ],
+                'costo' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Costo" es requerido',
+                    ]
+                ],
+                'precio_venta' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Precio de Venta" es requerido',
+                    ]
+                ],
+                'user_id' => [],
+                'producto_id' => [],
+            ];
+
+            $data = $this->request->getPost(array_keys($rules));
+            if ($this->validateData($data, $rules)) {
+                echo 'datos validos';
+                $validData = $this->validator->getValidated();
+                $modelo_producto->update($validData['producto_id'], $validData);
+                return redirect()->to('/dashboard/productos');
+            }
+            // return redirect()->to('/dashboard/new_link')->withInput();
+            //return redirect()->back()->withInput();
+        }
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Productos";
+        $datos['menu_activo'] = "editar_producto";
+        $datos['producto'] = $producto;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/editar_producto');
+        echo view('dashboard/templates/footer');
+    }
 }

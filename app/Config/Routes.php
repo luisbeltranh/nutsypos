@@ -10,6 +10,8 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('', 'Dashboard\Dashboard::index');
     $routes->add('productos', 'Dashboard\Dashboard::productos');
     $routes->add('nuevoproducto', 'Dashboard\Dashboard::nuevoproducto');
+    $routes->add('editarproducto', 'Dashboard\Dashboard::editarproducto');
+    $routes->add('editarproducto/(:num)', 'Dashboard\Dashboard::editarproducto/$1');
     $routes->add('pos', 'Dashboard\Dashboard::pos');
     $routes->add('ventaproducto', 'Dashboard\Dashboard::ventaProducto');
     $routes->add('verventas', 'Dashboard\Dashboard::verVentas');

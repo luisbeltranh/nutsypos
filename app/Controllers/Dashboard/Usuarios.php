@@ -43,19 +43,19 @@ class Usuarios extends BaseController
             $datos['is_admin'] = true;
         }
         $usuario_model = new UsuariosModel();
-        $usuarios = $usuario_model->select('users.id, nombres, apellido_paterno, apellido_materno, group')->join('users', 'users.id = users_information.users_id')->join('auth_groups_users', 'users.id = auth_groups_users.user_id')->findAll();
+        $usuarios = $usuario_model->select('users.id, nombres, apellido_paterno, apellido_materno, group, telefono, telefono_emergencia')->join('users', 'users.id = users_information.user_id')->join('auth_groups_users', 'users.id = auth_groups_users.user_id')->findAll();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Ver Usuarios";
         $datos['menu_activo'] = "verusuarios";
+        $datos['usuarios'] =  $usuarios;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
-        print_r($usuarios);
-
-        //cho view('dashboard/dashboard');
+        //print_r($usuarios);
+        echo view('dashboard/lista_usuarios');
         echo 'Ver Usuarios';
         echo view('dashboard/templates/footer');
     }
@@ -89,6 +89,12 @@ class Usuarios extends BaseController
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'El campo "Contraseña" es requerido',
+                    ]
+                ],
+                'nombres' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Nombres" es requerido',
                     ]
                 ],
                 'apellido_paterno' => [
@@ -133,6 +139,7 @@ class Usuarios extends BaseController
                         'required' => 'El campo "Dirección" es requerido',
                     ]
                 ],
+                'user_id' => [],
             ];
 
             $data = $this->request->getPost(array_keys($rules));
@@ -148,12 +155,12 @@ class Usuarios extends BaseController
 
                 // Save the new user information
                 $users->save($user);
-
+                $ultimo_id = $users->getInsertID();
                 // To get the complete user object with ID, we need to get from the database
-                $user = $users->findById($users->getInsertID());
+                $user = $users->findById($ultimo_id);
                 // Add to default group
                 $users->addToDefaultGroup($user);
-                $validData['user_id'] = $users->getInsertID();
+                $validData['user_id'] = $ultimo_id;
                 $usuario_model->insert($validData);
                 //$modelo_movimientos->insert($dato_movimiento);
                 return redirect()->to('/dashboard/verusuarios');

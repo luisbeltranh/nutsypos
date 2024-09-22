@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: db:3306
--- Tiempo de generación: 21-09-2024 a las 15:58:25
+-- Tiempo de generación: 22-09-2024 a las 13:31:40
 -- Versión del servidor: 8.3.0
 -- Versión de PHP: 8.2.8
 
@@ -24,12 +24,12 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `user_information`
+-- Estructura de tabla para la tabla `users_information`
 --
 
-CREATE TABLE `user_information` (
+CREATE TABLE `users_information` (
   `id` int NOT NULL,
-  `users_id` int UNSIGNED NOT NULL,
+  `user_id` int UNSIGNED NOT NULL,
   `nombres` varchar(100) NOT NULL,
   `apellido_paterno` varchar(60) NOT NULL,
   `apellido_materno` varchar(60) NOT NULL,
@@ -37,7 +37,10 @@ CREATE TABLE `user_information` (
   `telefono` varchar(10) NOT NULL,
   `telefono_emergencia` varchar(10) NOT NULL,
   `contacto_emergencia` varchar(100) NOT NULL,
-  `direccion` varchar(100) NOT NULL
+  `direccion` varchar(100) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `deleted_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -45,20 +48,20 @@ CREATE TABLE `user_information` (
 --
 
 --
--- Indices de la tabla `user_information`
+-- Indices de la tabla `users_information`
 --
-ALTER TABLE `user_information`
+ALTER TABLE `users_information`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `users_id` (`users_id`);
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `user_information`
+-- AUTO_INCREMENT de la tabla `users_information`
 --
-ALTER TABLE `user_information`
+ALTER TABLE `users_information`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
@@ -66,10 +69,10 @@ ALTER TABLE `user_information`
 --
 
 --
--- Filtros para la tabla `user_information`
+-- Filtros para la tabla `users_information`
 --
-ALTER TABLE `user_information`
-  ADD CONSTRAINT `user_information_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+ALTER TABLE `users_information`
+  ADD CONSTRAINT `users_information_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
