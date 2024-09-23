@@ -264,6 +264,10 @@ class Dashboard extends BaseController
         $datos['titulo_breadcrumbs'] = "Ventas";
         $datos['menu_activo'] = "verventas";
         $datos['fecha_hoy'] = $fecha_hoy;
+
+        if ($ventas === []) {
+            $datos['ventas'] = $ventas;
+        }
         //$datos['ventas'] = $ventas;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
