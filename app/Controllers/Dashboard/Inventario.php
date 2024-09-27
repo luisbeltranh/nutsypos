@@ -151,17 +151,26 @@ class Inventario extends BaseController
         $ingresos_array = $this->sumarArray($ingresos, 1);
         $total_array = array_merge_recursive($ventas_array, $ingresos_array);
         $suma_total = $this->sumarArray($total_array, 1);
+        // seleccionamos la columna categoria de nuestro array multidimensional
+        $array_nombre = array_column($suma_total, 'nombre');
+        $array_catagoria = array_column($suma_total, 'categoria');
+        // ordenamos el array suma_total con el orden del array catogoria        
+        array_multisort($array_catagoria, $array_nombre, $suma_total, SORT_ASC);
+
         return $suma_total;
 
 
     ?>
         <pre>
         <?php
+        // print_r($suma_total);
+
+
         // echo 'ventas_array';
         // print_r($ventas_array);
-        // echo '<hr>';
+        //echo '<hr>';
         // echo 'ingresos_array';
-        // print_r($ingresos_array);
+        //print_r($suma_total);
         // echo '<hr>';
         // echo 'array_merge';
         // print_r(array_merge_recursive($ventas_array, $ingresos_array));
@@ -175,6 +184,7 @@ class Inventario extends BaseController
         ?>
         </pre>
 <?php
+        //        die();
     }
     function sumarArray($array_datos, $factor)
     {
