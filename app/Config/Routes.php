@@ -18,6 +18,9 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verinventario', 'Dashboard\Inventario::index');
     $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
+    $routes->add('vergranel', 'Dashboard\Granel::index');
+    $routes->add('agregaringresogranel/(:num)', 'Dashboard\Granel::formIngresogranel/$1');
+    $routes->add('granelembolsado/(:num)', 'Dashboard\Granel::formGranelEmbolsado/$1');
     $routes->add('verusuarios', 'Dashboard\Usuarios::verUsuarios');
     $routes->add('nuevousuario', 'Dashboard\Usuarios::nuevoUsuario');
 

@@ -44,11 +44,22 @@ class Dashboard extends BaseController
     public function pos()
     {
         $modelo = new ProductosModel();
-        $productos = $modelo->select('id, categoria, nombre, costo, precio_venta, cantidad_total')->orderBy('nombre', 'ASC')->findAll();
+        $productos = $modelo->select('id, categoria, nombre, tamano, costo, precio_venta, cantidad_total')->orderBy('nombre', 'ASC')->findAll();
         $modeloVentas = new VentasModel();
         $numero_venta = $modeloVentas->select('numero_venta')->orderBy('numero_venta', 'desc')->first();
         $datos['estaLogeado'] = auth()->loggedIn();
+
+        $productos_nombre = array_column($productos, 'nombre');
+        $productos_categoria = array_column($productos, 'categoria');
+        $productos_tamano = array_column($productos, 'tamano');
+        array_multisort($productos_categoria, $productos_tamano, $productos_nombre, $productos);
+
         $datos['productos'] = $productos;
+
+        // echo '<pre>';
+        // print_r($datos['productos']);
+        // echo '</pre>';
+        // die();
         if ($numero_venta != null) {
             $datos['numero_venta'] = $numero_venta['numero_venta'] + 1;
         } else {
@@ -86,6 +97,10 @@ class Dashboard extends BaseController
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Productos";
         $datos['menu_activo'] = "productos";
+        $productos_nombre = array_column($productos, 'nombre');
+        $productos_categoria = array_column($productos, 'categoria');
+        $productos_tamano = array_column($productos, 'tamano');
+        array_multisort($productos_categoria, $productos_tamano, $productos_nombre, $productos);
         $datos['productos'] = $productos;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
@@ -336,6 +351,7 @@ class Dashboard extends BaseController
                 ],
                 'user_id' => [],
                 'producto_id' => [],
+                'tamano' => [],
             ];
 
             $data = $this->request->getPost(array_keys($rules));

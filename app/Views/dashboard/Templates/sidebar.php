@@ -42,8 +42,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo $menu_activo == 'agregar_ingreso' ? '#' : base_url('dashboard/agregaringreso'); ?>" class="nav-link <?php echo $menu_activo == 'agregar_ingreso' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
-                        <p>Agregar</p>
+                    <a href="<?php echo $menu_activo == 'ver_granel' ? '#' : base_url('dashboard/vergranel'); ?>" class="nav-link <?php echo $menu_activo == 'ver_granel' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
+                        <p>Ver A Granel</p>
                     </a>
                 </li>
 

@@ -8,7 +8,7 @@ use App\Models\MovimientosModel;
 use App\Models\VentasModel;
 use App\Models\IngresosModel;
 
-class Inventario extends BaseController
+class Granel extends BaseController
 {
     function index() //verInventario
     {
@@ -29,21 +29,15 @@ class Inventario extends BaseController
 ?>
         <pre>
         <?php
-        // echo 'suma total';
-        // print_r($datos['productos']);
-        // echo '<hr>';
+        echo 'index - Ver a Granel';
         ?>
         </pre>
     <?php
-
-
-
-
-        echo view('dashboard/ver_inventario');
+        //echo view('dashboard/ver_inventario');
         echo view('dashboard/templates/footer');
     }
 
-    function formIngreso($producto_id)
+    function formIngresogranel($producto_id)
     {
         $datos['is_admin'] = false;
         if (auth()->getUser()->inGroup('admin')) {
@@ -75,9 +69,46 @@ class Inventario extends BaseController
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
-        echo view('dashboard/nuevo_ingreso');
+        echo 'Ingreso Granel';
         echo view('dashboard/templates/footer');
     }
+    function formGranelEmbolsado($producto_id)
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+
+        helper('form');
+        $modelo_ingresos = new IngresosModel();
+        $modelo_productos = new ProductosModel();
+        $producto = $modelo_productos->find($producto_id);
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ingreso";
+        $datos['menu_activo'] = "agregar_ingreso";
+        $datos['producto'] = $producto;
+
+        $modeloVentas = new VentasModel();
+        $numero_ingreso = $modelo_ingresos->select('numero_ingreso')->orderBy('numero_ingreso', 'desc')->first();
+        $datos['estaLogeado'] = auth()->loggedIn();
+        if ($numero_ingreso != null) {
+            $datos['numero_ingreso'] = $numero_ingreso['numero_ingreso'] + 1;
+        } else {
+            $datos['numero_ingreso'] = 0;
+        }
+
+
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo 'A Granel a Embolsado';
+        echo view('dashboard/templates/footer');
+    }
+
+
 
     function guardarIngreso()
     {
@@ -143,19 +174,18 @@ class Inventario extends BaseController
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
         $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, monto, costo, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
         $ventas_array = $this->sumarArray($ventas, -1);
         $modelo_ingresos = new IngresosModel();
-        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, monto, costo, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
         $ingresos_array = $this->sumarArray($ingresos, 1);
         $total_array = array_merge_recursive($ventas_array, $ingresos_array);
         $suma_total = $this->sumarArray($total_array, 1);
         // seleccionamos la columna categoria de nuestro array multidimensional
         $array_nombre = array_column($suma_total, 'nombre');
         $array_catagoria = array_column($suma_total, 'categoria');
-        $array_tamano = array_column($suma_total, 'tamano');
         // ordenamos el array suma_total con el orden del array catogoria        
-        array_multisort($array_catagoria, $array_tamano, $array_nombre, $suma_total, SORT_ASC);
+        array_multisort($array_catagoria, $array_nombre, $suma_total, SORT_ASC);
 
         return $suma_total;
 
@@ -195,7 +225,6 @@ class Inventario extends BaseController
         foreach ($array_datos as $element) {
             $result[$element['producto_id']]['categoria'][] = $element['categoria'];
             $result[$element['producto_id']]['nombre'][] = $element['nombre'];
-            $result[$element['producto_id']]['tamano'][] = $element['tamano'];
             $result[$element['producto_id']]['monto'][] = $element['monto'];
             $result[$element['producto_id']]['costo'][] = $element['costo'];
             $result[$element['producto_id']]['cantidad'][] = $element['cantidad'];
@@ -208,7 +237,6 @@ class Inventario extends BaseController
             $datos[$inter]['producto_id'] = $key;
             $datos[$inter]['categoria'] = $vector['categoria'][0];
             $datos[$inter]['nombre'] = $vector['nombre'][0];
-            $datos[$inter]['tamano'] = $vector['tamano'][0];
             $datos[$inter]['cantidad'] = $factor * array_sum($vector['cantidad']);
             $datos[$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
             $datos[$inter]['costo'] = array_sum($vector['costo']) / count($vector['costo']);

@@ -15,8 +15,15 @@
                                 <th>Categoría</th>
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
-                                <th>Costo</th>
-                                <th>Total</th>
+                                <?php
+                                if ($is_admin) {
+                                ?>
+                                    <th>Costo</th>
+                                    <th>Total</th>
+
+                                <?php
+                                }
+                                ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,8 +36,15 @@
                                     <td><?= $producto['categoria']; ?></td>
                                     <td><?= $producto['nombre']; ?></td>
                                     <td><?= $producto['cantidad']; ?></td>
-                                    <td><?= $producto['costo']; ?></td>
-                                    <td><?= $producto['total']; ?></td>
+                                    <?php
+                                    if ($is_admin) {
+                                    ?>
+                                        <td><?= $producto['costo']; ?></td>
+                                        <td><?= $producto['total']; ?></td>
+                                    <?php
+                                    }
+                                    ?>
+
                                     <td>
                                         <a href="/dashboard/agregaringreso/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
                                     </td>

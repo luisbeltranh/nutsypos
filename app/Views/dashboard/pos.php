@@ -153,6 +153,17 @@
 
         }
 
+        function eliminarArticulo(idProducto, indiceItem) {
+            console.log(idProducto);
+            console.log(ARTICULOS);
+            ARTICULOS = ARTICULOS.filter(unarticulo => unarticulo.id != idProducto);
+            console.log(ARTICULOS);
+            refrescarVistaItems();
+            //  var element = document.getElementById(idProducto);
+            // element.parentNode.removeChild(element);
+        }
+
+
         function refrescarVistaItems() {
             var compraTotal = 0;
             var cantidadTotal = 0;
@@ -161,7 +172,7 @@
             var articuloCanasta = document.getElementById("articulosLista")
             articuloCanasta.innerHTML = "";
             for (let i = ARTICULOS.length - 1; i >= 0; i--) {
-                articuloCanasta.innerHTML += agregarArticuloHtml(ARTICULOS[i]);
+                articuloCanasta.innerHTML += agregarArticuloHtml(ARTICULOS[i], i);
                 compraTotal += Number(ARTICULOS[i].precio_venta) * Number(ARTICULOS[i].cantidad);
                 cantidadTotal += Number(ARTICULOS[i].cantidad);
             }
@@ -173,11 +184,13 @@
             contadorArticulos.innerHTML = cantidadTotal;
         }
 
-        function agregarArticuloHtml(datos) {
+        function agregarArticuloHtml(datos, indiceItem) {
             return ` 
-            <li class = "d-flex justify-content-between align-items-center"> <span class = "text-success"> ${datos.cantidad} </span>${datos.nombre}<span class="text-danger">${datos.precio_venta} Bs</span> <span> hola </span></li >
+            <li id = "${indiceItem}" class = "d-flex justify-content-between align-items-center"> <span class = "text-success"> ${datos.cantidad} </span>${datos.nombre}<span class="text-danger">${datos.precio_venta} Bs</span> <span class = "h-50" onclick = "eliminarArticulo(${datos.id}, ${indiceItem})"><button type="button" class="btn btn-danger btn-md"> - </button></span></li>
                 `;
         }
+
+
 
         function sumarArticulos(costoArticulo) {}
 

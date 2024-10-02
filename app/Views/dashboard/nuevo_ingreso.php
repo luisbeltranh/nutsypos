@@ -23,15 +23,23 @@
                             <label for="descripcion">Descripción</label>
                             <input type="text" class="form-control" name="descripcion" value="<?= $producto['descripcion'] ?>" readonly="readonly">
                         </div>
-                        <div class="form-group">
-                            <label for="costo">Costo</label>
-                            <input type="text" class="form-control" name="monto" value="<?= $producto['costo'] ?>" readonly="readonly">
-                        </div>
+                        <?php
+                        if ($is_admin) {
+                        ?>
+                            <div class="form-group">
+                                <label for="costo">Costo</label>
+                                <input type="text" class="form-control" name="" value="<?= $producto['costo'] ?>" readonly="readonly">
+                            </div>
+
+                        <?php
+                        }
+                        ?>
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>
                             <input type="text" class="form-control" name="cantidad" autofocus>
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
+                            <input type="hidden" name="monto" value="<?= $producto['costo'] ?>">
                             <input type="hidden" name="numero_ingreso" value="<?= $numero_ingreso ?>">
                         </div>
                     </div>

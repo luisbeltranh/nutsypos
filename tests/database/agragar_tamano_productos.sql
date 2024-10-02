@@ -1,0 +1,1 @@
+ALTER TABLE `productos` ADD `tamano` INT NOT NULL AFTER `descripcion`;
