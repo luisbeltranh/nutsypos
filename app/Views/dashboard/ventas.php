@@ -48,8 +48,8 @@
                             <tr>
                                 <td></td>
                                 <td></td>
-                                <td></td>
                                 <td>Total</td>
+                                <td><?= $costo_total ?></td>
                                 <td> <?= $monto_total ?></td>
                             </tr>
                         </tbody>

@@ -263,6 +263,7 @@ class Dashboard extends BaseController
         }
         $inter = 0;
         $monto_total = 0;
+        $costo_total = 0;
         foreach ($result as $key => $vector) {
             $datos['ventas'][$inter]['producto_id'] = $key;
             $datos['ventas'][$inter]['nombre'] = $vector['nombre'][0];
@@ -271,8 +272,10 @@ class Dashboard extends BaseController
             $datos['ventas'][$inter]['total'] = array_sum($vector['total']);
             $inter++;
             $monto_total += array_sum($vector['total']);
+            $costo_total += array_sum($vector['monto']);
         }
         $datos['monto_total'] = $monto_total;
+        $datos['costo_total'] = $costo_total;
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
