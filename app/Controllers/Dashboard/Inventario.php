@@ -212,7 +212,7 @@ class Inventario extends BaseController
             $datos[$inter]['cantidad'] = $factor * array_sum($vector['cantidad']);
             $datos[$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
             $datos[$inter]['costo'] = array_sum($vector['costo']) / count($vector['costo']);
-            $datos[$inter]['total'] = array_sum($vector['total']);
+            $datos[$inter]['total'] = number_format(array_sum($vector['total']), 2);
             $inter++;
             $monto_total += array_sum($vector['total']);
         }

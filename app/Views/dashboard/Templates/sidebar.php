@@ -24,16 +24,35 @@
                 <li class="nav-item"> <a href="<?php echo $menu_activo == 'productos' ? '#' : base_url('dashboard/productos'); ?>" class="nav-link <?php echo $menu_activo == 'productos' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
                         <p>Productos</p>
                     </a> </li>
-                <li class="nav-item">
-                    <a href="<?php echo $menu_activo == 'nuevo_producto' ? '#' : base_url('dashboard/nuevoproducto'); ?>" class="nav-link <?php echo $menu_activo == 'nuevo_producto' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
-                        <p>Nuevo</p>
-                    </a>
-                </li>
+                <?php
+                if ($is_admin) {
+                ?>
+                    <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'nuevo_producto' ? '#' : base_url('dashboard/nuevoproducto'); ?>" class="nav-link <?php echo $menu_activo == 'nuevo_producto' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
+                            <p>Nuevo</p>
+                        </a>
+                    </li>
+                <?php
+                }
+                ?>
+
                 <li class="nav-item">
                     <a href="<?php echo $menu_activo == 'verventas' ? '#' : base_url('dashboard/verventas'); ?>" class="nav-link <?php echo $menu_activo == 'verventas' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
                         <p>Ver Ventas</p>
                     </a>
                 </li>
+                <?php
+                if ($is_admin) {
+                ?>
+
+                    <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'verventasperiodo' ? '#' : base_url('dashboard/verventasperiodo'); ?>" class="nav-link <?php echo $menu_activo == 'verventasperiodo' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
+                            <p>Ver Ventas P.</p>
+                        </a>
+                    </li>
+                <?php
+                }
+                ?>
 
                 <li class="nav-header">Inventario</li>
                 <li class="nav-item">
@@ -49,10 +68,11 @@
 
                 <li class="nav-header">Tienda</li>
 
-                <li class="nav-item"> <a href="<?php echo $menu_activo == 'tienda' ? '#' : base_url('dashboard/pos'); ?>" class="nav-link <?php echo $menu_activo == 'tienda' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-shop"></i>
-                        <p>Tienda
-                        </p>
-                    </a> </li>
+                <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'tienda' ? '#' : base_url('dashboard/pos'); ?>" class="nav-link <?php echo $menu_activo == 'tienda' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-cart"></i>
+                        <p>Vender</p>
+                    </a>
+                </li>
                 </li>
                 <?php
                 if ($is_admin) {

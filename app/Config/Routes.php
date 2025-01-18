@@ -12,9 +12,11 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('nuevoproducto', 'Dashboard\Dashboard::nuevoproducto');
     $routes->add('editarproducto', 'Dashboard\Dashboard::editarproducto');
     $routes->add('editarproducto/(:num)', 'Dashboard\Dashboard::editarproducto/$1');
+    $routes->add('eliminarproducto/(:num)', 'Dashboard\Dashboard::eliminarproducto/$1');
     $routes->add('pos', 'Dashboard\Dashboard::pos');
     $routes->add('ventaproducto', 'Dashboard\Dashboard::ventaProducto');
     $routes->add('verventas', 'Dashboard\Dashboard::verVentas');
+    $routes->add('verventasperiodo', 'Dashboard\Dashboard::verVentasperiodo');
     $routes->add('verinventario', 'Dashboard\Inventario::index');
     $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');

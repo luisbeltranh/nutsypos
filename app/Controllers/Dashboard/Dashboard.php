@@ -52,7 +52,8 @@ class Dashboard extends BaseController
         $productos_nombre = array_column($productos, 'nombre');
         $productos_categoria = array_column($productos, 'categoria');
         $productos_tamano = array_column($productos, 'tamano');
-        array_multisort($productos_categoria, $productos_tamano, $productos_nombre, $productos);
+        //array_multisort($productos_categoria, $productos_tamano, $productos_nombre, $productos);
+        array_multisort($productos_categoria, $productos_nombre, SORT_NATURAL, $productos);
 
         $datos['productos'] = $productos;
 
@@ -100,7 +101,7 @@ class Dashboard extends BaseController
         $productos_nombre = array_column($productos, 'nombre');
         $productos_categoria = array_column($productos, 'categoria');
         $productos_tamano = array_column($productos, 'tamano');
-        array_multisort($productos_categoria, $productos_tamano, $productos_nombre, $productos);
+        array_multisort($productos_categoria, $productos_nombre, SORT_NATURAL, $productos);
         $datos['productos'] = $productos;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
@@ -158,6 +159,7 @@ class Dashboard extends BaseController
                     ]
                 ],
                 'user_id' => [],
+                'tamano' => [],
             ];
 
             $producto_id = $modelo->orderBy('id', 'desc')->first();
@@ -257,6 +259,7 @@ class Dashboard extends BaseController
         foreach ($ventas as $element) {
             $result[$element['producto_id']]['nombre'][] = $element['nombre'];
             $result[$element['producto_id']]['monto'][] = $element['monto'];
+            $result[$element['producto_id']]['costo'][] = $element['costo'];
             $result[$element['producto_id']]['cantidad'][] = $element['cantidad'];
             $result[$element['producto_id']]['total'][] = $element['cantidad'] * $element['monto'];
             $result[$element['producto_id']]['created_at'][] = $element['created_at'];
@@ -264,15 +267,23 @@ class Dashboard extends BaseController
         $inter = 0;
         $monto_total = 0;
         $costo_total = 0;
+        // echo "<pre>";
+        // print_r($result);
+        // echo "</pre>";
+        // die();
+
+
         foreach ($result as $key => $vector) {
             $datos['ventas'][$inter]['producto_id'] = $key;
             $datos['ventas'][$inter]['nombre'] = $vector['nombre'][0];
             $datos['ventas'][$inter]['cantidad'] = array_sum($vector['cantidad']);
-            $datos['ventas'][$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
+            $datos['ventas'][$inter]['costo'] = $vector['costo'][0];
+            $datos['ventas'][$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']); //monto es el precio de venta
+            $datos['ventas'][$inter]['tcosto'] = array_sum($vector['cantidad']) * $vector['costo'][0];
             $datos['ventas'][$inter]['total'] = array_sum($vector['total']);
             $inter++;
             $monto_total += array_sum($vector['total']);
-            $costo_total += array_sum($vector['monto']);
+            $costo_total += array_sum($vector['cantidad']) * $vector['costo'][0];
         }
         $datos['monto_total'] = $monto_total;
         $datos['costo_total'] = $costo_total;
@@ -378,6 +389,95 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/editar_producto');
+        echo view('dashboard/templates/footer');
+    }
+
+    function eliminarProducto($producto_id = null)
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+            $modelo_producto = new ProductosModel();
+            $modelo_producto->delete($producto_id);
+            return redirect()->to('/dashboard/productos');
+        }
+
+
+        echo $producto_id;
+    }
+    function verVentasPeriodo()
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        helper('form');
+        $modelo = new VentasModel();
+        $fecha_hoy = date('Y-m-d');
+        $fecha_inicio = date('Y-m-d 00:00:00');
+        $fecha_fin = date('Y-m-d 23:59:59');
+        if ($this->request->getMethod() == 'POST') {
+            $data = $this->request->getPost();
+            $fecha_hoy = date('Y-m-d', strtotime($fecha_hoy));
+            $fecha_inicio = date('Y-m-d 00:00:01', strtotime($data['fecha_inicio']));
+            $fecha_fin = date('Y-m-d 23:59:59', strtotime($data['fecha_fin']));
+        }
+        $ventas = $modelo->select('ventas.id, numero_venta, producto_id, monto, cantidad, total, ventas.user_id, ventas.created_at AS venta_creada,ventas.updated_at, productos.id, categoria, nombre, tamano, costo, precio_venta, productos.created_at, productos.updated_at ')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->join('productos', 'productos.id = ventas.producto_id')->orderBy('ventas.created_at')->findAll();
+
+        // echo '<pre>';
+        // print_r($ventas);
+        // echo '</pre>';
+        //$ventas = $modelo->findAll();
+        //$fecha = strtotime('2024-10-01 00:00:00');
+        //$fecha = date('Y-m-d', $fecha);
+        //echo $fecha;
+        $result = array();
+        foreach ($ventas as $element) {
+            $fecha = strtotime($element['venta_creada']);
+            $fecha = date('Y-m-d', $fecha);
+            $result[$fecha]['nombre'][] = $element['nombre'];
+            $result[$fecha]['precio'][] = $element['monto'];
+            $result[$fecha]['costo'][] = $element['costo'];
+            $result[$fecha]['cantidad'][] = $element['cantidad'];
+            $result[$fecha]['total_precio'][] = $element['cantidad'] * $element['monto'];
+            $result[$fecha]['total_costo'][] = $element['cantidad'] * $element['costo'];
+            $result[$fecha]['producto_id'][] = $element['producto_id'];
+        }
+        // echo '<pre>';
+        // print_r($result);
+        // echo '</pre>';
+
+        $inter = 0;
+        $monto_total = 0;
+        $costo_total = 0;
+        foreach ($result as $key => $vector) {
+            $datos['ventas'][$inter]['fecha'] = $key;
+            $datos['ventas'][$inter]['nombre'] = $vector['nombre'][0];
+            $datos['ventas'][$inter]['cantidad'] = array_sum($vector['cantidad']);
+            $datos['ventas'][$inter]['costo'] = $vector['costo'][0];
+            $datos['ventas'][$inter]['precio'] = array_sum($vector['precio']) / count($vector['precio']); //monto es el precio de venta
+            $datos['ventas'][$inter]['total_costo'] = array_sum($vector['total_costo']);
+            $datos['ventas'][$inter]['total_precio'] = array_sum($vector['total_precio']);
+            $datos['ventas'][$inter]['ganancia'] = array_sum($vector['total_precio']) - array_sum($vector['total_costo']);
+            // echo 'Cantidad:' . array_sum($vector['cantidad']) . 'Costo:' . $vector['costo'][0];
+            $inter++;
+        }
+        if (!isset($datos['ventas'])) {
+            $datos['ventas'] = array();            # code...
+        }
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ventas por Periodo";
+        $datos['menu_activo'] = "verventasperiodo";
+        $datos['fecha_hoy'] = $fecha_hoy;
+
+        //$datos['ventas'] = $ventas;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/verventasperiodo');
         echo view('dashboard/templates/footer');
     }
 }

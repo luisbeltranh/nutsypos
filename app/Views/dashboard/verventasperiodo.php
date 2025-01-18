@@ -6,11 +6,14 @@
                     <div class="">
                         <div class="input-group">
                             <div class="col-sm-4">
-                                Elegir fecha:
+                                Elegir fechas:
                             </div>
                             <div cls="col-sm-6">
-                                <?= form_open('dashboard/verventas') ?>
-                                <input type="date" name="fecha" value="<?= $fecha_hoy ?>">
+                                <?= form_open('dashboard/verventasperiodo') ?>
+                                <label for="fecha_inicio">Fecha Inicio</label>
+                                <input type="date" name="fecha_inicio" value="<?= $fecha_hoy ?>">
+                                <label for="fecha_fin">Fecha Fin</label>
+                                <input type="date" name="fecha_fin" value="<?= $fecha_hoy ?>">
                                 <input type="submit" class="btn btn-primary">
                                 <?= form_close() ?>
                             </div>
@@ -22,16 +25,12 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th>Producto Id</th>
-                                <th>Producto</th>
-                                <th>Cantidad</th>
-                                <th>Precio</th>
-                                <th>Total</th>
+                                <th>Fecha</th>
+                                <th>Ventas</th>
                                 <?php
                                 if ($is_admin) {
                                 ?>
                                     <th>Costo</th>
-                                    <th>T. Costo</th>
                                     <th>Ganancia</th>
                                 <?php
                                 }
@@ -44,17 +43,13 @@
                             ?>
 
                                 <tr>
-                                    <td><?= $venta['producto_id']; ?></td>
-                                    <td><?= $venta['nombre']; ?></td>
-                                    <td><?= $venta['cantidad']; ?></td>
-                                    <td><?= $venta['monto']; ?></td>
-                                    <td><?= $venta['total']; ?></td>
+                                    <td><?= $venta['fecha']; ?></td>
+                                    <td><?= $venta['total_precio']; ?></td>
                                     <?php
                                     if ($is_admin) {
                                     ?>
-                                        <td><?= $venta['costo']; ?></td>
-                                        <td><?= $venta['tcosto']; ?></td>
-                                        <td><?= $venta['total'] - $venta['tcosto']; ?></td>
+                                        <td><?= $venta['total_costo']; ?></td>
+                                        <td><?= $venta['ganancia']; ?></td>
                                     <?php
                                     }
                                     ?>
@@ -67,15 +62,11 @@
                             <tr>
                                 <td></td>
                                 <td></td>
-                                <td>Total</td>
-                                <td></td>
-                                <td><?= $monto_total ?></td>
                                 <?php
                                 if ($is_admin) {
                                 ?>
                                     <td></td>
-                                    <td><?= $costo_total ?></td>
-                                    <td><?= $monto_total - $costo_total; ?></td>
+                                    <td></td>
                                 <?php
                                 }
                                 ?>
