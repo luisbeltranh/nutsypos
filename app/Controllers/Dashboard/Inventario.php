@@ -143,10 +143,14 @@ class Inventario extends BaseController
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
         $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        // echo "<pre>";
+        // print_r($ventas);
+        // echo "</pre>";
+        // die();
         $ventas_array = $this->sumarArray($ventas, -1);
         $modelo_ingresos = new IngresosModel();
-        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->findAll();
+        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
         $ingresos_array = $this->sumarArray($ingresos, 1);
         $total_array = array_merge_recursive($ventas_array, $ingresos_array);
         $suma_total = $this->sumarArray($total_array, 1);
@@ -156,10 +160,7 @@ class Inventario extends BaseController
         $array_tamano = array_column($suma_total, 'tamano');
         // ordenamos el array suma_total con el orden del array catogoria        
         array_multisort($array_catagoria, $array_tamano, $array_nombre, $suma_total, SORT_ASC);
-
         return $suma_total;
-
-
     ?>
         <pre>
         <?php

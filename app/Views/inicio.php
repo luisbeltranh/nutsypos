@@ -72,7 +72,7 @@
             <h1>NutsyPOS</h1>
             <p class="lead">Software Punto de Venta, diseñado para facilitar sus ventas y tener un mayor control de su inventario. </p>
             <p class="lead">
-                <a href="/login" class="btn btn-lg btn-light fw-bold border-white bg-white">Ingressar</a>
+                <a href="/login" class="btn btn-lg btn-light fw-bold border-white bg-white">Ingresar</a>
             </p>
         </main>
 
