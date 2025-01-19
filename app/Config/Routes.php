@@ -25,6 +25,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('granelembolsado/(:num)', 'Dashboard\Granel::formGranelEmbolsado/$1');
     $routes->add('verusuarios', 'Dashboard\Usuarios::verUsuarios');
     $routes->add('nuevousuario', 'Dashboard\Usuarios::nuevoUsuario');
+    $routes->add('vistaventashoyhoras', 'Dashboard\Vistas::vistaVentasHoyHoras');
 
     // $routes->add('shop', 'Dashboard\Dashboard::shop');
     // $routes->add('new_link', 'Dashboard\Dashboard::new_link');
