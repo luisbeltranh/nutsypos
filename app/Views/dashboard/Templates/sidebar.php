@@ -85,16 +85,28 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?php echo $menu_activo == 'verusuarios' ? '#' : base_url('dashboard/verusuarios'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
+                        <a href="#" class="nav-link">
                             <i class="nav-icon bi bi-people"></i>
-                            <p>Usuarios</p>
+                            <p>
+                                USUARIOS
+                                <i class=" bi bi-chevron-left float-end"></i>
+                            </p>
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?php echo $menu_activo == 'nuevousuario' ? '#' : base_url('dashboard/nuevousuario'); ?>" class="nav-link <?php echo $menu_activo == 'nuevousuario' ? 'active' : ''; ?>">
-                            <i class="nav-icon bi bi-people"></i>
-                            <p>Nuevo Usuario</p>
-                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="<?php echo $menu_activo == 'verusuarios' ? '#' : base_url('dashboard/verusuarios'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
+                                    <i class="nav-icon bi bi-people"></i>
+                                    <p>Usuarios</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo $menu_activo == 'nuevousuario' ? '#' : base_url('dashboard/nuevousuario'); ?>" class="nav-link <?php echo $menu_activo == 'nuevousuario' ? 'active' : ''; ?>">
+                                    <i class="nav-icon bi bi-people"></i>
+                                    <p>Nuevo Usuario</p>
+                                </a>
+                            </li>
+                        </ul>
+
                     </li>
                 <?php
                 }

@@ -18,6 +18,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verventas', 'Dashboard\Dashboard::verVentas');
     $routes->add('verventasperiodo', 'Dashboard\Dashboard::verVentasperiodo');
     $routes->add('verinventario', 'Dashboard\Inventario::index');
+    $routes->add('verinventario/(:alpha)', 'Dashboard\Inventario::index/$1');
     $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
     $routes->add('vergranel', 'Dashboard\Granel::index');

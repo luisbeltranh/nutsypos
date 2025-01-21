@@ -10,35 +10,24 @@ use App\Models\IngresosModel;
 
 class Inventario extends BaseController
 {
-    function index() //verInventario
+    function index($ordenar = null) //verInventario
     {
         $datos['is_admin'] = false;
         if (auth()->getUser()->inGroup('admin')) {
             $datos['is_admin'] = true;
         }
+
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Inventario";
-        $datos['menu_activo'] = "dashboard";
-        $datos['productos'] = $this->saldoInventario();
+        $datos['menu_activo'] = "inventario";
+        $datos['orden_lista'] = $ordenar;
+        $datos['productos'] = $this->saldoInventario($ordenar);
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
-?>
-        <pre>
-        <?php
-        // echo 'suma total';
-        // print_r($datos['productos']);
-        // echo '<hr>';
-        ?>
-        </pre>
-    <?php
-
-
-
-
         echo view('dashboard/ver_inventario');
         echo view('dashboard/templates/footer');
     }
@@ -138,7 +127,7 @@ class Inventario extends BaseController
     }
 
 
-    private function saldoInventario()
+    private function saldoInventario($ordenar = null)
     {
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
@@ -158,10 +147,22 @@ class Inventario extends BaseController
         $array_nombre = array_column($suma_total, 'nombre');
         $array_catagoria = array_column($suma_total, 'categoria');
         $array_tamano = array_column($suma_total, 'tamano');
+        $array_cantidad = array_column($suma_total, 'cantidad');
         // ordenamos el array suma_total con el orden del array catogoria        
-        array_multisort($array_catagoria, $array_tamano, $array_nombre, $suma_total, SORT_ASC);
+        //array_multisort($array_catagoria, $array_tamano, $array_nombre, $suma_total, SORT_ASC);
+        if ($ordenar == 'nombre' || $ordenar == NULL) {
+            array_multisort($array_catagoria, $array_nombre, SORT_NATURAL, $suma_total);
+        }
+        if ($ordenar == 'invmenos') {
+            array_multisort($array_cantidad, $array_catagoria, $array_nombre, $suma_total, SORT_DESC);
+        }
+        if ($ordenar == 'invmas') {
+            array_multisort($array_cantidad, SORT_DESC, $suma_total);
+        }
+
+        //array_multisort($array_cantidad, $suma_total);
         return $suma_total;
-    ?>
+?>
         <pre>
         <?php
         // print_r($suma_total);

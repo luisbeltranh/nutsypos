@@ -6,16 +6,21 @@
                 <!-- BAR CHART -->
                 <div class="card card-success">
                     <div class="card-header">
-                        <h3 class="card-title">Bar Chart</h3>
+                        <div class="">
+                            <div class="input-group">
+                                <div class="col-sm-4">
+                                    Elegir fecha:
+                                </div>
+                                <div cls="col-sm-6">
+                                    <?= form_open('dashboard/vistaventashoyhoras') ?>
+                                    <input type="date" name="fecha" value="<?= $fecha_hoy ?>">
+                                    <input type="submit" class="btn btn-primary">
+                                    <?= form_close() ?>
+                                </div>
 
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                <i class="fas fa-times"></i>
-                            </button>
+                            </div>
                         </div>
+
                     </div>
                     <div class="card-body">
                         <div class="chart">

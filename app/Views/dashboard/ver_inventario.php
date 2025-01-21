@@ -3,8 +3,13 @@
         <div class="row"> <!--begin::Col-->
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">
-                        Inventario de Productos <span></span>
+                    <div class="card-title">Inventario de Productos - <?php echo $menu_activo ?></div>
+                    <div class="card-tools">
+                        <div class="btn-group">
+                            <a href="/dashboard/verinventario/nombre" class="btn btn-info">Nombre</a>
+                            <a href="/dashboard/verinventario/invmenos" class="btn btn-info">Inventario - </a>
+                            <a href="/dashboard/verinventario/invmas" class="btn btn-info">Inventario + </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body table-responsive p-0">
