@@ -277,6 +277,26 @@ class Auth extends ShieldAuth
      * Valid login fields
      * --------------------------------------------------------------------
      * Fields that are available to be used as credentials for login.
+     * *************************************************************
+     * *** ATENCION A ESTE CAMBIO LUEGO DE UNA ACTUALIZACION *******
+     * *************************************************************
+     * ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+     * Tambien se debe hacer un cambio en la carpeta en app\vendor\codeigniter4\shield\src\Validation\ValidationRules.php
+     * Se debera cambiar esta funcion donde comentaremos la line a de email y descomentaremos la lina de username
+     *     public function getLoginRules(): array
+     *{
+     *    return setting('Validation.login') ?? [
+     *        'username' => $this->config->usernameValidationRules,
+     *        //'email'    => $this->config->emailValidationRules,
+     *       'password' => $this->getPasswordRules(),
+     *   ];
+     *}
+
+     * 
+     * 
+     * 
+     * 
+     * 
      */
     public array $validFields = [
         //'email',
