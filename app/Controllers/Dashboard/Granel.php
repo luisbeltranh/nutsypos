@@ -3,6 +3,7 @@
 namespace App\Controllers\Dashboard;
 
 use App\Controllers\BaseController;
+use App\Models\GranelModel;
 use App\Models\ProductosModel;
 use App\Models\MovimientosModel;
 use App\Models\VentasModel;
@@ -171,8 +172,10 @@ class Granel extends BaseController
 
     private function saldoInventario()
     {
-        $modelo_productos = new ProductosModel();
-        $productos = $modelo_productos->findAll();
+        $modelo_productos_granel = new GranelModel();
+        $productos = $modelo_productos_granel->findAll();
+        print_r($productos);
+        die();
         $modelo_ventas = new VentasModel();
         $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, monto, costo, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->findAll();
         $ventas_array = $this->sumarArray($ventas, -1);
