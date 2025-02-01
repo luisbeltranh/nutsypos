@@ -7,6 +7,8 @@ use App\Models\ProductosModel;
 use App\Models\MovimientosModel;
 use App\Models\VentasModel;
 use App\Models\IngresosModel;
+use App\Models\ProductosGranelModel;
+use App\Models\UtilModel;
 
 class Dashboard extends BaseController
 {
@@ -20,6 +22,7 @@ class Dashboard extends BaseController
         $fecha_inicio = date('Y-m-d 00:00:00');
         $fecha_fin = date('Y-m-d 23:59:59');
         $cantidad_ventas = $ventas_model->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->countAllResults();
+        $total_ventas = $ventas_model->selectSum('total')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->findAll();
         $datos['grupo_usuario'] = auth()->getUser()->getGroups();
         //auth()->getUser()->syncGroups('superadmin', 'admin', 'user');
         $datos['is_admin'] = false;
@@ -33,6 +36,7 @@ class Dashboard extends BaseController
         $datos['menu_activo'] = "dashboard";
         $datos['cantidad_productos'] = "$cantidad_productos";
         $datos['cantidad_ventas'] = "$cantidad_ventas";
+        $datos['total_ventas'] = $total_ventas[0]['total'];
 
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
@@ -161,20 +165,24 @@ class Dashboard extends BaseController
                 'user_id' => [],
                 'tamano' => [],
             ];
-
-            $producto_id = $modelo->orderBy('id', 'desc')->first();
+            //$data son los datos del formulario de ingreso de nuevo producto
             $data = $this->request->getPost(array_keys($rules));
-            $dato_movimiento['productos_id'] = $producto_id['id'] + 1;
-            $dato_movimiento['tipo'] = '0'; //0 es tipo NUEVO
-            $dato_movimiento['cantidad'] = $data['cantidad'];
-            $dato_movimiento['monto'] = $data['precio_venta'];
-            $dato_movimiento['user_id'] = $data['user_id'];
+            //seleccionamos el ultimo id de la tabla productos para 
+            //obtener el nuevo id del nuevo producto
+            //$producto_id = $modelo->orderBy('id', 'desc')->first();
+            // NO estamos usando la tabla movimientos porque no podemos validar las 3 tablas y si existe un error
+            // no podemos hacer un rollback de las tablas ya cambiadas para que regresen al estado inicial
+            //$dato_movimiento['productos_id'] = $producto_id['id'] + 1;
+            //$dato_movimiento['tipo'] = '0'; //0 es tipo NUEVO
+            //$dato_movimiento['cantidad'] = $data['cantidad'];
+            //$dato_movimiento['monto'] = $data['precio_venta'];
+            //$dato_movimiento['user_id'] = $data['user_id'];
             // datos para insertar en la tabla de ingresos
             $numero_ingreso = $modelo_ingresos->select('numero_ingreso')->orderBy('numero_ingreso', 'desc')->first();
             if ($numero_ingreso != null) {
-                $datos['numero_ingreso'] = $numero_ingreso['numero_ingreso'] + 1;
+                $dato_ingreso['numero_ingreso'] = $numero_ingreso['numero_ingreso'] + 1;
             } else {
-                $datos['numero_ingreso'] = 0;
+                $dato_ingreso['numero_ingreso'] = 1;
             }
             $dato_ingreso['monto'] = $data['costo'];
             $dato_ingreso['cantidad'] = $data['cantidad'];
@@ -185,9 +193,7 @@ class Dashboard extends BaseController
             if ($this->validateData($data, $rules)) {
                 $validData = $this->validator->getValidated();
                 $modelo->insert($validData);
-
                 $dato_ingreso['producto_id'] = $modelo->getInsertID();
-
                 //$modelo_movimientos->insert($dato_movimiento);
                 $modelo_ingresos->insert($dato_ingreso);
                 return redirect()->to('/dashboard/productos');
@@ -329,8 +335,6 @@ class Dashboard extends BaseController
         }
         helper('form');
         $modelo_producto = new ProductosModel();
-        $producto = $modelo_producto->find($producto_id);
-
         if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'categoria' => [
@@ -363,6 +367,7 @@ class Dashboard extends BaseController
                         'required' => 'El campo "Precio de Venta" es requerido',
                     ]
                 ],
+                'productos_granel_id' => [],
                 'user_id' => [],
                 'producto_id' => [],
                 'tamano' => [],
@@ -378,11 +383,25 @@ class Dashboard extends BaseController
             // return redirect()->to('/dashboard/new_link')->withInput();
             //return redirect()->back()->withInput();
         }
+        $productos_granel = new ProductosGranelModel();
+        $granel = $productos_granel->select('id, nombre')->findAll();
+        //verificar que el producto que deseamos editar tenga un producto a granel afiliado a este, si es null el programa daria error
+        // al no encontrar los datos para rellenar el formulario de edicion, es por eso que nosotros asignamos el valor de '' a id y 
+        // el nombre de No tiene producto a Granel al array producto
+        $verificar_producto = $modelo_producto->find($producto_id);
+        if ($verificar_producto['productos_granel_id'] != null) {
+            $producto = $modelo_producto->select('productos.id, productos.categoria AS categoria, productos.nombre, productos.descripcion, tamano, costo, precio_venta, productos.cantidad_total, productos_granel_id, productos.user_id, productos.created_at, productos_granel.nombre AS nombre_granel')->join('productos_granel', 'productos_granel.id = productos_granel_id')->find($producto_id);
+        } else {
+            $producto = $verificar_producto;
+            $producto['productos_granel_id'] = '';
+            $producto['nombre_granel'] = 'No tiene producto a Granel';
+        }
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Productos";
         $datos['menu_activo'] = "editar_producto";
+        $datos['productos_granel'] = $granel;
         $datos['producto'] = $producto;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
@@ -478,6 +497,32 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/verventasperiodo');
+        echo view('dashboard/templates/footer');
+    }
+    function verMasVendido()
+    {
+        $utilitario_model = new UtilModel();
+        //$cantidad_ventas = $ventas_model->countAllResults();
+
+        $fecha_inicio_hoy = date('Y-m-d 00:00:00');
+        $fecha_fin_hoy = date('Y-m-d 23:59:59');
+        $datos['grupo_usuario'] = auth()->getUser()->getGroups();
+        //auth()->getUser()->syncGroups('superadmin', 'admin', 'user');
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Enlaces";
+        $datos['menu_activo'] = "dashboard";
+        $datos['productos'] = $utilitario_model->listarMasVendidos('hoy');
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_mas_vendido');
         echo view('dashboard/templates/footer');
     }
 }

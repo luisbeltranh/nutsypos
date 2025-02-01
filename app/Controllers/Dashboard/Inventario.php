@@ -49,7 +49,6 @@ class Inventario extends BaseController
         $datos['titulo_breadcrumbs'] = "Ingreso";
         $datos['menu_activo'] = "agregar_ingreso";
         $datos['producto'] = $producto;
-
         $modeloVentas = new VentasModel();
         $numero_ingreso = $modelo_ingresos->select('numero_ingreso')->orderBy('numero_ingreso', 'desc')->first();
         $datos['estaLogeado'] = auth()->loggedIn();
@@ -58,8 +57,6 @@ class Inventario extends BaseController
         } else {
             $datos['numero_ingreso'] = 0;
         }
-
-
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
@@ -125,7 +122,28 @@ class Inventario extends BaseController
             //return redirect()->back()->withInput();
         }
     }
+    function verIngresos()
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $modelo_veringresos = new IngresosModel();
+        $ingresos = $modelo_veringresos->select('ingresos.id, numero_ingreso, productos.nombre, cantidad, monto, total, users.username, ingresos.created_at')->join('users', 'users.id = ingresos.user_id')->join('productos', 'productos.id = ingresos.producto_id')->findAll();
 
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ver Ingresos";
+        $datos['menu_activo'] = "veringresos";
+        $datos['ingresos'] = $ingresos;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_ingresos');
+        echo view('dashboard/templates/footer');
+    }
 
     private function saldoInventario($ordenar = null)
     {

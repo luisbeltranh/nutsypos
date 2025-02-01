@@ -6,9 +6,9 @@
                     <div class="card-title">Inventario de Productos - <?php echo $menu_activo ?></div>
                     <div class="card-tools">
                         <div class="btn-group">
-                            <a href="/dashboard/verinventario/nombre" class="btn btn-info">Nombre</a>
-                            <a href="/dashboard/verinventario/invmenos" class="btn btn-info">Inventario - </a>
-                            <a href="/dashboard/verinventario/invmas" class="btn btn-info">Inventario + </a>
+                            <a href="/dashboard/verinventariogranel/nombre" class="btn btn-info">Nombre</a>
+                            <a href="/dashboard/verinventariogranel/invmenos" class="btn btn-info">Inventario - </a>
+                            <a href="/dashboard/verinventariogranel/invmas" class="btn btn-info">Inventario + </a>
                         </div>
                     </div>
                 </div>
@@ -23,12 +23,13 @@
                                 <?php
                                 if ($is_admin) {
                                 ?>
-                                    <th>Costo</th>
+                                    <th>Costo gr</th>
                                     <th>Total</th>
 
                                 <?php
                                 }
                                 ?>
+                                <th>Minimo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,14 +45,14 @@
                                     <?php
                                     if ($is_admin) {
                                     ?>
-                                        <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['costo']; ?></td>
+                                        <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['costo_gramo']; ?></td>
                                         <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['total']; ?></td>
                                     <?php
                                     }
                                     ?>
-
+                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['minimo']; ?></td>
                                     <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
-                                        <a href="/dashboard/agregaringreso/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
+                                        <a href="/dashboard/agregaringresogranel/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
                                     </td>
 
                                 </tr>
