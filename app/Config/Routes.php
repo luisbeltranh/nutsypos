@@ -22,8 +22,12 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
     $routes->add('veringresos', 'Dashboard\Inventario::verIngresos');
+
     $routes->add('verproductosgranel', 'Dashboard\Granel::verProductosGranel');
     $routes->add('nuevoproductogranel', 'Dashboard\Granel::nuevoproductogranel');
+    $routes->add('editarproductogranel', 'Dashboard\Granel::editarProductoGranel');
+    $routes->add('editarproductogranel/(:num)', 'Dashboard\Granel::editarProductoGranel/$1');
+    $routes->add('eliminarproductogranel/(:num)', 'Dashboard\Granel::eliminarProductoGranel/$1');
     $routes->add('verinventariogranel', 'Dashboard\Granel::index');
     $routes->add('verinventariogranel/(:alpha)', 'Dashboard\Granel::index/$1');
     $routes->add('agregaringresogranel/(:num)', 'Dashboard\Granel::formIngresogranel/$1');

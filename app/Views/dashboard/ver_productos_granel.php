@@ -59,7 +59,7 @@
                                         if ($is_admin) {
                                         ?>
                                             <a href="/dashboard/editarproductogranel/<?= $producto['id'] ?>" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
-                                            <a href="/dashboard/eliminarproductogranel/<?= $producto['id'] ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                            <a href="/dashboard/eliminarproductogranel/<?= $producto['id'] ?>" class="btn btn-danger" onclick="return confirm('Realmente desea eliminar el producto: <?php echo $producto['nombre']; ?>')"><i class="bi bi-trash"></i></a>
                                         <?php
                                         }
                                         ?>

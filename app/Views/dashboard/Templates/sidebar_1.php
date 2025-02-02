@@ -24,7 +24,7 @@
                 role="menu"
                 data-accordion="false">
                 <li class="nav-item">
-                    <a href="<?php echo $menu_activo == 'dashboard' ? '#' : base_url('dashboard'); ?>" class="nav-link <?php echo $menu_activo == 'enlaces' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-speedometer2"></i>
+                    <a href="<?php echo base_url('dashboard'); ?>" class="nav-link <?php echo $menu_activo == 'enlaces' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-speedometer2"></i>
                         <p>Panel</p>
                     </a>
                 </li>

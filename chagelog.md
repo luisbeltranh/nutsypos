@@ -8,3 +8,6 @@ Esta funcion descuenta el producto a granel y agrega la cantidad paquetes embols
             Se hicieron cambios en el menú sidebar para agregar los enlaces hacias las nuevas funcionalidades.
             Tambien se cambio el estilo del menu que era simple a uno que tiene algunos enlaces anidados.
 
+2025-02-02
+v0.6.1
+Se pusieron en funcionamiento los botones de editar y eliminar productos a granel.

@@ -17,7 +17,7 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2"> <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-                <li class="nav-item"> <a href="<?php echo $menu_activo == 'dashboard' ? '#' : base_url('dashboard'); ?>" class="nav-link <?php echo $menu_activo == 'enlaces' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-speedometer2"></i>
+                <li class="nav-item"> <a href="<?php echo base_url('dashboard'); ?>" class="nav-link <?php echo $menu_activo == 'enlaces' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-speedometer2"></i>
                         <p>Panel</p>
                     </a> </li>
                 <li class="nav-header">Productos</li>

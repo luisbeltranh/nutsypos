@@ -420,8 +420,6 @@ class Dashboard extends BaseController
             $modelo_producto->delete($producto_id);
             return redirect()->to('/dashboard/productos');
         }
-
-
         echo $producto_id;
     }
     function verVentasPeriodo()

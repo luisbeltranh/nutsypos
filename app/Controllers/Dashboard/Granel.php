@@ -377,6 +377,88 @@ class Granel extends BaseController
         echo view('dashboard/templates/footer');
     }
 
+    function editarProductoGranel($id = null)
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        helper('form');
+        $modelo_productos_granel = new ProductosGranelModel();
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'categoria' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Categoría" es requerido',
+                    ]
+                ],
+                'nombre' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Nombre" es requerido',
+                    ]
+                ],
+                'descripcion' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Descripcion" es requerido',
+                    ]
+                ],
+                'costo_gramo' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Costo" es requerido',
+                    ]
+                ],
+                'precio_venta_gramo' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Precio de Venta" es requerido',
+                    ]
+                ],
+                'producto_granel_id' => [],
+                'minimo' => [],
+                'user_id' => [],
+            ];
+            //$data son los datos del formulario de ingreso de nuevo producto
+            $data = $this->request->getPost(array_keys($rules));
+            if ($this->validateData($data, $rules)) {
+                $validData = $this->validator->getValidated();
+
+                $modelo_productos_granel->update($validData['producto_granel_id'], $validData);
+                return redirect()->to('/dashboard/verproductosgranel');
+            }
+            // return redirect()->to('/dashboard/new_link')->withInput();
+            //return redirect()->back()->withInput();
+        }
+        $producto_granel = $modelo_productos_granel->find($id);
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Productos Granel";
+        $datos['menu_activo'] = "editar_producto_granel";
+        $datos['producto'] = $producto_granel;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/editar_producto_granel');
+        echo view('dashboard/templates/footer');
+    }
+    function eliminarProductoGranel($producto_granel_id)
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            echo 'eliminar ' . $producto_granel_id;
+            die();
+            // $datos['is_admin'] = true;
+            // $modelo_productos_granel = new ProductosGranelModel();
+            // $modelo_productos_granel->delete($producto_granel_id);
+            // return redirect()->to('/dashboard/verproductosgranel');
+        }
+        echo $producto_granel_id;
+    }
 
     private function saldoInventario($ordenar = null)
     {
