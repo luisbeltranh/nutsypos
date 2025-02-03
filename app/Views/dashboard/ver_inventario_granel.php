@@ -51,9 +51,19 @@
                                     }
                                     ?>
                                     <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['minimo']; ?></td>
-                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
-                                        <a href="/dashboard/agregaringresogranel/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
-                                    </td>
+
+                                    <?php
+                                    if ($is_admin) {
+                                    ?>
+                                        <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
+                                            <a href="/dashboard/agregaringresogranel/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
+                                        </td>
+                                    <?php
+                                    }
+                                    ?>
+
+
+
 
                                 </tr>
 

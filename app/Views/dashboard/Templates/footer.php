@@ -2,7 +2,7 @@
     <!--begin::Copyright-->
     <strong>
         Copyright &copy; 2024&nbsp;
-        <a href="https://nutsypos.com" class="text-decoration-none">NutsyPOS v. 0.6.1</a>.
+        <a href="https://nutsypos.com" class="text-decoration-none">NutsyPOS v. 0.6.2</a>.
     </strong>
     All rights reserved.
     <!--end::Copyright-->
