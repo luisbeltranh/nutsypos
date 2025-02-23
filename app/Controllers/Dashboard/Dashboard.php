@@ -9,6 +9,7 @@ use App\Models\VentasModel;
 use App\Models\IngresosModel;
 use App\Models\ProductosGranelModel;
 use App\Models\UtilModel;
+use App\Models\GastosModel;
 
 class Dashboard extends BaseController
 {
@@ -521,6 +522,106 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/ver_mas_vendido');
+        echo view('dashboard/templates/footer');
+    }
+    function nuevoGasto()
+    {
+        helper('form');
+        if ($this->request->getMethod() == 'POST') {
+        }
+        $datos['grupo_usuario'] = auth()->getUser()->getGroups();
+        //auth()->getUser()->syncGroups('superadmin', 'admin', 'user');
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $modelo_gastos = new GastosModel();
+        $numero_gasto = $modelo_gastos->numero_gasto();
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Enlaces";
+        $datos['menu_activo'] = "dashboard";
+        $datos['numero_gasto'] = $numero_gasto;
+
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/nuevo_gasto');
+        echo view('dashboard/templates/footer');
+    }
+
+    function cerrarPos()
+    {
+        helper('form');
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'categoria' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Categoría" es requerido',
+                    ]
+                ],
+                'nombre' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Nombre" es requerido',
+                    ]
+                ],
+                'descripcion' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Descripcion" es requerido',
+                    ]
+                ],
+                'costo' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Costo" es requerido',
+                    ]
+                ],
+                'precio_venta' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Precio de Venta" es requerido',
+                    ]
+                ],
+                'productos_granel_id' => [],
+                'user_id' => [],
+                'producto_id' => [],
+                'tamano' => [],
+            ];
+
+            $data = $this->request->getPost(array_keys($rules));
+            if ($this->validateData($data, $rules)) {
+                echo 'datos validos';
+                // $validData = $this->validator->getValidated();
+                // $modelo_producto->update($validData['producto_id'], $validData);
+                // return redirect()->to('/dashboard/productos');
+            }
+            // return redirect()->to('/dashboard/new_link')->withInput();
+            //return redirect()->back()->withInput();
+        }
+        $fecha_inicio = date('Y-m-d 00:00:00');
+        $fecha_fin = date('Y-m-d 23:59:59');
+        $ventas_model = new VentasModel();
+        $datos['total_ventas_hoy'] = $ventas_model->ventasTotal($fecha_inicio, $fecha_fin);
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Enlaces";
+        $datos['menu_activo'] = "dashboard";
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/cerrarpos');
         echo view('dashboard/templates/footer');
     }
 }

@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 
 use App\Models\GranelEmbolsadosModel;
 use App\Models\IngresosGranelModel;
+use App\Models\IngresosModel;
 use App\Models\ProductosModelModel;
 use App\Models\ProductosGranelModelModel;
 use App\Models\VentasModel;
@@ -17,14 +18,14 @@ class UtilModel extends Model
     {
         $tabla_granel_embolsados = new GranelEmbolsadosModel();
         $tabla_ingresos = new IngresosModel();
-
         $tabla_productos = new ProductosModel();
         $tabla_productos_granel = new ProductosGranelModel();
+
         $data_productos = $tabla_productos->find($data['producto_id']);
         $data_productos_granel = $tabla_productos_granel->find($data['producto_granel_id']);
 
+        $numero_ingreso = $tabla_ingresos->select('*')->orderBy('numero_ingreso', 'desc')->first();
 
-        $numero_ingreso = $tabla_ingresos->select('numero_ingreso')->orderBy('numero_ingreso', 'desc')->first();
         $data_ingreso = [
             'numero_ingreso' => $numero_ingreso['numero_ingreso'] + 1,
             'producto_id' => $data['producto_id'],
@@ -40,7 +41,7 @@ class UtilModel extends Model
             'producto_id' => $data['producto_id'],
             'tipo' => 2,
             'cantidad' => $data['cantidad_granel'],
-            'costo' => $data_productos_granel['costo_gramo'],
+            'costo_gramo' => $data_productos_granel['costo_gramo'],
             'total' => $data_productos_granel['costo_gramo'] * $data['cantidad_granel'],
             'user_id' => $data['user_id'],
         ];
@@ -54,7 +55,7 @@ class UtilModel extends Model
         // $data_granel_embolsados['cantidad'] = $data['cantidad_granel'];
         //$data_granel_embolsados['costo'] = $data['costo_granel'];
 
-        $data_granel_embolsados['user_id'] = $data['user_id'];
+        //$data_granel_embolsados['user_id'] = $data['user_id'];
         //$this->db->table('ingresos')->insert($data_ingreso);
 
         $this->db->transStart();

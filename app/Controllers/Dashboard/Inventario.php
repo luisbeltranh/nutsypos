@@ -130,7 +130,6 @@ class Inventario extends BaseController
         }
         $modelo_veringresos = new IngresosModel();
         $ingresos = $modelo_veringresos->select('ingresos.id, numero_ingreso, productos.nombre, cantidad, monto, total, users.username, ingresos.created_at')->join('users', 'users.id = ingresos.user_id')->join('productos', 'productos.id = ingresos.producto_id')->findAll();
-
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;

@@ -4,16 +4,16 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class VentasModel extends Model
+class GastosModel extends Model
 {
-    protected $table = 'ventas';
+    protected $table = 'gastos';
     protected $primary_key = 'id';
     protected $useAutoIncrement = true;
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['numero_venta', 'producto_id', 'monto', 'cantidad', 'total', 'user_id'];
+    protected $allowedFields = ['numero_gasto', 'monto', 'descripcion', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -41,12 +41,12 @@ class VentasModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-    public function ventasTotal($fecha_inicio, $fecha_fin)
+    public function numero_gasto()
     {
-        $total_ventas = $this->selectSum('total')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->findAll();
-        if ($total_ventas[0]['total'] == '') {
+        $numero = $this->select('numero_gasto')->orderBy('numero_gasto', 'desc')->first();
+        if ($numero == null) {
             return 0;
         }
-        return $total_ventas[0]['total'];
+        return $numero;
     }
 }
