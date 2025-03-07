@@ -47,6 +47,17 @@ class GastosModel extends Model
         if ($numero == null) {
             return 0;
         }
-        return $numero;
+        $numero['numero_gasto']++;
+        return $numero['numero_gasto'];
+    }
+    public function gasto_total_hoy($fecha_inicio, $fecha_fin)
+    {
+        $gasto_total = $this->selectSum('monto')->where('created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->findAll();
+        if ($gasto_total[0]['monto'] == '') {
+            $gasto = 0;
+            return $gasto;
+        }
+        $gasto = $gasto_total[0]['monto'];
+        return $gasto;
     }
 }

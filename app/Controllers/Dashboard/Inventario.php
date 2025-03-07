@@ -7,6 +7,7 @@ use App\Models\ProductosModel;
 use App\Models\MovimientosModel;
 use App\Models\VentasModel;
 use App\Models\IngresosModel;
+use App\Models\UtilModel;
 
 class Inventario extends BaseController
 {
@@ -143,7 +144,28 @@ class Inventario extends BaseController
         echo view('dashboard/ver_ingresos');
         echo view('dashboard/templates/footer');
     }
+    function conteoInventario()
+    {
+        helper('form');
+        $funciones =  new UtilModel();
 
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Inventario";
+        $datos['menu_activo'] = "inventario";
+        $datos['productos'] = $funciones->listarInventario();
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_conteo_inventario');
+        echo view('dashboard/templates/footer');
+    }
     private function saldoInventario($ordenar = null)
     {
         $modelo_productos = new ProductosModel();

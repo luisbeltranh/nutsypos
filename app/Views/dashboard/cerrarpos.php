@@ -12,28 +12,29 @@
                     <div class="card-body">
                         <?= validation_list_errors() ?>
                         <div class="form-group">
-                            <label for="nombre">Ventas Sistema</label>
-                            <input type="text" class="form-control" name="nombre" value="<?= $total_ventas_hoy ?>">
-                        </div>
-                        <div class="form-group">
                             <div class="row">
-                                <label for="gasto_1">Gastos</label>
-                                <div class="col-md-3">
-                                    <input type="text" class="form-control" name="gasto_1" placeholder="Monto - 1">
+                                <div class="col-md-6">
+                                    <label for="nombre">VENTAS</label>
+                                    <input type="text" class="form-control" name="venta" value="<?= $total_ventas_hoy ?>" readonly>
                                 </div>
-                                <div class=" col-md-9">
-                                    <input type="text" class="form-control" name="descripcion_gasto_1" placeholder="Descripcion Gasto 1">
+                                <div class="col-md-6">
+                                    <label for="gasto_1">GASTOS</label>
+                                    <input type="text" class="form-control" name="gasto" value="<?= $total_gastos_hoy ?>" readonly>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="row">
-                                <label for="gasto_1">INGRESOS</label>
+                                <label>INGRESOS</label>
                                 <div class="col-md-6">
-                                    <input type="text" class="form-control" name="efectivo" placeholder="Efectivo">
+                                    <label for="efectivo">Efectivo</label>
+                                    <input type="number" class="form-control" name="efectivo">
                                 </div>
                                 <div class=" col-md-6">
-                                    <input type="text" class="form-control" name="pago_qr" placeholder="Pago QR">
+                                    <label for="pago_qr">Pagos por QR</label>
+                                    <input type="number" class="form-control" name="pago_qr" value="0">
+                                    <input type="hidden" class="form-control" name="user_id" value="<?= $idUsuario ?>">
+                                    <input type="hidden" class="form-control" name="validado" value="true">
                                 </div>
                             </div>
                         </div>

@@ -74,6 +74,22 @@ class UtilModel extends Model
 
         return true;
     }
+    public function listarInventario()
+    {
+        $ventas_model = new VentasModel();
+        $ingresos_model = new IngresosModel();
+        $ventas = $ventas_model->select('producto_id, categoria, nombre, cantidad, costo')->join('productos', 'productos.id = producto_id')->findAll();
+        $suma_ventas = $this->sumarArrayPorClave($ventas, 'producto_id', ['cantidad'], true);
+        $ingresos = $ingresos_model->select('producto_id, categoria, nombre, cantidad, costo')->join('productos', 'productos.id = producto_id')->findAll();
+        $suma_ingresos = $this->sumarArrayPorClave($ingresos, 'producto_id', ['cantidad'], false);
+        $total_array = array_merge_recursive($suma_ventas, $suma_ingresos);
+        $suma_total = $this->sumarArrayPorClave($total_array, 'producto_id', ['cantidad'], false);
+        // echo '<pre>';
+        // print_r($suma_total);
+        // echo '</pre>';
+        // die();
+        return $suma_total;
+    }
     public function listarMasVendidos($periodo = null, $fecha_inicio = null, $fecha_fin = null)
     {
         $ventas_modelo = new VentasModel();
@@ -124,7 +140,7 @@ class UtilModel extends Model
         // Si se solicita invertir el signo, multiplicamos los campos sumados por -1
         if ($invertir_signo) {
             foreach ($result as &$item) {
-                foreach ($suma as $field) {
+                foreach ($suma_campos as $field) {
                     if (isset($item[$field])) {
                         $item[$field] *= -1;
                     }

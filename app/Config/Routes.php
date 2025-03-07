@@ -42,6 +42,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('nuevousuario', 'Dashboard\Usuarios::nuevoUsuario');
     $routes->add('vistaventashoyhoras', 'Dashboard\Vistas::vistaVentasHoyHoras');
     $routes->add('nuevogasto', 'Dashboard\Dashboard::nuevoGasto');
+    $routes->add('conteoinventario', 'Dashboard\Inventario::conteoInventario');
 
 
     $routes->add('cerrarpos', 'Dashboard\Dashboard::cerrarPos');

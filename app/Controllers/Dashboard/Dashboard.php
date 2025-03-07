@@ -18,12 +18,14 @@ class Dashboard extends BaseController
         $productos_model = new ProductosModel();
         $cantidad_productos = $productos_model->countAllResults();
         $ventas_model = new VentasModel();
+        $gastos_model = new GastosModel();
         //$cantidad_ventas = $ventas_model->countAllResults();
 
         $fecha_inicio = date('Y-m-d 00:00:00');
         $fecha_fin = date('Y-m-d 23:59:59');
         $cantidad_ventas = $ventas_model->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->countAllResults();
         $total_ventas = $ventas_model->selectSum('total')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->findAll();
+        $total_gastos_hoy = $gastos_model->gasto_total_hoy($fecha_inicio, $fecha_fin);
         $datos['grupo_usuario'] = auth()->getUser()->getGroups();
         //auth()->getUser()->syncGroups('superadmin', 'admin', 'user');
         $datos['is_admin'] = false;
@@ -38,7 +40,8 @@ class Dashboard extends BaseController
         $datos['cantidad_productos'] = "$cantidad_productos";
         $datos['cantidad_ventas'] = "$cantidad_ventas";
         $datos['total_ventas'] = $total_ventas[0]['total'];
-
+        $datos['total_gastos'] = $total_gastos_hoy;
+        $datos['total_caja'] = number_format((float)($total_ventas[0]['total'] - $total_gastos_hoy), 2, '.', '');
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
@@ -526,8 +529,41 @@ class Dashboard extends BaseController
     }
     function nuevoGasto()
     {
+        $modelo_gastos = new GastosModel();
         helper('form');
         if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'numero_gasto' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Numero de Gasto" es requerido',
+                    ]
+                ],
+                'monto' => [
+                    'rules' => 'required|is_natural_no_zero',
+                    'errors' => [
+                        'required' => 'El campo "Monto" es requerido',
+                        'is_natural_no_zero' => 'El campo "Monto" debe ser un numero natural mayor que cero',
+                    ]
+                ],
+                'descripcion' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Descripcion" es requerido',
+                    ]
+                ],
+                'user_id' => [],
+            ];
+
+            $data = $this->request->getPost(array_keys($rules));
+            if ($this->validateData($data, $rules)) {
+                $validData = $this->validator->getValidated();
+                $modelo_gastos->insert($validData);
+                return redirect()->to('/dashboard');
+            }
+            // return redirect()->to('/dashboard/new_link')->withInput();
+            //return redirect()->back()->withInput();
+
         }
         $datos['grupo_usuario'] = auth()->getUser()->getGroups();
         //auth()->getUser()->syncGroups('superadmin', 'admin', 'user');
@@ -535,11 +571,10 @@ class Dashboard extends BaseController
         if (auth()->getUser()->inGroup('admin')) {
             $datos['is_admin'] = true;
         }
-        $modelo_gastos = new GastosModel();
         $numero_gasto = $modelo_gastos->numero_gasto();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
-        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['id_usuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Enlaces";
         $datos['menu_activo'] = "dashboard";
         $datos['numero_gasto'] = $numero_gasto;
@@ -557,71 +592,98 @@ class Dashboard extends BaseController
         helper('form');
         if ($this->request->getMethod() == 'POST') {
             $rules = [
-                'categoria' => [
+                'venta' => [
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'El campo "Categoría" es requerido',
                     ]
                 ],
-                'nombre' => [
+                'gasto' => [
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'El campo "Nombre" es requerido',
                     ]
                 ],
-                'descripcion' => [
-                    'rules' => 'required',
+                'efectivo' => [
+                    'rules' => 'required|is_natural',
                     'errors' => [
                         'required' => 'El campo "Descripcion" es requerido',
                     ]
                 ],
-                'costo' => [
-                    'rules' => 'required',
+                'pago_qr' => [
+                    'rules' => 'is_natural',
                     'errors' => [
                         'required' => 'El campo "Costo" es requerido',
                     ]
                 ],
-                'precio_venta' => [
+                'user_id' => [
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'El campo "Precio de Venta" es requerido',
                     ]
                 ],
-                'productos_granel_id' => [],
-                'user_id' => [],
-                'producto_id' => [],
-                'tamano' => [],
+                'validado' => [],
             ];
 
             $data = $this->request->getPost(array_keys($rules));
             if ($this->validateData($data, $rules)) {
-                echo 'datos validos';
-                // $validData = $this->validator->getValidated();
+                $validData = $this->validator->getValidated();
+                if (isset($validData['validado'])) {
+                    $datos = $validData;
+                    $datos['total_sistema'] = $validData['venta'] - $validData['gasto'];
+                    $datos['total_caja'] = $validData['efectivo'] + $validData['pago_qr'];
+                    $datos['diferencia'] = $datos['total_caja'] - $datos['total_sistema'];
+                    $datos['color_tabla'] = 'table-success';
+                    if ($datos['diferencia'] <> 0) {
+                        $datos['color_tabla'] = 'table-danger';
+                    }
+                    $datos['is_admin'] = false;
+                    if (auth()->getUser()->inGroup('admin')) {
+                        $datos['is_admin'] = true;
+                    }
+                    $datos['estaLogeado'] = auth()->loggedIn();
+                    $datos['nombreUsuario'] = auth()->getUser()->username;
+                    $datos['idUsuario'] = auth()->getUser()->id;
+                    $datos['titulo_breadcrumbs'] = "Enlaces";
+                    $datos['menu_activo'] = "dashboard";
+                    echo view('dashboard/templates/head', $datos);
+                    echo view('dashboard/templates/topmenu');
+                    echo view('dashboard/templates/sidebar');
+                    echo view('dashboard/templates/breadcrumbs');
+                    echo view('dashboard/confirmar_cerrarpos');
+                    echo view('dashboard/templates/footer');
+                }
+
                 // $modelo_producto->update($validData['producto_id'], $validData);
                 // return redirect()->to('/dashboard/productos');
             }
             // return redirect()->to('/dashboard/new_link')->withInput();
             //return redirect()->back()->withInput();
-        }
-        $fecha_inicio = date('Y-m-d 00:00:00');
-        $fecha_fin = date('Y-m-d 23:59:59');
-        $ventas_model = new VentasModel();
-        $datos['total_ventas_hoy'] = $ventas_model->ventasTotal($fecha_inicio, $fecha_fin);
-        $datos['is_admin'] = false;
-        if (auth()->getUser()->inGroup('admin')) {
-            $datos['is_admin'] = true;
-        }
+        } else {
 
-        $datos['estaLogeado'] = auth()->loggedIn();
-        $datos['nombreUsuario'] = auth()->getUser()->username;
-        $datos['idUsuario'] = auth()->getUser()->id;
-        $datos['titulo_breadcrumbs'] = "Enlaces";
-        $datos['menu_activo'] = "dashboard";
-        echo view('dashboard/templates/head', $datos);
-        echo view('dashboard/templates/topmenu');
-        echo view('dashboard/templates/sidebar');
-        echo view('dashboard/templates/breadcrumbs');
-        echo view('dashboard/cerrarpos');
-        echo view('dashboard/templates/footer');
+
+            $fecha_inicio = date('Y-m-d 00:00:00');
+            $fecha_fin = date('Y-m-d 23:59:59');
+            $ventas_model = new VentasModel();
+            $gastos_model = new GastosModel();
+            $datos['total_ventas_hoy'] = $ventas_model->ventasTotal($fecha_inicio, $fecha_fin);
+            $datos['total_gastos_hoy'] = $gastos_model->gasto_total_hoy($fecha_inicio, $fecha_fin);
+            $datos['is_admin'] = false;
+            if (auth()->getUser()->inGroup('admin')) {
+                $datos['is_admin'] = true;
+            }
+
+            $datos['estaLogeado'] = auth()->loggedIn();
+            $datos['nombreUsuario'] = auth()->getUser()->username;
+            $datos['idUsuario'] = auth()->getUser()->id;
+            $datos['titulo_breadcrumbs'] = "Enlaces";
+            $datos['menu_activo'] = "dashboard";
+            echo view('dashboard/templates/head', $datos);
+            echo view('dashboard/templates/topmenu');
+            echo view('dashboard/templates/sidebar');
+            echo view('dashboard/templates/breadcrumbs');
+            echo view('dashboard/cerrarpos');
+            echo view('dashboard/templates/footer');
+        }
     }
 }
