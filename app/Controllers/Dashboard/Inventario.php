@@ -53,6 +53,7 @@ class Inventario extends BaseController
         $modeloVentas = new VentasModel();
         $numero_ingreso = $modelo_ingresos->select('numero_ingreso')->orderBy('numero_ingreso', 'desc')->first();
         $datos['estaLogeado'] = auth()->loggedIn();
+        //$datos['fecha_hoy'] = date('Y-m-d\TH:i');
         if ($numero_ingreso != null) {
             $datos['numero_ingreso'] = $numero_ingreso['numero_ingreso'] + 1;
         } else {
@@ -109,6 +110,7 @@ class Inventario extends BaseController
                     ]
                 ],
                 'user_id' => [],
+                'created_at' => [],
             ];
 
             $producto_id = $modelo_ingresos->orderBy('id', 'desc')->first();
@@ -130,7 +132,7 @@ class Inventario extends BaseController
             $datos['is_admin'] = true;
         }
         $modelo_veringresos = new IngresosModel();
-        $ingresos = $modelo_veringresos->select('ingresos.id, numero_ingreso, productos.nombre, cantidad, monto, total, users.username, ingresos.created_at')->join('users', 'users.id = ingresos.user_id')->join('productos', 'productos.id = ingresos.producto_id')->findAll();
+        $ingresos = $modelo_veringresos->select('ingresos.id, numero_ingreso, productos.nombre, cantidad, monto, total, users.username, ingresos.created_at')->join('users', 'users.id = ingresos.user_id')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('created_at', 'DESC')->findAll();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
