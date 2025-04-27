@@ -10,6 +10,7 @@ use App\Models\IngresosModel;
 use App\Models\ProductosGranelModel;
 use App\Models\UtilModel;
 use App\Models\GastosModel;
+use App\Models\FormasPagoModel;
 
 class Dashboard extends BaseController
 {
@@ -62,9 +63,10 @@ class Dashboard extends BaseController
         $productos_tamano = array_column($productos, 'tamano');
         //array_multisort($productos_categoria, $productos_tamano, $productos_nombre, $productos);
         array_multisort($productos_categoria, $productos_nombre, SORT_NATURAL, $productos);
-
         $datos['productos'] = $productos;
-
+        $formas_pago = new FormasPagoModel();
+        $formas_pago = $formas_pago->findAll();
+        $datos['formas_pago'] = $formas_pago;
         // echo '<pre>';
         // print_r($datos['productos']);
         // echo '</pre>';
@@ -219,12 +221,12 @@ class Dashboard extends BaseController
         echo view('dashboard/nuevo_producto');
         echo view('dashboard/templates/footer');
     }
-    function ventaProducto()
+    function ventaProducto($forma_pago_id = null)
     {
         helper('form');
         $usuario['id'] = auth()->getUser()->id;
         $modeloProductos = new ProductosModel();
-        $modeloMovimientos = new VentasModel();
+        $modeloVentas = new VentasModel();
 
         if ($this->request->getMethod() == 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
@@ -235,10 +237,11 @@ class Dashboard extends BaseController
                 $venta[$indice]['monto'] = $valor['precio_venta'];
                 $venta[$indice]['cantidad'] = $valor['cantidad'];
                 $venta[$indice]['total'] = $valor['precio_venta'] * $valor['cantidad'];
+                $venta[$indice]['forma_pago_id'] = $forma_pago_id;
                 $venta[$indice]['user_id'] = $usuario['id'];
                 $indice++;
             }
-            $modeloMovimientos->insertBatch($venta);
+            $modeloVentas->insertBatch($venta);
 
             // print_r($data);
         }

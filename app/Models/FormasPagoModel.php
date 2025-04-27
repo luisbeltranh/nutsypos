@@ -4,16 +4,16 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class VentasModel extends Model
+class FormasPagoModel extends Model
 {
-    protected $table = 'ventas';
+    protected $table = 'formas_pago';
     protected $primary_key = 'id';
     protected $useAutoIncrement = true;
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['numero_venta', 'producto_id', 'monto', 'cantidad', 'total', 'forma_pago_id', 'user_id'];
+    protected $allowedFields = ['nombre', 'descripcion', 'activo'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -41,12 +41,9 @@ class VentasModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-    public function ventasTotal($fecha_inicio, $fecha_fin)
+
+    public function getFormasPago()
     {
-        $total_ventas = $this->selectSum('total')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->findAll();
-        if ($total_ventas[0]['total'] == '') {
-            return 0;
-        }
-        return $total_ventas[0]['total'];
+        return $this->findAll();
     }
 }
