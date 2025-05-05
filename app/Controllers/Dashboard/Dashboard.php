@@ -27,6 +27,7 @@ class Dashboard extends BaseController
         $cantidad_ventas = $ventas_model->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->countAllResults();
         $total_ventas = $ventas_model->selectSum('total')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->findAll();
         $total_gastos_hoy = $gastos_model->gasto_total_hoy($fecha_inicio, $fecha_fin);
+        $ventas_efectivo_hoy = $ventas_model->ventasFormaPago($fecha_inicio, $fecha_fin, 1);
         $datos['grupo_usuario'] = auth()->getUser()->getGroups();
         //auth()->getUser()->syncGroups('superadmin', 'admin', 'user');
         $datos['is_admin'] = false;
@@ -42,7 +43,11 @@ class Dashboard extends BaseController
         $datos['cantidad_ventas'] = "$cantidad_ventas";
         $datos['total_ventas'] = $total_ventas[0]['total'];
         $datos['total_gastos'] = $total_gastos_hoy;
-        $datos['total_caja'] = number_format((float)($total_ventas[0]['total'] - $total_gastos_hoy), 2, '.', '');
+        $datos['total_caja'] = number_format((float)($ventas_efectivo_hoy - $total_gastos_hoy), 2, '.', '');
+        // venta en efectivo '1'
+        $datos['ventas_efectivo'] = $ventas_efectivo_hoy;
+        // venta por qr '2'
+        $datos['ventas_qr'] = $ventas_model->ventasFormaPago($fecha_inicio, $fecha_fin, 2);
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
@@ -502,6 +507,38 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/verventasperiodo');
+        echo view('dashboard/templates/footer');
+    }
+    function verVentasDetalladas()
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        helper('form');
+        $modelo_ventas = new VentasModel();
+        $fecha_hoy = date('Y-m-d');
+        $fecha_inicio = date('Y-m-d 00:00:00');
+        $fecha_fin = date('Y-m-d 23:59:59');
+        if ($this->request->getMethod() == 'POST') {
+            $data = $this->request->getPost();
+            $fecha_hoy = date('Y-m-d', strtotime($fecha_hoy));
+            $fecha_inicio = date('Y-m-d 00:00:01', strtotime($data['fecha_inicio']));
+            $fecha_fin = date('Y-m-d 23:59:59', strtotime($data['fecha_fin']));
+        }
+        $ventas = $modelo_ventas->obtenerVentas($fecha_inicio, $fecha_fin);
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ventas Detalladas";
+        $datos['menu_activo'] = "verventasdetalladas";
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['ventas'] = $ventas;
+        $datos['fecha_hoy'] = $fecha_hoy;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_ventas_detalladas');
         echo view('dashboard/templates/footer');
     }
     function verMasVendido()

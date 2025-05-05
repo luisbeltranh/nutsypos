@@ -29,8 +29,8 @@
                                 <?php
                                 }
                                 ?>
-                                <th>Precio</th>
-                                <th>Minimo</th>
+                                <th>Costo [g]</th>
+                                <th>Minimo [g]</th>
                                 <th>Descripción</th>
                             </tr>
                         </thead>

@@ -26,7 +26,8 @@ class Granel extends BaseController
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Inventario Granel";
         $datos['menu_activo'] = "dashboard";
-        $datos['productos'] = $this->saldoInventario($ordenar);
+        $modelo_productos_granel = new ProductosGranelModel();
+        $datos['productos_granel'] = $modelo_productos_granel->findAll();
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
@@ -34,9 +35,9 @@ class Granel extends BaseController
         // echo '<pre>';
         // echo 'index - Ver a Granel';
         // echo '<br>';
-        // print_r($datos['productos']);
+        // print_r($datos['productos_granel']);
         // echo '</pre>';
-        echo view('dashboard/ver_inventario_granel');
+        echo view('dashboard/ver_productos_granel');
         echo view('dashboard/templates/footer');
     }
 

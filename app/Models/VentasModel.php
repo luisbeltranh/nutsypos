@@ -49,4 +49,17 @@ class VentasModel extends Model
         }
         return $total_ventas[0]['total'];
     }
+
+    public function ventasFormaPago($fecha_inicio, $fecha_fin, $forma_pago_id)
+    {
+        $total_ventas = $this->selectSum('total')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->where('forma_pago_id', $forma_pago_id)->findAll();
+        if ($total_ventas[0]['total'] == '') {
+            return 0;
+        }
+        return $total_ventas[0]['total'];
+    }
+    public function obtenerVentas($fecha_inicio, $fecha_fin)
+    {
+        return $this->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->join('productos', 'productos.id = ventas.producto_id')->orderBy('numero_venta', 'ASC')->findAll();
+    }
 }

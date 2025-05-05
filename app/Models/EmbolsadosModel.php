@@ -4,16 +4,16 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class ProductosModel extends Model
+class EmbolsadosModel extends Model
 {
-    protected $table = 'productos';
+    protected $table = 'embolsados';
     protected $primary_key = 'id';
     protected $useAutoIncrement = true;
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['categoria', 'nombre', 'descripcion', 'tamano', 'costo', 'precio_venta', 'cantidad_total', 'user_id'];
+    protected $allowedFields = ['producto_granel_id', 'producto__id', 'cantidad_granel_usado', 'cantidad_producto_embolsado', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -16,6 +16,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('pos', 'Dashboard\Dashboard::pos');
     $routes->add('ventaproducto/(:num)', 'Dashboard\Dashboard::ventaProducto/$1');
     $routes->add('verventas', 'Dashboard\Dashboard::verVentas');
+    $routes->add('verventasdetalladas', 'Dashboard\Dashboard::verVentasDetalladas');
     $routes->add('verventasperiodo', 'Dashboard\Dashboard::verVentasperiodo');
     $routes->add('verinventario', 'Dashboard\Inventario::index');
     $routes->add('verinventario/(:alpha)', 'Dashboard\Inventario::index/$1');
