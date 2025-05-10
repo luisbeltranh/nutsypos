@@ -25,12 +25,12 @@
                                 <?php
                                 if ($is_admin) {
                                 ?>
-                                    <th>Costo</th>
+                                    <th>Costo [g]</th>
                                 <?php
                                 }
                                 ?>
-                                <th>Costo [g]</th>
                                 <th>Minimo [g]</th>
+                                <th>Cantidad</th>
                                 <th>Descripción</th>
                             </tr>
                         </thead>
@@ -46,12 +46,12 @@
                                     <?php
                                     if ($is_admin) {
                                     ?>
-                                        <td><?= $producto['costo_gramo']; ?></td>
+                                        <td><?= $producto['costo_kg'] / 1000; ?></td>
                                     <?php
                                     }
                                     ?>
-                                    <td><?= $producto['precio_venta_gramo']; ?></td>
-                                    <td><?= $producto['minimo']; ?></td>
+                                    <td><?= $producto['minimo'] * 1000; ?></td>
+                                    <td><?= $producto['cantidad_total']; ?></td>
                                     <td><?= $producto['descripcion']; ?></td>
                                     <td>
                                         <?php

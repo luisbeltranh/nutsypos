@@ -521,10 +521,16 @@ class Dashboard extends BaseController
         $fecha_inicio = date('Y-m-d 00:00:00');
         $fecha_fin = date('Y-m-d 23:59:59');
         if ($this->request->getMethod() == 'POST') {
-            $data = $this->request->getPost();
-            $fecha_hoy = date('Y-m-d', strtotime($fecha_hoy));
-            $fecha_inicio = date('Y-m-d 00:00:01', strtotime($data['fecha_inicio']));
-            $fecha_fin = date('Y-m-d 23:59:59', strtotime($data['fecha_fin']));
+            $data = $this->request->getPost('fecha');
+            $fecha_hoy = date('Y-m-d', strtotime($data));
+            $fecha_inicio = date('Y-m-d 00:00:01', strtotime($data));
+            $fecha_fin = date('Y-m-d 23:59:59', strtotime($data));
+        }
+        $formas_pago = new FormasPagoModel();
+        $formas_pago = $formas_pago->findAll();
+        foreach ($formas_pago as $forma_pago) {
+            $datos['venta_forma_nombre'][$forma_pago['id']] = $forma_pago['nombre'];
+            $datos['venta_forma_total'][$forma_pago['id']] = $modelo_ventas->ventasFormaPago($fecha_inicio, $fecha_fin, $forma_pago['id']);
         }
         $ventas = $modelo_ventas->obtenerVentas($fecha_inicio, $fecha_fin);
         $datos['nombreUsuario'] = auth()->getUser()->username;
@@ -538,6 +544,9 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
+        // echo '<pre>';
+        // print_r($ventas);
+        // echo '</pre>';
         echo view('dashboard/ver_ventas_detalladas');
         echo view('dashboard/templates/footer');
     }

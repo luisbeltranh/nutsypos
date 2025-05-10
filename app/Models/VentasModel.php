@@ -60,6 +60,6 @@ class VentasModel extends Model
     }
     public function obtenerVentas($fecha_inicio, $fecha_fin)
     {
-        return $this->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->join('productos', 'productos.id = ventas.producto_id')->orderBy('numero_venta', 'ASC')->findAll();
+        return $this->select('*,productos.nombre AS producto_nombre, formas_pago.nombre AS forma_pago_nombre')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->join('productos', 'productos.id = ventas.producto_id')->join('formas_pago', 'formas_pago.id = forma_pago_id')->orderBy('numero_venta', 'ASC')->findAll();
     }
 }

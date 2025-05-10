@@ -9,7 +9,7 @@
                                 Elegir fecha:
                             </div>
                             <div cls="col-sm-6">
-                                <?= form_open('dashboard/verventas') ?>
+                                <?= form_open('dashboard/verventasdetalladas') ?>
                                 <input type="date" name="fecha" value="<?= $fecha_hoy ?>">
                                 <input type="submit" class="btn btn-primary">
                                 <?= form_close() ?>
@@ -27,6 +27,7 @@
                                 <th>Cantidad</th>
                                 <th>Precio</th>
                                 <th>Total</th>
+                                <th>Forma Pago</th>
                                 <?php
                                 if ($is_admin) {
                                 ?>
@@ -45,16 +46,17 @@
 
                                 <tr>
                                     <td><?= $venta['numero_venta']; ?></td>
-                                    <td><?= $venta['nombre']; ?></td>
+                                    <td><?= $venta['producto_nombre']; ?></td>
                                     <td><?= $venta['cantidad']; ?></td>
                                     <td><?= $venta['monto']; ?></td>
                                     <td><?= $venta['total']; ?></td>
+                                    <td><?= $venta['forma_pago_nombre']; ?></td>
                                     <?php
                                     if ($is_admin) {
                                     ?>
                                         <td><?= $venta['costo']; ?></td>
-                                        <td></td>
-                                        <td><?= $venta['total'] - $venta['costo']; ?></td>
+                                        <td><?= $venta['costo'] * $venta['cantidad']; ?></td>
+                                        <td><?= $venta['total'] - ($venta['costo'] * $venta['cantidad']); ?></td>
                                     <?php
                                     }
                                     ?>

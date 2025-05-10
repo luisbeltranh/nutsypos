@@ -33,12 +33,8 @@
                             <input type="text" class="form-control" name="minimo">
                         </div>
                         <div class="form-group">
-                            <label for="costo">Costo por Gramo</label>
+                            <label for="costo">Costo por Kg</label>
                             <input type="text" class="form-control" name="costo_gramo">
-                        </div>
-                        <div class="form-group">
-                            <label for="precio_venta">Precio de Venta por Gramo</label>
-                            <input type="text" class="form-control" name="precio_venta_gramo">
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                         </div>
                     </div>
