@@ -70,13 +70,14 @@
                                 <td></td>
                                 <td></td>
                                 <td>Total</td>
-                                <td></td>
-                                <td></td>
+                                <td><?= $venta_forma_nombre[1]; ?></td>
+                                <td><?= $venta_forma_total[1]; ?></td>
+                                <td><?= $venta_forma_nombre[2]; ?></td>
+                                <td><?= $venta_forma_total[2]; ?></td>
+
                                 <?php
                                 if ($is_admin) {
                                 ?>
-                                    <td></td>
-                                    <td></td>
                                     <td></td>
                                 <?php
                                 }
