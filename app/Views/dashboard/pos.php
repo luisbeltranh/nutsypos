@@ -243,6 +243,9 @@
                     //limpiarCanasta();
 
                 } else {
+                    boton_pagar.disabled = false;
+                    spinner.style.display = "none";
+
                     return;
                 }
             }
