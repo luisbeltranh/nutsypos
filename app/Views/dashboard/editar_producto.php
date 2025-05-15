@@ -29,24 +29,6 @@
                             <input type="text" class="form-control" name="descripcion" value="<?= $producto['descripcion'] ?>">
                         </div>
                         <div class="form-group">
-                            <label for="productos_granel_id">Granel</label>
-                            <select name="productos_granel_id" id="" class="form-control">
-                                <option value="" <?php echo $producto['productos_granel_id'] == '' ? 'selected' : ''; ?>>Ninguno</option>
-                                <?php
-
-                                foreach ($productos_granel as $producto_granel) {
-                                    echo '<option value="' . $producto_granel['id'] . '"';
-                                    if ($producto_granel['id'] == $producto['productos_granel_id']) {
-                                        echo ' selected';
-                                    }
-                                    echo '>';
-                                    echo  $producto_granel['nombre'];
-                                    echo '</option>';
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label for="descripcion">Tamaño</label>
                             <input type="text" class="form-control" name="tamano" value="<?= $producto['tamano'] ?>">
                         </div>
@@ -63,6 +45,10 @@
                             <input type="text" class="form-control" name="precio_venta" value="<?= $producto['precio_venta'] ?>">
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="habilitado">Producto Habilitado</label>
+                            <input type="checkbox" name="habilitado" value="1" <?php echo $producto['deleted_at'] == null ? 'checked' : ''; ?>>
                         </div>
                     </div>
                     <div class="card-footer">

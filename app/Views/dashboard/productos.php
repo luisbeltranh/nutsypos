@@ -39,7 +39,7 @@
                             foreach ($productos as $producto) {
                             ?>
 
-                                <tr>
+                                <tr class="<?= $producto['deleted_at'] != null ? 'table-secondary' : '' ?>">
                                     <td><?= $producto['id']; ?></td>
                                     <td><?= $producto['categoria']; ?></td>
                                     <td><?= $producto['nombre']; ?></td>

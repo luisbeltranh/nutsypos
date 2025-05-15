@@ -107,7 +107,7 @@ class Dashboard extends BaseController
             $datos['is_admin'] = true;
         }
         $modelo = new ProductosModel();
-        $productos = $modelo->findAll();
+        $productos = $modelo->withDeleted()->findAll();
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
@@ -323,22 +323,13 @@ class Dashboard extends BaseController
         echo view('dashboard/ventas');
         echo view('dashboard/templates/footer');
     }
-    function ver_inventario()
-    {
-        $modelo_productos = new ProductosModel();
-        $productos = $modelo_productos->findAll();
-        $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->selectSum('cantidad')->select('producto_id, sum(cantidad * monto) AS canti')->groupBy('producto_id')->findAll();
-?>
-        <pre>
-        <?php
-        print_r($productos);
-        print_r($ventas);
-
-        ?>
-        </pre>
-<?php
-    }
+//     function ver_inventario()
+//     {
+//         $modelo_productos = new ProductosModel();
+//         $productos = $modelo_productos->findAll();
+//         $modelo_ventas = new VentasModel();
+//         $ventas = $modelo_ventas->selectSum('cantidad')->select('producto_id, sum(cantidad * monto) AS canti')->groupBy('producto_id')->findAll();
+//     }
     function editarproducto($producto_id = null)
     {
         $datos['is_admin'] = false;
@@ -379,7 +370,7 @@ class Dashboard extends BaseController
                         'required' => 'El campo "Precio de Venta" es requerido',
                     ]
                 ],
-                'productos_granel_id' => [],
+                'habilitado' => [],
                 'user_id' => [],
                 'producto_id' => [],
                 'tamano' => [],
@@ -389,36 +380,43 @@ class Dashboard extends BaseController
             if ($this->validateData($data, $rules)) {
                 echo 'datos validos';
                 $validData = $this->validator->getValidated();
+                if (isset($validData['habilitado'])) {
+                    $validData['deleted_at'] = null;
+                } else {
+                    $validData['deleted_at'] = date('Y-m-d H:i:s');
+                }
                 $modelo_producto->update($validData['producto_id'], $validData);
                 return redirect()->to('/dashboard/productos');
             }
             // return redirect()->to('/dashboard/new_link')->withInput();
             //return redirect()->back()->withInput();
         }
-        $productos_granel = new ProductosGranelModel();
-        $granel = $productos_granel->select('id, nombre')->findAll();
         //verificar que el producto que deseamos editar tenga un producto a granel afiliado a este, si es null el programa daria error
         // al no encontrar los datos para rellenar el formulario de edicion, es por eso que nosotros asignamos el valor de '' a id y 
         // el nombre de No tiene producto a Granel al array producto
-        $verificar_producto = $modelo_producto->find($producto_id);
-        if ($verificar_producto['productos_granel_id'] != null) {
-            $producto = $modelo_producto->select('productos.id, productos.categoria AS categoria, productos.nombre, productos.descripcion, tamano, costo, precio_venta, productos.cantidad_total, productos_granel_id, productos.user_id, productos.created_at, productos_granel.nombre AS nombre_granel')->join('productos_granel', 'productos_granel.id = productos_granel_id')->find($producto_id);
-        } else {
-            $producto = $verificar_producto;
-            $producto['productos_granel_id'] = '';
-            $producto['nombre_granel'] = 'No tiene producto a Granel';
-        }
+        // $verificar_producto = $modelo_producto->find($producto_id);
+        // if ($verificar_producto['productos_granel_id'] != null) {
+            //  $producto = $modelo_producto->find($producto_id);
+        // } else {
+        //     $producto = $verificar_producto;
+        //     $producto['productos_granel_id'] = '';
+        //     $producto['nombre_granel'] = 'No tiene producto a Granel';
+        // }
+        $producto = $modelo_producto->withDeleted()->find($producto_id);
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Productos";
         $datos['menu_activo'] = "editar_producto";
-        $datos['productos_granel'] = $granel;
         $datos['producto'] = $producto;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
+        //  echo '<pre>';
+        // print_r($producto);
+        // echo $producto_id;
+        // echo '</pre>';
         echo view('dashboard/editar_producto');
         echo view('dashboard/templates/footer');
     }
