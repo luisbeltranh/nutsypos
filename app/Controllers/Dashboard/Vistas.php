@@ -12,7 +12,6 @@ class Vistas extends BaseController
 {
     public function index() {}
     public function vistaVentasHoyHoras()
-
     {
         $datos['is_admin'] = false;
         if (auth()->getUser()->inGroup('admin')) {
@@ -55,5 +54,37 @@ class Vistas extends BaseController
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/venta_horas');
         echo view('dashboard/templates/graph_footer');
+    }
+    public function informeDiario()
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        helper('form');
+        $modelo_ventas = new VentasModel();
+        $fecha_hoy = date('Y-m-d');
+        $fecha_inicio = date('Y-m-d 00:00:00');
+        $fecha_fin = date('Y-m-d 23:59:59');
+        if ($this->request->getMethod() == 'POST') {
+            $data = $this->request->getPost('fecha');
+            $fecha_inicio = date('Y-m-d 00:00:0', strtotime($data));
+            $fecha_fin = date('Y-m-d 23:59:59', strtotime($data));
+        }
+        $datos['ventas_total'] = $modelo_ventas->ventasTotal($fecha_inicio, $fecha_fin);
+
+        $datos['fecha_hoy'] = date('Y-m-d');
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ventas por Hora";
+        $datos['menu_activo'] = "vistaventashoyhoras";
+        echo view('dashboard/templates/graph_head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/informe_diario');
+        echo view('dashboard/templates/footer');
+        
     }
 }
