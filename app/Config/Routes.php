@@ -37,14 +37,17 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('agregarembolsadogranel', 'Dashboard\Granel::agregarEmbolsadoGranel');
     $routes->add('guardarembolsadogranel', 'Dashboard\Granel::guardarEmbolsadoGranel');
 
+    $routes->add('verembolsados', 'Dashboard\Embolsado::index');
+    $routes->add('nuevoembolsado', 'Dashboard\Embolsado::nuevo');
+
     $routes->add('vermasvendido', 'Dashboard\Dashboard::verMasVendido');
 
     $routes->add('verusuarios', 'Dashboard\Usuarios::verUsuarios');
     $routes->add('nuevousuario', 'Dashboard\Usuarios::nuevoUsuario');
     $routes->add('vistaventashoyhoras', 'Dashboard\Vistas::vistaVentasHoyHoras');
-    
+
     $routes->add('informediario', 'Dashboard\Vistas::informeDiario');
-    
+
     $routes->add('nuevogasto', 'Dashboard\Dashboard::nuevoGasto');
     $routes->add('conteoinventario', 'Dashboard\Inventario::conteoInventario');
 
