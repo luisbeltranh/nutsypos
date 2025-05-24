@@ -13,7 +13,7 @@ class EmbolsadosModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['producto_granel_id', 'producto__id', 'cantidad_granel_usado', 'cantidad_producto_embolsado', 'user_id'];
+    protected $allowedFields = ['numero_embolsado', 'producto_granel_id', 'producto_id', 'cantidad_granel_usado', 'cantidad_producto_embolsado', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

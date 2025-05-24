@@ -24,22 +24,27 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
     $routes->add('veringresos', 'Dashboard\Inventario::verIngresos');
 
-    $routes->add('verproductosgranel', 'Dashboard\Granel::verProductosGranel');
-    $routes->add('nuevoproductogranel', 'Dashboard\Granel::nuevoproductogranel');
+    $routes->add('verproductosgranel', 'Dashboard\Granel::verProductosGranel'); //si se usa
+    $routes->add('nuevoproductogranel', 'Dashboard\Granel::nuevoproductogranel'); //si se usa
     $routes->add('editarproductogranel', 'Dashboard\Granel::editarProductoGranel');
     $routes->add('editarproductogranel/(:num)', 'Dashboard\Granel::editarProductoGranel/$1');
     $routes->add('eliminarproductogranel/(:num)', 'Dashboard\Granel::eliminarProductoGranel/$1');
     $routes->add('verinventariogranel', 'Dashboard\Granel::index');
     $routes->add('verinventariogranel/(:alpha)', 'Dashboard\Granel::index/$1');
-    $routes->add('agregaringresogranel/(:num)', 'Dashboard\Granel::formIngresogranel/$1');
+    $routes->add('agregaringresogranel/(:num)', 'Dashboard\Granel::formIngresogranel/$1'); //si se usa
     $routes->add('guardaringresogranel', 'Dashboard\Granel::guardarIngresogranel');
 
-    $routes->add('agregarembolsadogranel', 'Dashboard\Granel::agregarEmbolsadoGranel');
     $routes->add('guardarembolsadogranel', 'Dashboard\Granel::guardarEmbolsadoGranel');
 
+    //proceso de embolsado
+    $routes->add('agregarembolsadogranel', 'Dashboard\Embolsado::agregarEmbolsadoGranel');
+    $routes->add('crear_composicion/(:num)', 'Dashboard\Embolsado::crearComposicion/$1');
     $routes->add('verembolsados', 'Dashboard\Embolsado::index');
-    $routes->add('nuevoembolsado', 'Dashboard\Embolsado::nuevo');
+    $routes->add('nuevo_embolsar/(:num)', 'Dashboard\Embolsado::nuevoEmbolsar/$1');
+    $routes->add('obtener_composicion/(:num)', 'dashboard\Embolsado::obtenerComposicion/$1');
+    // fin de proceso de embolsado
 
+    //
     $routes->add('vermasvendido', 'Dashboard\Dashboard::verMasVendido');
 
     $routes->add('verusuarios', 'Dashboard\Usuarios::verUsuarios');

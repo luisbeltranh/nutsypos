@@ -32,46 +32,36 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
-                        <?php
-                        if (isset($existe_composicion)) {
-                        ?>
-                            <div class="form-group">
-                                <label for="cantidad_bolsas_producidas">Cantidad de Bolsas a Producir</label>
-                                <input type="number" class="form-control" id="cantidad_bolsas_producidas" name="cantidad_bolsas_producidas" autofocus required>
-                            </div>
-                            <div class="form-group">
-                            </div>
+                        <div class="form-group">
+                            <label for="productos_granel_id">Producto a Granel</label>
+                            <select name="producto_granel_id" id="" class="form-control" autofocus>
+                                <option value="">Seleccionar Producto</option>
+                                <?php
+                                foreach ($productos_granel as $producto_granel) {
+                                    echo '<option value="' . $producto_granel['id'] . '"';
+                                    echo '>';
+                                    echo  $producto_granel['nombre'];
+                                    echo '</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
 
-                        <?php
-                        } else {
-                        ?>
-                            <div class="bg-danger text-center">
-                                <div>
-                                    <p>NO EXISTE LA COMPOSICION DEL EMBOLSADO.</p>
-                                    <p>Click en en el boton "Crear Composición" para crear la composicion.</p>
-                                </div>
-                            </div>
-                        <?php
-                        }
-                        ?>
+                        <div class="form-group">
+                            <label for="cantidad_bolsas_producidas">Cantidad de Producto en "GRAMOS"</label>
+                            <input type="number" class="form-control" id="cantidad_producto_gr" name="cantidad_producto_gr" required>
+                        </div>
+                        <div class="form-group">
+                        </div>
+
 
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body">
 
-                        <?php
-                        if (isset($existe_composicion)) {
-                        ?>
-                            <input type="submit" class="btn btn-primary" value="Siguiente">
-                        <?php
-                        } else {
-                        ?>
-                            <a href="/dashboard/crear_composicion/<?= $producto['id'] ?>" class="btn btn-primary" role="button">Crear Composición</a>
-                            <a href="#" class="btn btn-danger" role="button">Cancelar</a>
-                        <?php
-                        }
-                        ?>
+                        <input type="submit" class="btn btn-primary" value="Agregar Elemento">
+                        <a href="#" class="btn btn-danger" role="button">Salir</a>
 
 
                     </div>

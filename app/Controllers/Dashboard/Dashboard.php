@@ -323,13 +323,13 @@ class Dashboard extends BaseController
         echo view('dashboard/ventas');
         echo view('dashboard/templates/footer');
     }
-//     function ver_inventario()
-//     {
-//         $modelo_productos = new ProductosModel();
-//         $productos = $modelo_productos->findAll();
-//         $modelo_ventas = new VentasModel();
-//         $ventas = $modelo_ventas->selectSum('cantidad')->select('producto_id, sum(cantidad * monto) AS canti')->groupBy('producto_id')->findAll();
-//     }
+    //     function ver_inventario()
+    //     {
+    //         $modelo_productos = new ProductosModel();
+    //         $productos = $modelo_productos->findAll();
+    //         $modelo_ventas = new VentasModel();
+    //         $ventas = $modelo_ventas->selectSum('cantidad')->select('producto_id, sum(cantidad * monto) AS canti')->groupBy('producto_id')->findAll();
+    //     }
     function editarproducto($producto_id = null)
     {
         $datos['is_admin'] = false;
@@ -370,6 +370,7 @@ class Dashboard extends BaseController
                         'required' => 'El campo "Precio de Venta" es requerido',
                     ]
                 ],
+                'producto_embolsado' => [],
                 'habilitado' => [],
                 'user_id' => [],
                 'producto_id' => [],
@@ -396,7 +397,7 @@ class Dashboard extends BaseController
         // el nombre de No tiene producto a Granel al array producto
         // $verificar_producto = $modelo_producto->find($producto_id);
         // if ($verificar_producto['productos_granel_id'] != null) {
-            //  $producto = $modelo_producto->find($producto_id);
+        //  $producto = $modelo_producto->find($producto_id);
         // } else {
         //     $producto = $verificar_producto;
         //     $producto['productos_granel_id'] = '';

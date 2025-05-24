@@ -10,41 +10,119 @@ use App\Models\IngresosModel;
 use App\Models\ProductosModelModel;
 use App\Models\ProductosGranelModelModel;
 use App\Models\VentasModel;
+use App\Models\EmbolsadosModel;
 
 
 class UtilModel extends Model
 {
     function guardaEmbolsado($data = null)
     {
-        $tabla_granel_embolsados = new GranelEmbolsadosModel();
         $tabla_ingresos = new IngresosModel();
-        $tabla_productos = new ProductosModel();
+        $tabla_embolsados = new EmbolsadosModel();
         $tabla_productos_granel = new ProductosGranelModel();
+        $tabla_productos = new ProductosModel();
 
         $data_productos = $tabla_productos->find($data['producto_id']);
-        $data_productos_granel = $tabla_productos_granel->find($data['producto_granel_id']);
-
         $numero_ingreso = $tabla_ingresos->select('*')->orderBy('numero_ingreso', 'desc')->first();
-
+        // inicio de guardar los datos
+        $this->db->transStart();
+        // insertar en la tabla ingresos
         $data_ingreso = [
             'numero_ingreso' => $numero_ingreso['numero_ingreso'] + 1,
             'producto_id' => $data['producto_id'],
             'monto' => $data_productos['costo'],
-            'cantidad' => $data['cantidad_embolsado'],
-            'total' => $data_productos['costo'] * $data['cantidad_embolsado'],
+            'cantidad' => $data['cantidad_embolsar'],
+            'total' => $data_productos['costo'] * $data['cantidad_embolsar'],
             'user_id' => $data['user_id'],
         ];
+        $tabla_ingresos->insert($data_ingreso);
 
-        $data_granel_embolsados = [
-            'numero_embolsado' => $data['numero_embolsado'],
-            'producto_granel_id' => $data['producto_granel_id'],
-            'producto_id' => $data['producto_id'],
-            'tipo' => 2,
-            'cantidad' => $data['cantidad_granel'],
-            'costo_gramo' => $data_productos_granel['costo_gramo'],
-            'total' => $data_productos_granel['costo_gramo'] * $data['cantidad_granel'],
-            'user_id' => $data['user_id'],
-        ];
+        print_r($data_ingreso);
+
+
+        // insertar en tabla embolsados
+        $numero_embolsado = $tabla_embolsados->select('*')->orderBy('numero_embolsado', 'desc')->first();
+        if (!isset($numero_embolsado)) {
+            $numero_embolsado['numero_embolsado'] = 0; # code...
+        }
+        $numero_embolsado['numero_embolsado']++;
+        foreach ($data['composicion'] as $key => $dato_composicion) {
+            $data_embolsados = [
+                'numero_embolsado' => $numero_embolsado['numero_embolsado'],
+                'producto_granel_id' => $key,
+                'producto_id' => $data['producto_id'],
+                'cantidad_granel_usado' => $dato_composicion,
+                'cantidad_producto_embolsado' => $data['cantidad_embolsar'],
+                'user_id' => $data['user_id'],
+            ];
+            $tabla_embolsados->insert($data_embolsados);
+            print_r($data_embolsados);
+            echo '<br>';
+
+
+            // update tabla productos_granel
+            $cantidad_inicial = $tabla_productos_granel->select('cantidad_total')->where('id', $key)->first();
+            $cantidad_total = $cantidad_inicial['cantidad_total'] - $dato_composicion;
+
+            $data_productos_granel = [
+                'cantidad_total' => $cantidad_total,
+            ];
+            $tabla_productos_granel->update($key, $data_productos_granel);
+        }
+        //        die();
+
+
+        //$this->db->transStart();
+        // $tabla_ingresos->insert($data_ingreso);
+        // $tabla_granel_embolsados->insert($data_granel_embolsados);
+        $this->db->transComplete();
+
+        // print_r($data_productos);
+        // echo '<br>';
+        // print_r($data_productos_granel);
+        // echo '<br>';
+
+        // print_r($data_ingreso);
+        // echo '<br>';
+        // print_r($data_granel_embolsados);
+
+        //        return true;
+
+        return $this->db->transStatus();
+
+
+
+
+
+        // $tabla_granel_embolsados = new GranelEmbolsadosModel();
+
+        // $tabla_productos = new ProductosModel();
+        // $tabla_productos_granel = new ProductosGranelModel();
+
+        // $data_productos = $tabla_productos->find($data['producto_id']);
+        // $data_productos_granel = $tabla_productos_granel->find($data['producto_granel_id']);
+
+        // $numero_ingreso = $tabla_ingresos->select('*')->orderBy('numero_ingreso', 'desc')->first();
+
+        // $data_ingreso = [
+        //     'numero_ingreso' => $numero_ingreso['numero_ingreso'] + 1,
+        //     'producto_id' => $data['producto_id'],
+        //     'monto' => $data_productos['costo'],
+        //     'cantidad' => $data['cantidad_embolsado'],
+        //     'total' => $data_productos['costo'] * $data['cantidad_embolsado'],
+        //     'user_id' => $data['user_id'],
+        // ];
+
+        // $data_granel_embolsados = [
+        //     'numero_embolsado' => $data['numero_embolsado'],
+        //     'producto_granel_id' => $data['producto_granel_id'],
+        //     'producto_id' => $data['producto_id'],
+        //     'tipo' => 2,
+        //     'cantidad' => $data['cantidad_granel'],
+        //     'costo_gramo' => $data_productos_granel['costo_gramo'],
+        //     'total' => $data_productos_granel['costo_gramo'] * $data['cantidad_granel'],
+        //     'user_id' => $data['user_id'],
+        // ];
 
 
 
@@ -58,21 +136,6 @@ class UtilModel extends Model
         //$data_granel_embolsados['user_id'] = $data['user_id'];
         //$this->db->table('ingresos')->insert($data_ingreso);
 
-        $this->db->transStart();
-        $tabla_ingresos->insert($data_ingreso);
-        $tabla_granel_embolsados->insert($data_granel_embolsados);
-        $this->db->transComplete();
-
-        print_r($data_productos);
-        echo '<br>';
-        print_r($data_productos_granel);
-        echo '<br>';
-
-        print_r($data_ingreso);
-        echo '<br>';
-        print_r($data_granel_embolsados);
-
-        return true;
     }
     public function listarInventario()
     {

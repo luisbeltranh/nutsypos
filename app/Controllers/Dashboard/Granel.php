@@ -338,7 +338,7 @@ class Granel extends BaseController
                         'required' => 'El campo "Descripcion" es requerido',
                     ]
                 ],
-                'costo_gramo' => [
+                'costo_kg' => [
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'El campo "Costo" es requerido',
@@ -348,6 +348,12 @@ class Granel extends BaseController
                     'rules' => 'required',
                     'errors' => [
                         'required' => 'El campo "Precio de Venta" es requerido',
+                    ]
+                ],
+                'cantidad_total' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Cantidad Total" es requerido',
                     ]
                 ],
                 'minimo' => [],

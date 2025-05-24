@@ -63,6 +63,13 @@
                                         <?php
                                         }
                                         ?>
+                                        <?php
+                                        if ($producto['producto_embolsado'] == 1) {
+                                        ?>
+                                            <a href="/dashboard/nuevo_embolsar/<?= $producto['id'] ?>" class="btn btn-warning"><i class="bi bi-bag-plus"></i></a>
+                                        <?php
+                                        }
+                                        ?>
 
 
 

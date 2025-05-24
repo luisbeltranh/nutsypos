@@ -8,7 +8,7 @@
                             <?php
                             if ($is_admin) {
                             ?>
-                                <a class="btn btn-primary" href="/dashboard/nuevoproductogranel">Embolsar Productos</a>
+                                <a class="btn btn-primary" href="/dashboard/nuevoproductogranel">Nuevo</a>
                             <?php
                             }
                             ?>
@@ -19,39 +19,28 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th>Numero Embolsado</th>
-                                <th>Producto Embolsado</th>
-                                <th>Producto Granel</th>
-                                <th>Cantidad Granel Usado [kg]</th>
-                                <th>Cantidad Producto Embolsado</th>
-                                <th>Usuario</th>
+                                <th>Categoría</th>
+                                <th>Nombre</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            foreach ($embolsados as $embolsado) {
+                            foreach ($embolsados as $producto) {
                             ?>
 
                                 <tr>
-                                    <td><?= $embolsado['numero_embolsado'] ?></td>
-                                    <td><?= $embolsado['producto_nombre']; ?></td>
-                                    <td><?= $embolsado['producto_granel_nombre']; ?></td>
-                                    <td><?= $embolsado['cantidad_granel_usado']; ?></td>
-                                    <td><?= $embolsado['cantidad_producto_embolsado']; ?></td>
-                                    <td><?= $embolsado['user_id']; ?></td>
+
+                                    <td><?= $producto['categoria']; ?></td>
+                                    <td><?= $producto['nombre']; ?></td>
                                     <td>
                                         <?php
                                         if ($is_admin) {
                                         ?>
-                                            <a href="/dashboard/agregaringresogranel/<?= $embolsado['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
-                                            <a href="/dashboard/editarproductogranel/<?= $embolsado['id'] ?>" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
-                                            <a href="/dashboard/eliminarproductogranel/<?= $embolsado['id'] ?>" class="btn btn-danger" onclick="return confirm('Realmente desea eliminar el producto: <?php echo $embolsado['id']; ?>')"><i class="bi bi-trash"></i></a>
+                                            <a href="/dashboard/nuevo_embolsar/<?= $producto['id'] ?>" class="btn btn-warning"><i class="bi bi-bag-plus"></i></a>
                                         <?php
                                         }
                                         ?>
-
-
-
                                     </td>
                                 </tr>
 

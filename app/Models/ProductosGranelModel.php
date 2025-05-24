@@ -13,7 +13,7 @@ class ProductosGranelModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['categoria', 'nombre', 'descripcion', 'costo_kg', 'cantidad_total', 'minimo', 'user_id','deleted_at'];
+    protected $allowedFields = ['categoria', 'nombre', 'descripcion', 'costo_gramo', 'precio_venta_gramo', 'cantidad_total', 'minimo', 'user_id', 'deleted_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

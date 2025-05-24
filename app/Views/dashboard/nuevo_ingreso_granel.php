@@ -35,8 +35,8 @@
                         }
                         ?>
                         <div class="form-group">
-                            <label for="cantidad">Cantidad</label>
-                            <input type="text" class="form-control" name="cantidad" autofocus>
+                            <label for="cantidad">Cantidad en kg</label>
+                            <input type="number" class="form-control" name="cantidad" autofocus step="0.01">
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
                             <input type="hidden" name="monto" value="<?= $producto['costo_gramo'] ?>">
