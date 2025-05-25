@@ -46,7 +46,7 @@
                                     <?php
                                     if ($is_admin) {
                                     ?>
-                                        <td><?= $producto['costo_kg'] / 1000; ?></td>
+                                        <td><?= number_format($producto['costo_gramo'],4); ?></td>
                                     <?php
                                     }
                                     ?>
