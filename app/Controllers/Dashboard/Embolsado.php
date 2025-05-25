@@ -205,6 +205,54 @@ class Embolsado extends BaseController
         $modelo_producto_granel = new ProductosGranelModel();
         $modelo_producto = new ProductosModel();
         $modelo_utilitario = new UtilModel();
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'producto_id' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Numero de ingreso" es requerido',
+                    ]
+                ],
+                'producto_granel_id' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Producto ID" es requerido',
+                    ]
+                ],
+                'cantidad_por_bolsa' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Monto" es requerido',
+                    ]
+                ],
+                'user_id' => [],
+            ];
+
+            //$producto_id = $modelo_ingresos->orderBy('id', 'desc')->first();
+            $data = $this->request->getPost(array_keys($rules));
+            //$data['total'] = $data['cantidad'] * $data['monto'];
+            if ($this->validateData($data, $rules)) {
+                $validData = $this->validator->getValidated();
+                //                 echo $validData['producto_id'];
+                // echo '<br>';
+                // echo $validData['producto_granel_id'];
+                // echo '<br>';
+                // echo $validData['cantidad_por_bolsa'];
+                // echo '<br>';
+                // echo $validData['user_id'];
+                // echo '<br>';
+                // die();
+
+
+                $modelo_composicion->insert($validData);
+                return redirect()->to('/dashboard/crear_composicion/' . $validData['producto_id']);
+            }
+            // return redirect()->to('/dashboard/new_link')->withInput();
+            //return redirect()->back()->withInput();
+        }
+
+
+
         // Aqui empieza el proceso de embolsado en el sistema
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;

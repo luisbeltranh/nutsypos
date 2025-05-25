@@ -13,7 +13,7 @@ class ComposicionEmbolsadosModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['producto__id', 'producto_granel_id', 'cantidad_por_bolsa'];
+    protected $allowedFields = ['producto_id', 'producto_granel_id', 'cantidad_por_bolsa','user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

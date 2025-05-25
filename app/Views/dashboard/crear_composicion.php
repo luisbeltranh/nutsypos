@@ -2,7 +2,7 @@
     <div class="container-fluid"> <!--begin::Row-->
         <div class="row"> <!--begin::Col-->
             <div class="col-md-8">
-                <?= form_open('dashboard/nuevo_embolsar/' . $producto['id']); ?>
+                <?= form_open('dashboard/crear_composicion/' . $producto['id']); ?>
                 <div class="card card-info">
                     <div class="card-header">
                         <div class="card-title">
@@ -28,6 +28,7 @@
                                         <td><?= esc($compo['nombre_granel']) ?></td>
                                         <td><?= esc($compo['cantidad_por_bolsa']) ?></td>
                                         <input type="hidden" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa']) ?>" required readonly>
+                                        <input type="hidden" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa']) ?>" required readonly>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -48,8 +49,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="cantidad_bolsas_producidas">Cantidad de Producto en "GRAMOS"</label>
-                            <input type="number" class="form-control" id="cantidad_producto_gr" name="cantidad_producto_gr" required>
+                            <label for="cantidad_por_bolsa">Cantidad de Producto en "GRAMOS"</label>
+                            <input type="number" class="form-control" id="cantidad_por_bolsa" name="cantidad_por_bolsa" required>
+                            <input type="hidden" name="producto_id" id="producto_id" value="<?= esc($producto['id']) ?>" required readonly>
+                            <input type="hidden" name="user_id" id="user_id" value="<?= esc($idUsuario) ?>" required readonly>
                         </div>
                         <div class="form-group">
                         </div>
