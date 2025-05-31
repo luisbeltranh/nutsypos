@@ -29,18 +29,18 @@
                             <input type="text" class="form-control" name="descripcion">
                         </div>
                         <div class="form-group">
-                            <label for="descripcion">Minimo en kg</label>
-                            <input type="number" class="form-control" name="minimo" step="0.01">
+                            <label for="descripcion">Minimo en gramos</label>
+                            <input type="number" class="form-control" name="minimo" step="0.0001">
                         </div>
                         <div class="form-group">
-                            <label for="costo_kg">Costo por Kg</label>
-                            <input type="number" class="form-control" name="costo_kg" step="0.01">
+                            <label for="costo_gramo">Costo por gramo</label>
+                            <input type="number" class="form-control" name="costo_gramo" step="0.0001">
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="cantidad_total" value="0">
                         </div>
                         <div class="form-group">
                             <label for="precio_venta_gramo">Precio de Venta por gramo</label>
-                            <input type="number" class="form-control" name="precio_venta_gramo" value="0" step="0.01">
+                            <input type="number" class="form-control" name="precio_venta_gramo" value="0" step="0.0001">
                         </div>
 
                     </div>

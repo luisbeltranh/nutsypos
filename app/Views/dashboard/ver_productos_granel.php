@@ -50,7 +50,7 @@
                                     <?php
                                     }
                                     ?>
-                                    <td><?= $producto['minimo'] * 1000; ?></td>
+                                    <td><?= number_format($producto['minimo'],0); ?></td>
                                     <td><?= $producto['cantidad_total']; ?></td>
                                     <td><?= $producto['descripcion']; ?></td>
                                     <td>
