@@ -261,8 +261,10 @@ class Embolsado extends BaseController
         $datos['menu_activo'] = "agregar_ingreso_granel";
         $datos['productos_granel'] = $modelo_producto_granel->findAll();
         $datos['composicion'] = $modelo_producto
+            ->select('composicion_embolsados.id, composicion_embolsados.cantidad_por_bolsa, productos_granel.id as producto_granel_id, productos_granel.nombre as nombre_granel')
             ->where('productos.id', $producto_id)
             ->join('composicion_embolsados', 'composicion_embolsados.producto_id = productos.id')
+            ->join('productos_granel', 'productos_granel.id = composicion_embolsados.producto_granel_id')
             ->findAll();
         $datos['producto'] = $modelo_producto->find($producto_id);
 

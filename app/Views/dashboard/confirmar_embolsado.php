@@ -28,10 +28,10 @@
                                 <?php foreach ($composicion as $compo) : ?>
                                     <tr>
                                         <td><?= esc($compo['nombre_granel']) ?></td>
-                                        <td><?= esc($compo['cantidad_por_bolsa']) ?></td>
+                                        <td><?= esc($compo['cantidad_por_bolsa']) / 1000 ?></td>
                                         <td><?= $cantidad_embolsar; ?></td>
                                         <td>
-                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa'] * $cantidad_embolsar) ?>" required readonly>
+                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa'] * $cantidad_embolsar / 1000) ?>" required readonly>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -49,7 +49,7 @@
                 <div class="card">
                     <div class="card-body">
                         <input type="submit" class="btn btn-primary" value="Siguiente" onclick="return confirm('Are you sure you want to search Google?')">
-                        <a href="<?= base_url('dashboard/productos') ?>" class="btn btn-danger">Cancelar</a>
+                        <a href="<?= base_url('dashboard/agregarembolsadogranel') ?>" class="btn btn-danger">Cancelar</a>
                     </div>
                 </div>
 

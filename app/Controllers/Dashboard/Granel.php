@@ -37,7 +37,7 @@ class Granel extends BaseController
         // echo '<br>';
         // print_r($datos['productos_granel']);
         // echo '</pre>';
-        echo view('dashboard/ver_productos_granel');
+        echo view('dashboard/ver_inventario_granel');
         echo view('dashboard/templates/footer');
     }
 

@@ -34,7 +34,7 @@
                         </thead>
                         <tbody>
                             <?php
-                            foreach ($productos as $producto) {
+                            foreach ($productos_granel as $producto) {
                             ?>
 
                                 <tr>
