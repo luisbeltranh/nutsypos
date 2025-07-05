@@ -37,7 +37,7 @@
                                     <td><?= $producto['tamano_bolsa']; ?></td>
                                     <td>
                                         <?php
-                                        if ($is_admin) {
+                                        if (true) {
                                         ?>
                                             <a href="/dashboard/nuevo_embolsar/<?= $producto['id'] ?>" class="btn btn-warning"><i class="bi bi-bag-plus"></i></a>
                                         <?php
