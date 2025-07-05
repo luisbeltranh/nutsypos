@@ -5,13 +5,7 @@
                 <div class="card-header">
                     <div class="card-title">
                         Lista de Gastos de hoy <?= $fecha ?> <span>
-                            <?php
-                            if ($is_admin) {
-                            ?>
                                 <a class="btn btn-primary" href="/dashboard/nuevogasto">Nuevo Gasto</a>
-                            <?php
-                            }
-                            ?>
                         </span>
                     </div>
                 </div>

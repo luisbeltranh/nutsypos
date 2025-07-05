@@ -81,7 +81,7 @@ class Dashboard extends BaseController
         } else {
             $datos['numero_venta'] = 0;
         }
-
+      
 
         echo view('dashboard/pos', $datos);
 

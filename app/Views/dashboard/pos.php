@@ -13,6 +13,11 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
         crossorigin="anonymous" />
     <link rel="stylesheet" href="/assets/css/estilo-pos.css">
+    <style>
+        .btn-warning {
+  background-color: 'purple';
+}
+    </style>
     <title>Caja - NutsyPOS</title>
 </head>
 
@@ -108,7 +113,7 @@
                             foreach ($formas_pago as $forma_pago) {
                             ?>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <button class="btn btn-primary btn-lg w-100" onclick="guardarDatos('<?= $forma_pago['id'] ?>')" id="boton_pagar">
+                                    <button class="btn btn-<?= $forma_pago['color'] ?> btn-lg w-100" onclick="guardarDatos('<?= $forma_pago['id'] ?>')" id="boton_pagar">
                                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" id="spinner"></span>
                                         <?= $forma_pago['nombre'] ?>
                                     </button>
