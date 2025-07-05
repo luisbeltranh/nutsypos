@@ -36,7 +36,20 @@
                         ?>
                         <div class="form-group">
                             <label for="cantidad">Cantidad en Gramos</label>
+                                                    <?php
+                        if ($is_admin) {
+                        ?>
+                            <input type="number" class="form-control" name="cantidad" autofocus step="1">
+
+                        <?php
+                        } else{
+                            ?>
                             <input type="number" min="0" class="form-control" name="cantidad" autofocus step="1">
+
+                            <?php
+                        }
+                        ?>
+
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
                             <input type="hidden" name="monto" value="<?= $producto['costo_gramo'] ?>">

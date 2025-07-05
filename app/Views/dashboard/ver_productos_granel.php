@@ -53,11 +53,12 @@
                                     <td><?= number_format($producto['minimo'],0); ?></td>
                                     <td><?= $producto['cantidad_total']; ?></td>
                                     <td><?= $producto['descripcion']; ?></td>
+                                    <td>                                            <a href="/dashboard/agregaringresogranel/<?= $producto['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
+</td>
                                     <td>
                                         <?php
                                         if ($is_admin) {
                                         ?>
-                                            <a href="/dashboard/agregaringresogranel/<?= $producto['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
                                             <a href="/dashboard/editarproductogranel/<?= $producto['id'] ?>" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
                                             <a href="/dashboard/eliminarproductogranel/<?= $producto['id'] ?>" class="btn btn-danger" onclick="return confirm('Realmente desea eliminar el producto: <?php echo $producto['nombre']; ?>')"><i class="bi bi-trash"></i></a>
                                         <?php

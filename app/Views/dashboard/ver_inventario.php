@@ -46,6 +46,10 @@
                                     ?>
                                         <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['costo']; ?></td>
                                         <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['total']; ?></td>
+
+                                    <?php
+                                    }
+                                    ?>
                                         <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
                                             <a href="/dashboard/agregaringreso/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
                                             <?php
@@ -57,10 +61,6 @@
                                             ?>
 
                                         </td>
-
-                                    <?php
-                                    }
-                                    ?>
 
                                 </tr>
 

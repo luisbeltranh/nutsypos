@@ -40,7 +40,19 @@
                         ?>
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>
-                            <input type="text" class="form-control" name="cantidad" autofocus>
+                                                    <?php
+                        if ($is_admin) {
+                        ?>
+                            <input type="number" class="form-control" name="cantidad" autofocus>
+
+                        <?php
+                        } else{
+                            ?>
+                            <input type="number" class="form-control" name="cantidad" autofocus min="0">
+<?php
+                        }
+                        ?>
+
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
                             <input type="hidden" name="monto" value="<?= $producto['costo'] ?>">
