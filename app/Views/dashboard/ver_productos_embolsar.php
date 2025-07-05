@@ -21,6 +21,7 @@
                             <tr>
                                 <th>Categoría</th>
                                 <th>Nombre</th>
+                                <th>Tamaño de Bolsa</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -33,6 +34,7 @@
 
                                     <td><?= $producto['categoria']; ?></td>
                                     <td><?= $producto['nombre']; ?></td>
+                                    <td><?= $producto['tamano_bolsa']; ?></td>
                                     <td>
                                         <?php
                                         if ($is_admin) {

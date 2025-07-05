@@ -64,11 +64,12 @@
                         if (isset($existe_composicion)) {
                         ?>
                             <input type="submit" class="btn btn-primary" value="Siguiente">
+                            <a href="/dashboard/agregarembolsadogranel" class="btn btn-danger" role="button">Cancelar</a>
                         <?php
                         } else {
                         ?>
                             <a href="/dashboard/crear_composicion/<?= $producto['id'] ?>" class="btn btn-primary" role="button">Crear Composición</a>
-                            <a href="#" class="btn btn-danger" role="button">Cancelar</a>
+                            <a href="/dashboard/agregarembolsadogranel" class="btn btn-danger" role="button">Cancelar</a>
                         <?php
                         }
                         ?>

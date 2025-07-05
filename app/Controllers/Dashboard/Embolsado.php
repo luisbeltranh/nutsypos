@@ -202,7 +202,8 @@ class Embolsado extends BaseController
             $datos['is_admin'] = true;
         }
         $modelo_productos = new ProductosModel();
-        $productos_embolsar = $modelo_productos->select('productos.id, productos.categoria, productos.nombre, productos.producto_embolsado')
+        $productos_embolsar = $modelo_productos
+            ->select('productos.id, productos.categoria, productos.nombre, productos.producto_embolsado, productos.tamano_bolsa')
             ->where('productos.producto_embolsado', 1)
             ->orderBy('productos.nombre', 'asc')
             ->findAll();
@@ -218,9 +219,9 @@ class Embolsado extends BaseController
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
         // echo '<pre>';
-        // echo 'index - Ver a Granel';
+        // echo 'productos embolsables';
         // echo '<br>';
-        // print_r($datos['productos_granel']);
+        // print_r($datos['embolsados']);
         // echo '</pre>';
         echo view('dashboard/ver_productos_embolsar');
         echo view('dashboard/templates/footer');

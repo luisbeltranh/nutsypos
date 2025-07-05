@@ -175,6 +175,7 @@ class Dashboard extends BaseController
                 ],
                 'user_id' => [],
                 'tamano' => [],
+                'tamano_bolsa' => [],
             ];
             //$data son los datos del formulario de ingreso de nuevo producto
             $data = $this->request->getPost(array_keys($rules));
@@ -375,6 +376,7 @@ class Dashboard extends BaseController
                 'user_id' => [],
                 'producto_id' => [],
                 'tamano' => [],
+                'tamano_bolsa' => [],
             ];
 
             $data = $this->request->getPost(array_keys($rules));

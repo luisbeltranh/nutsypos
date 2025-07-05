@@ -29,8 +29,12 @@
                             <input type="text" class="form-control" name="descripcion" value="<?= $producto['descripcion'] ?>">
                         </div>
                         <div class="form-group">
-                            <label for="descripcion">Tamaño</label>
+                            <label for="tamano">Tamaño</label>
                             <input type="text" class="form-control" name="tamano" value="<?= $producto['tamano'] ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="tamano_bolsa">Tamaño de Bolsa</label>
+                            <input type="text" class="form-control" name="tamano_bolsa" value="<?= $producto['tamano_bolsa'] ?>">
                         </div>
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>

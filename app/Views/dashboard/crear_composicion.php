@@ -64,7 +64,7 @@
                     <div class="card-body">
 
                         <input type="submit" class="btn btn-primary" value="Agregar Elemento">
-                        <a href="#" class="btn btn-danger" role="button">Salir</a>
+                        <a href="/dashboard/agregarembolsadogranel" class="btn btn-danger" role="button">Salir</a>
 
 
                     </div>
