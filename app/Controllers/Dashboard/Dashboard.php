@@ -386,6 +386,9 @@ class Dashboard extends BaseController
                 } else {
                     $validData['deleted_at'] = date('Y-m-d H:i:s');
                 }
+                if (!isset($validData['producto_embolsado'])) {
+                    $validData['producto_embolsado'] = 0;
+                }
                 $modelo_producto->update($validData['producto_id'], $validData);
                 return redirect()->to('/dashboard/productos');
             }

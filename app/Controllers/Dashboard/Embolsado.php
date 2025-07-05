@@ -26,11 +26,11 @@ class Embolsado extends BaseController
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
-        $datos['titulo_breadcrumbs'] = "Inventario Granel";
+        $datos['titulo_breadcrumbs'] = "Registro de Productos Embolsados";
         $datos['menu_activo'] = "dashboard";
         $modelo_embolsados = new EmbolsadosModel();
         $datos['embolsados'] = $modelo_embolsados
-            ->select('*,productos.nombre AS producto_nombre,productos_granel.nombre AS producto_granel_nombre')
+            ->select('*, embolsados.created_at AS embolsados_created_at,productos.nombre AS producto_nombre,productos_granel.nombre AS producto_granel_nombre')
             ->join('productos', 'producto_id = productos.id')
             ->join('productos_granel', 'producto_granel_id = productos_granel.id')
             ->findAll();
@@ -88,10 +88,50 @@ class Embolsado extends BaseController
                 // die();
             }
             $cantidad_productos = $this->request->getPost('cantidad_bolsas_producidas');
-            $datos['composicion'] = $modelo_composicion->select('composicion_embolsados.cantidad_por_bolsa, productos_granel.id as producto_granel_id, productos_granel.nombre as nombre_granel')
+            $datos['composicion'] = $modelo_composicion->select('composicion_embolsados.cantidad_por_bolsa AS cantidad_por_bolsa, productos_granel.id as producto_granel_id, productos_granel.nombre as nombre_granel, productos_granel.cantidad_total AS inventario_total_granel, (composicion_embolsados.cantidad_por_bolsa * ' . $cantidad_productos . ') AS peso_total_requerido')
                 ->where('producto_id', $producto_id)
                 ->join('productos_granel', 'productos_granel.id = composicion_embolsados.producto_granel_id')
                 ->findAll();
+            foreach ($datos['composicion'] as $key => $compo) {
+                $datos['embolsado'][$key]['cantidad_por_bolsa'] = $compo['cantidad_por_bolsa'];
+                $datos['embolsado'][$key]['producto_granel_id'] = $compo['producto_granel_id'];
+                $datos['embolsado'][$key]['nombre_granel'] = $compo['nombre_granel'];
+                $datos['embolsado'][$key]['inventario_total_granel'] = $compo['inventario_total_granel'];
+                $datos['embolsado'][$key]['peso_total_requerido'] = $compo['peso_total_requerido'];
+                if ($compo['inventario_total_granel'] < $compo['peso_total_requerido']) {
+                    $datos['embolsado'][$key]['inventario_insuficiente'] = 'insuficiente';
+                    $datos['embolsado'][$key]['clase'] = 'table-danger';
+                    $datos['embolsado'][$key]['mensaje'] = '* La cantidad de gramos de ' . $compo['nombre_granel'] . ' en inventario no es suficiente para ebolsar el producto.';
+                    $datos['boton_continuar'] = 'disabled';
+                    // si el inventario es menor al requerido, se marca como insuficiente
+
+                } elseif ($compo['inventario_total_granel'] < ($compo['peso_total_requerido'] - ($compo['cantidad_por_bolsa'] / 2))) {
+                    $datos['embolsado'][$key]['inventario_insuficiente'] = 'advertencia';
+                    $datos['embolsado'][$key]['clase'] = 'table-warning';
+                    $datos['embolsado'][$key]['mensaje'] = '* Es posible que la cantidad de gramos de ' . $compo['nombre_granel'] . ' en inventario no sea suficiente para ebolsar el producto.';
+                    $datos['boton_continuar'] = '';
+                    //si el inventario es menor al requerido menos la mitad de la cantidad por bolsa, se marca como advertencia
+                } else {
+                    $datos['embolsado'][$key]['inventario_insuficiente'] = 'suficiente';
+                    $datos['embolsado'][$key]['clase'] = '';
+                    $datos['embolsado'][$key]['mensaje'] = '';
+                    $datos['boton_continuar'] = '';
+                    // si el inventario es mayor o igual al requerido, se marca como suficiente
+                }
+            }
+            // echo '<br>';
+            // echo '<pre>';
+            // print_r($datos['composicion']);
+            // echo '</pre>';
+            // echo '<br>';
+            // echo '<pre>';
+            // print_r($datos['embolsado']);
+            // echo '</pre>';
+            // die();
+            // echo '<pre>';
+            // print_r($datos['composicion']);
+            // echo '</pre>';
+            // die();
             $datos['cantidad_embolsar'] = $cantidad_productos;
             $datos['estaLogeado'] = auth()->loggedIn();
             $datos['nombreUsuario'] = auth()->getUser()->username;

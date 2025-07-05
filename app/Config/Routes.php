@@ -24,6 +24,15 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
     $routes->add('veringresos', 'Dashboard\Inventario::verIngresos');
 
+    // Inicio de manejo de gastos
+    $routes->add('nuevogasto', 'Dashboard\Dashboard::nuevoGasto');
+    $routes->add('vergastos', 'Dashboard\Gastos::verGastos');
+    $routes->add('eliminargasto/(:num)', 'Dashboard\Gastos::eliminarGasto/$1');
+    $routes->add('editargasto', 'Dashboard\Gastos::editarGasto');
+    $routes->add('editargasto/(:num)', 'Dashboard\Gastos::editarGasto/$1');
+    // Fin de manejo de gastos
+
+    // Manejo de productos a granel
     $routes->add('verproductosgranel', 'Dashboard\Granel::verProductosGranel'); //si se usa
     $routes->add('nuevoproductogranel', 'Dashboard\Granel::nuevoproductogranel'); //si se usa
     $routes->add('editarproductogranel', 'Dashboard\Granel::editarProductoGranel');
@@ -33,6 +42,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verinventariogranel/(:alpha)', 'Dashboard\Granel::index/$1');
     $routes->add('agregaringresogranel/(:num)', 'Dashboard\Granel::formIngresogranel/$1'); //si se usa
     $routes->add('guardaringresogranel', 'Dashboard\Granel::guardarIngresogranel');
+    // fin de manejo de productos a granel
 
     $routes->add('guardarembolsadogranel', 'Dashboard\Granel::guardarEmbolsadoGranel');
 
@@ -53,7 +63,6 @@ $routes->group('dashboard', function ($routes) {
 
     $routes->add('informediario', 'Dashboard\Vistas::informeDiario');
 
-    $routes->add('nuevogasto', 'Dashboard\Dashboard::nuevoGasto');
     $routes->add('conteoinventario', 'Dashboard\Inventario::conteoInventario');
 
 

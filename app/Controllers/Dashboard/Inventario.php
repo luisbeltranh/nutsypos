@@ -173,14 +173,14 @@ class Inventario extends BaseController
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
         $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ventas.updated_at')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ventas.updated_at, producto_embolsado')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
         // echo "<pre>";
         // print_r($ventas);
         // echo "</pre>";
         // die();
         $ventas_array = $this->sumarArray($ventas, -1);
         $modelo_ingresos = new IngresosModel();
-        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ingresos.updated_at')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ingresos.updated_at, producto_embolsado')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
         $ingresos_array = $this->sumarArray($ingresos, 1);
         $total_array = array_merge_recursive($ventas_array, $ingresos_array);
         $suma_total = $this->sumarArray($total_array, 1);
@@ -243,6 +243,7 @@ class Inventario extends BaseController
             $result[$element['producto_id']]['costo'][] = $element['costo'];
             $result[$element['producto_id']]['cantidad'][] = $element['cantidad'];
             $result[$element['producto_id']]['total'][] = $element['cantidad'] * $element['costo'];
+            $result[$element['producto_id']]['producto_embolsado'][] = $element['producto_embolsado'];
             // $result[$element['producto_id']]['updated_at'][] = $element['updated_at'];
         }
         $inter = 0;
@@ -256,6 +257,8 @@ class Inventario extends BaseController
             $datos[$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
             $datos[$inter]['costo'] = array_sum($vector['costo']) / count($vector['costo']);
             $datos[$inter]['total'] = number_format(array_sum($vector['total']), 2);
+            $datos[$inter]['producto_embolsado'] = $vector['producto_embolsado'][0];
+
             $inter++;
             $monto_total += array_sum($vector['total']);
         }

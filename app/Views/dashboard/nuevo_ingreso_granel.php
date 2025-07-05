@@ -27,7 +27,7 @@
                         if ($is_admin) {
                         ?>
                             <div class="form-group">
-                                <label for="costo">Costo</label>
+                                <label for="costo">Costo kg</label>
                                 <input type="text" class="form-control" name="" value="<?= $producto['costo_gramo'] ?>" readonly="readonly">
                             </div>
 
@@ -35,8 +35,8 @@
                         }
                         ?>
                         <div class="form-group">
-                            <label for="cantidad">Cantidad en kg</label>
-                            <input type="number" class="form-control" name="cantidad" autofocus step="0.01">
+                            <label for="cantidad">Cantidad en Gramos</label>
+                            <input type="number" min="0" class="form-control" name="cantidad" autofocus step="1">
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
                             <input type="hidden" name="monto" value="<?= $producto['costo_gramo'] ?>">

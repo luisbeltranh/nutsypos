@@ -66,11 +66,7 @@ class Usuarios extends BaseController
         if (auth()->getUser()->inGroup('admin')) {
             $datos['is_admin'] = true;
         }
-
         $usuario_model = new UsuariosModel();
-
-
-
         if ($this->request->getMethod() == 'POST') {
             $rules = [
                 'username' => [
@@ -168,9 +164,6 @@ class Usuarios extends BaseController
             // return redirect()->to('/dashboard/new_link')->withInput();
             //return redirect()->back()->withInput();
         }
-
-
-
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;

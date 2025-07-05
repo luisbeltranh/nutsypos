@@ -18,25 +18,31 @@
                             <thead>
                                 <tr>
                                     <th>Producto Granel</th>
-                                    <th>Cantidad por Bolsa [Kg]</th>
+                                    <th>Cantidad por Bolsa [g]</th>
                                     <th>Cantidad de Bolsas</th>
-                                    <th>Total en Kilogramos</th>
-                                    <!-- <th>Cantidad Total</th> -->
+                                    <th>Total en [g]</th>
+                                    <th>Inventario [g]</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($composicion as $compo) : ?>
-                                    <tr>
+                                <?php foreach ($embolsado as $compo) : ?>
+                                    <tr class="<?= esc($compo['clase']) ?>">
                                         <td><?= esc($compo['nombre_granel']) ?></td>
-                                        <td><?= esc($compo['cantidad_por_bolsa']) / 1000 ?></td>
+                                        <td><?= esc($compo['cantidad_por_bolsa']) ?></td>
                                         <td><?= $cantidad_embolsar; ?></td>
                                         <td>
-                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa'] * $cantidad_embolsar / 1000) ?>" required readonly>
+                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa'] * $cantidad_embolsar) ?>" required readonly>
                                         </td>
+                                        <td><?= esc($compo['inventario_total_granel']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
+                        <div>
+                            <?php foreach ($embolsado as $compo) : ?>
+                                <div><?= esc($compo['mensaje']) ?></div>
+                            <?php endforeach; ?>
+                        </div>
                         <div class="form-group">
                             <input type="hidden" class="form-control" id="cantidad_bolsas_producidas" name="cantidad_bolsas_producidas" value="<?= $cantidad_embolsar; ?>" required>
                             <input type="hidden" class="form-control" id="confirmar" name="confirmar" value="true">
@@ -48,7 +54,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <input type="submit" class="btn btn-primary" value="Siguiente" onclick="return confirm('Are you sure you want to search Google?')">
+                        <input type="submit" class="btn btn-primary" value="Confirmar" onclick="return confirm('¿Esta seguro de continuar?')" <?= esc($boton_continuar) ?>>
                         <a href="<?= base_url('dashboard/agregarembolsadogranel') ?>" class="btn btn-danger">Cancelar</a>
                     </div>
                 </div>

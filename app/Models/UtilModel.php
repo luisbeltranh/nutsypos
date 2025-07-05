@@ -137,6 +137,37 @@ class UtilModel extends Model
         //$this->db->table('ingresos')->insert($data_ingreso);
 
     }
+    public function guardarIngresoGranel($data = null)
+    {
+        ///// revisar luego esta funcion para segurar que no se guarden datos solo en una de las tablas,
+        //// por el momento esta funcinando porque los datos a guardar se garantizan en el controlador
+        //// pero siempre pueden surgir errores, asi que es mejor revisar
+        if ($data == null) {
+            return false;
+        }
+        $productos_granel_model = new ProductosGranelModel();
+        $ingresos_granel_model = new IngresosGranelModel();
+
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        $this->db->transStart();
+        $productos_granel_model
+            ->where('id', $data['producto_id'])
+            ->set('cantidad_total', 'cantidad_total + ' . $data['cantidad'], false)
+            ->update();
+        $data_ingreso_granel = [
+            'numero_ingreso' => $data['numero_ingreso'],
+            'producto_id' => $data['producto_id'],
+            'monto' => $data['monto'],
+            'cantidad' => $data['cantidad'],
+            'total' => $data['monto'] * $data['cantidad'],
+            'user_id' => $data['user_id'],
+        ];
+        $ingresos_granel_model->insert($data_ingreso_granel);
+        $this->db->transComplete();
+        return $this->db->transStatus();
+    }
     public function listarInventario()
     {
         $ventas_model = new VentasModel();

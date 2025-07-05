@@ -13,7 +13,7 @@ class ProductosModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['categoria', 'nombre', 'descripcion', 'tamano', 'costo', 'precio_venta', 'cantidad_total', 'user_id', 'deleted_at'];
+    protected $allowedFields = ['categoria', 'nombre', 'descripcion', 'producto_embolsado', 'tamano', 'costo', 'precio_venta', 'cantidad_total', 'user_id', 'deleted_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

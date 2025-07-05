@@ -24,8 +24,8 @@ class Granel extends BaseController
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
-        $datos['titulo_breadcrumbs'] = "Inventario Granel";
-        $datos['menu_activo'] = "dashboard";
+        $datos['titulo_breadcrumbs'] = "Inventario de Productos a Granel";
+        $datos['menu_activo'] = "inventario_productos_granel";
         $modelo_productos_granel = new ProductosGranelModel();
         $datos['productos_granel'] = $modelo_productos_granel->findAll();
         echo view('dashboard/templates/head', $datos);
@@ -234,6 +234,7 @@ class Granel extends BaseController
 
     function guardarIngresoGranel()
     {
+        $session = session();
         $datos['is_admin'] = false;
         if (auth()->getUser()->inGroup('admin')) {
             $datos['is_admin'] = true;
@@ -250,12 +251,7 @@ class Granel extends BaseController
                         'required' => 'El campo "Numero de ingreso" es requerido',
                     ]
                 ],
-                'producto_id' => [
-                    'rules' => 'required',
-                    'errors' => [
-                        'required' => 'El campo "Producto ID" es requerido',
-                    ]
-                ],
+                'producto_id' => [],
                 'monto' => [
                     'rules' => 'required',
                     'errors' => [
@@ -282,8 +278,18 @@ class Granel extends BaseController
             $data['total'] = $data['cantidad'] * $data['monto'];
             if ($this->validateData($data, $rules)) {
                 $validData = $this->validator->getValidated();
-                $modelo_ingresos_granel->insert($validData);
-                return redirect()->to('/dashboard/verinventariogranel');
+
+                // empezamos a guardar el ingreso de granel
+                // guardamos el ingreo a la tabla ingresos_granel, luego actualizamos la tabla productos_granel el campo cantidad_total
+                // para estos usamos la funcion guardaIngresoGranel del modelo UtilModel
+                $modelo_utilitario = new UtilModel();
+                if ($modelo_utilitario->guardarIngresoGranel($validData)) {
+                    $session->setFlashdata('exito', 'Se ha registrado el embolsado correctamente.');
+                    return redirect()->to(base_url('dashboard/verinventariogranel'));
+                } else {
+                    $session->setFlashdata('error', 'No se ha podido registrar el embolsado.');
+                    return redirect()->to(base_url('dashboard/verinventariogranel'));
+                }
             }
             // return redirect()->to('/dashboard/new_link')->withInput();
             //return redirect()->back()->withInput();

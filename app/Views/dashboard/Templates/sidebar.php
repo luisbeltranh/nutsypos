@@ -133,7 +133,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="<?php echo $menu_activo == 'tienda' ? '#' : base_url('dashboard/nuevogasto'); ?>" class="nav-link <?php echo $menu_activo == 'gastos' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-bag-dash"></i>
+                    <a href="<?php echo $menu_activo == 'tienda' ? '#' : base_url('dashboard/vergastos'); ?>" class="nav-link <?php echo $menu_activo == 'gastos' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-bag-dash"></i>
                         <p>Gastos</p>
                     </a>
                 </li>

@@ -47,6 +47,10 @@
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
                         </div>
                         <div class="form-group">
+                            <label for="producto_embolsado">Producto Embolsado Propio</label>
+                            <input type="checkbox" name="producto_embolsado" value="1" <?php echo $producto['producto_embolsado'] <> 0 ? 'checked' : ''; ?>>
+                        </div>
+                        <div class="form-group">
                             <label for="habilitado">Producto Habilitado</label>
                             <input type="checkbox" name="habilitado" value="1" <?php echo $producto['deleted_at'] == null ? 'checked' : ''; ?>>
                         </div>

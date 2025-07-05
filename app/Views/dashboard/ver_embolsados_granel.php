@@ -24,6 +24,7 @@
                                 <th>Producto Granel</th>
                                 <th>Cantidad Granel Usado [kg]</th>
                                 <th>Cantidad Producto Embolsado</th>
+                                <th>Fecha</th>
                                 <th>Usuario</th>
                             </tr>
                         </thead>
@@ -32,12 +33,13 @@
                             foreach ($embolsados as $embolsado) {
                             ?>
 
-                                <tr>
+                                <tr class="<?= ($embolsado['numero_embolsado'] % 2 == 0) ? 'table-secondary' : '' ?>">
                                     <td><?= $embolsado['numero_embolsado'] ?></td>
                                     <td><?= $embolsado['producto_nombre']; ?></td>
                                     <td><?= $embolsado['producto_granel_nombre']; ?></td>
                                     <td><?= $embolsado['cantidad_granel_usado']; ?></td>
                                     <td><?= $embolsado['cantidad_producto_embolsado']; ?></td>
+                                    <td><?= $embolsado['embolsados_created_at']; ?></td>
                                     <td><?= $embolsado['user_id']; ?></td>
                                     <td>
                                         <?php
