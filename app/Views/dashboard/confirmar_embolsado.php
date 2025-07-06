@@ -1,7 +1,7 @@
 <div class="app-content"> <!--begin::Container-->
     <div class="container-fluid"> <!--begin::Row-->
         <div class="row"> <!--begin::Col-->
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <?= form_open('dashboard/nuevo_embolsar/' . $producto['id']); ?>
                 <div class="card card-info">
                     <div class="card-header">
@@ -31,7 +31,7 @@
                                         <td><?= esc($compo['cantidad_por_bolsa']) ?></td>
                                         <td><?= $cantidad_embolsar; ?></td>
                                         <td>
-                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa'] * $cantidad_embolsar) ?>" required readonly>
+                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa'] * $cantidad_embolsar) ?>" size="8" required readonly>
                                         </td>
                                         <td><?= esc($compo['inventario_total_granel']) ?></td>
                                     </tr>
