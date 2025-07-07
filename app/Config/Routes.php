@@ -54,6 +54,10 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('obtener_composicion/(:num)', 'dashboard\Embolsado::obtenerComposicion/$1');
     // fin de proceso de embolsado
 
+    // Inicio informes
+    $routes->add('reportediario', 'dashboard\Informes::reporteDiario');
+    // Fin informes
+
     //
     $routes->add('vermasvendido', 'Dashboard\Dashboard::verMasVendido');
 

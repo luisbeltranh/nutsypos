@@ -20,18 +20,22 @@
                                 </thead>
                                 <tbody class="table-group-divider">
                                     <tr>
-                                        <td>Ventas ingresadas al sistema</td>
-                                        <td><?= $venta ?></td>
+                                        <td>Total de Ventas en Efectivo Ingresadas al Sistema</td>
+                                        <td><?= $total_ventas_efectivo ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Gastos ingresados el sistema</td>
-                                        <td><?= $gasto ?></td>
+                                        <td>Total de Ventas en QR Ingresadas al Sistema</td>
+                                        <td><?= $total_ventas_qr ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total de Gastos Ingresados el Sistema</td>
+                                        <td><?= $total_gastos ?></td>
                                     </tr>
                                 </tbody>
                                 <tfoot class="table-group-divider">
                                     <tr>
-                                        <th>Total Sistema</th>
-                                        <th><?= $total_sistema ?></th>
+                                        <th>Total de Ingreso</th>
+                                        <th><?= $total_ventas_registrado - $total_gastos ?></th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -46,44 +50,41 @@
                                 </thead>
                                 <tbody class="table-group-divider">
                                     <tr>
-                                        <td>Efectivo en caja</td>
-                                        <td><?= $efectivo ?></td>
+                                        <td>Efectivo en caja - Sistema</td>
+                                        <td><?= $total_efectivo ?></td>
                                     </tr>
                                     <tr>
-                                        <td>Pagos con QR</td>
-                                        <td><?= $pago_qr ?></td>
+                                        <td>Efectivo en caja - Conteo Manual</td>
+                                        <td><?= $efectivo_arqueo ?></td>
                                     </tr>
+
                                 </tbody>
                                 <tfoot class="table-group-divider">
+                                    <tr class="<?= $color_tabla ?>">
+                                        <th>Diferencia</th>
+                                        <th><?= $arqueo_diferencia ?></th>
+                                    </tr>
                                     <tr>
-                                        <th>Total caja</th>
-                                        <th><?= $total_caja ?></th>
+                                        <td> <?= $arqueo_mensaje ?> </td>
                                     </tr>
                                 </tfoot>
+
                             </table>
                         </div>
-                        <div class="table">
-                            <table class="table">
-                                <thead class="table-primary">
-                                    <tr>
-                                        <th>Descripcion</th>
-                                        <th>Monto</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    <tr class="<?= $color_tabla ?>">
-                                        <td>Diferencia</td>
-                                        <td><?= $diferencia ?></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
 
                     </div>
                     <div class="card-footer">
+                        <input type="hidden" class="form-control" name="total_ventas_registrado" value="<?= $total_ventas_registrado ?>">
+                        <input type="hidden" class="form-control" name="total_ventas_efectivo" value="<?= $total_ventas_efectivo ?>">
+                        <input type="hidden" class="form-control" name="total_ventas_qr" value="<?= $total_ventas_qr ?>">
+                        <input type="hidden" class="form-control" name="total_gastos" value="<?= $total_gastos ?>">
+                        <input type="hidden" class="form-control" name="total_efectivo" value="<?= $total_efectivo ?>">
+                        <input type="hidden" class="form-control" name="efectivo_arqueo" value="<?= $efectivo_arqueo ?>">
+                        <input type="hidden" class="form-control" name="arqueo_diferencia" value="<?= $arqueo_diferencia ?>">
+                        <input type="hidden" class="form-control" name="guardar_datos" value="guardar">
+                        <input type="hidden" class="form-control" name="user_id" value="<?= $idUsuario ?>">
                         <input type="submit" class="btn btn-primary" value="Guardar y Salir">
+                        <a href="/dashboard" class="btn btn-danger" role="button">Cancelar</a>
                     </div>
                     <?= form_close() ?>
                 </div>

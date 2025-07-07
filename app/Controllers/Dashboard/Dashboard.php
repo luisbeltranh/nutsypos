@@ -11,6 +11,7 @@ use App\Models\ProductosGranelModel;
 use App\Models\UtilModel;
 use App\Models\GastosModel;
 use App\Models\FormasPagoModel;
+use App\Models\CierreposModel;
 
 class Dashboard extends BaseController
 {
@@ -81,7 +82,7 @@ class Dashboard extends BaseController
         } else {
             $datos['numero_venta'] = 0;
         }
-      
+
 
         echo view('dashboard/pos', $datos);
 
@@ -643,39 +644,54 @@ class Dashboard extends BaseController
     function cerrarPos()
     {
         helper('form');
+        $modelo_cierre = new CierreposModel();
         if ($this->request->getMethod() == 'POST') {
             $rules = [
-                'venta' => [
+                'total_ventas_registrado' => [
                     'rules' => 'required',
                     'errors' => [
-                        'required' => 'El campo "Categoría" es requerido',
+                        'required' => 'El campo "VENTAS" es requerido',
                     ]
                 ],
-                'gasto' => [
+                'total_ventas_efectivo' => [
                     'rules' => 'required',
                     'errors' => [
-                        'required' => 'El campo "Nombre" es requerido',
+                        'required' => 'El campo "PAGOS EN EFECTIVO" es requerido',
                     ]
                 ],
-                'efectivo' => [
-                    'rules' => 'required|is_natural',
+                'total_ventas_qr' => [
+                    'rules' => 'required',
                     'errors' => [
-                        'required' => 'El campo "Descripcion" es requerido',
+                        'required' => 'El campo "VENTAS POR QR" es requerido',
                     ]
                 ],
-                'pago_qr' => [
-                    'rules' => 'is_natural',
+                'total_gastos' => [
+                    'rules' => 'required',
                     'errors' => [
-                        'required' => 'El campo "Costo" es requerido',
+                        'required' => 'El campo "GASTOS" es requerido',
                     ]
                 ],
+                'total_efectivo' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "TOTAL EFECTIVO" es requerido',
+                    ]
+                ],
+                'efectivo_arqueo' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "EFECTIVO ARQUEO" es requerido',
+                    ]
+                ],
+                'arqueo_diferencia' => [],
                 'user_id' => [
                     'rules' => 'required',
                     'errors' => [
-                        'required' => 'El campo "Precio de Venta" es requerido',
+                        'required' => 'El campo "ID DE USUARIO" es requerido',
                     ]
                 ],
                 'validado' => [],
+                'guardar_datos' => [],
             ];
 
             $data = $this->request->getPost(array_keys($rules));
@@ -683,13 +699,29 @@ class Dashboard extends BaseController
                 $validData = $this->validator->getValidated();
                 if (isset($validData['validado'])) {
                     $datos = $validData;
-                    $datos['total_sistema'] = $validData['venta'] - $validData['gasto'];
-                    $datos['total_caja'] = $validData['efectivo'] + $validData['pago_qr'];
-                    $datos['diferencia'] = $datos['total_caja'] - $datos['total_sistema'];
+                    $datos['total_ventas_registrado'] = $validData['total_ventas_registrado'];;
+                    $datos['total_ventas_efectivo'] = $validData['total_ventas_efectivo'];
+                    $datos['total_ventas_qr'] = $datos['total_ventas_qr'];
+                    $datos['total_gastos'] = $validData['total_gastos'];
+                    $datos['total_efectivo'] = $validData['total_efectivo'];
+                    $datos['efectivo_arqueo'] = $validData['efectivo_arqueo'];
+                    $datos['arqueo_diferencia'] = $validData['efectivo_arqueo'] - $validData['total_efectivo'];
+
                     $datos['color_tabla'] = 'table-success';
-                    if ($datos['diferencia'] <> 0) {
+                    $datos['arqueo_mensaje'] = 'Arqueo de caja realizado correctamente';
+                    if ($datos['arqueo_diferencia'] < 0) {
+                        $datos['color_tabla'] = 'table-warning';
+                        $datos['arqueo_mensaje'] = 'Arqueo de caja realizado con diferencia, FALTA EFECTIVO. Es probable que se haya registrado una venta por demas o no se haya registrado un gasto. Tambien puede haberse registrado una venta por QR como venta en efectivo.';
+                    } elseif ($datos['arqueo_diferencia'] > 0) {
+                        $datos['color_tabla'] = 'table-info';
+                        $datos['arqueo_mensaje'] = 'Arqueo de caja realizado con diferencia, SOBRA EFECTIVO. Es probable que no se haya registrado una venta en el sistema o se registro un gasto de mas. Tambien puede haberse registrado una venta en efectivo como venta por QR.';
+                    }
+
+                    if ($datos['arqueo_diferencia'] <> 0) {
                         $datos['color_tabla'] = 'table-danger';
                     }
+
+
                     $datos['is_admin'] = false;
                     if (auth()->getUser()->inGroup('admin')) {
                         $datos['is_admin'] = true;
@@ -705,7 +737,11 @@ class Dashboard extends BaseController
                     echo view('dashboard/templates/breadcrumbs');
                     echo view('dashboard/confirmar_cerrarpos');
                     echo view('dashboard/templates/footer');
+                } elseif ($validData['guardar_datos'] == 'guardar') {
+                    $modelo_cierre->insert($validData);
+                    return redirect()->to('/logout');
                 }
+
 
                 // $modelo_producto->update($validData['producto_id'], $validData);
                 // return redirect()->to('/dashboard/productos');
@@ -721,6 +757,13 @@ class Dashboard extends BaseController
             $gastos_model = new GastosModel();
             $datos['total_ventas_hoy'] = $ventas_model->ventasTotal($fecha_inicio, $fecha_fin);
             $datos['total_gastos_hoy'] = $gastos_model->gasto_total_hoy($fecha_inicio, $fecha_fin);
+            $datos['total_ventas_qr'] = $ventas_model->ventasFormaPago($fecha_inicio, $fecha_fin, 2);
+            $datos['total_ventas_efectivo'] = $ventas_model->ventasFormaPago($fecha_inicio, $fecha_fin, 1);
+            $datos['efectivo_arqueo'] = $datos['total_ventas_efectivo'] - $datos['total_gastos_hoy'];
+            // echo '<pre>';
+            // print_r($datos['ventas_qr']);
+            // echo '</pre>';
+            // die();
             $datos['is_admin'] = false;
             if (auth()->getUser()->inGroup('admin')) {
                 $datos['is_admin'] = true;

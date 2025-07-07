@@ -99,6 +99,12 @@
                 if ($is_admin) {
                 ?>
                     <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'reportediario' ? '#' : base_url('dashboard/reportediario'); ?>" class="nav-link <?php echo $menu_activo == 'reportediario' ? 'active' : ''; ?>">
+                            <i class="nav-icon bi bi-bar-chart-line"></i>
+                            <p>Reporte Diario</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="<?php echo $menu_activo == 'verventasperiodo' ? '#' : base_url('dashboard/verventasperiodo'); ?>" class="nav-link <?php echo $menu_activo == 'verventasperiodo' ? 'active' : ''; ?>">
                             <i class="nav-icon bi bi-bar-chart-line"></i>
                             <p>Ver Ventas P.</p>
