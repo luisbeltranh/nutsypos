@@ -37,7 +37,7 @@ class UtilModel extends Model
         ];
         $tabla_ingresos->insert($data_ingreso);
 
-        print_r($data_ingreso);
+        //print_r($data_ingreso);
 
 
         // insertar en tabla embolsados

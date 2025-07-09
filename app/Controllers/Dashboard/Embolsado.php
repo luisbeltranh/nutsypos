@@ -88,27 +88,31 @@ class Embolsado extends BaseController
                 // die();
             }
             $cantidad_productos = $this->request->getPost('cantidad_bolsas_producidas');
-            $datos['composicion'] = $modelo_composicion->select('composicion_embolsados.cantidad_por_bolsa AS cantidad_por_bolsa, productos_granel.id as producto_granel_id, productos_granel.nombre as nombre_granel, productos_granel.cantidad_total AS inventario_total_granel, (composicion_embolsados.cantidad_por_bolsa * ' . $cantidad_productos . ') AS peso_total_requerido')
+            $datos['composicion'] = $modelo_composicion->select('composicion_embolsados.cantidad_por_bolsa AS cantidad_por_bolsa, productos_granel.id as producto_granel_id, productos_granel.nombre as nombre_granel, productos_granel.cantidad_total AS inventario_total_granel, (composicion_embolsados.cantidad_por_bolsa * ' . $cantidad_productos . ') AS peso_total_requerido, peso_bolsa_vacia')
                 ->where('producto_id', $producto_id)
                 ->join('productos_granel', 'productos_granel.id = composicion_embolsados.producto_granel_id')
+                ->join('productos', 'productos.id = composicion_embolsados.producto_id')
                 ->findAll();
+            $cantidad_productos_diferentes = $modelo_composicion->selectCount('*', 'peso')->where('producto_id', $producto_id)->first();
             foreach ($datos['composicion'] as $key => $compo) {
                 $datos['embolsado'][$key]['cantidad_por_bolsa'] = $compo['cantidad_por_bolsa'];
                 $datos['embolsado'][$key]['producto_granel_id'] = $compo['producto_granel_id'];
                 $datos['embolsado'][$key]['nombre_granel'] = $compo['nombre_granel'];
                 $datos['embolsado'][$key]['inventario_total_granel'] = $compo['inventario_total_granel'];
-                $datos['embolsado'][$key]['peso_total_requerido'] = $compo['peso_total_requerido'];
-                if ($compo['inventario_total_granel'] < $compo['peso_total_requerido']) {
+                $datos['embolsado'][$key]['peso_total_requerido'] = $compo['peso_total_requerido'] - ($compo['peso_bolsa_vacia']  / $cantidad_productos_diferentes['peso'] * $cantidad_productos);
+                $datos['embolsado'][$key]['peso_total_requerido_merma'] = $compo['peso_total_requerido'] - ($compo['peso_bolsa_vacia'] * $cantidad_productos);
+
+                if ($compo['inventario_total_granel'] < ($compo['peso_total_requerido'] - ($compo['peso_bolsa_vacia'] / $cantidad_productos_diferentes['peso'] * $cantidad_productos))) {
                     $datos['embolsado'][$key]['inventario_insuficiente'] = 'insuficiente';
                     $datos['embolsado'][$key]['clase'] = 'table-danger';
-                    $datos['embolsado'][$key]['mensaje'] = '* La cantidad de gramos de ' . $compo['nombre_granel'] . ' en inventario no es suficiente para ebolsar el producto.';
-                    $datos['boton_continuar'] = 'disabled';
+                    $datos['embolsado'][$key]['mensaje'] = '* La cantidad de gramos de ' . $compo['nombre_granel'] . ' en inventario no es suficiente para embolsar el producto. Puede proceder con el embolsado, pero se recomienda revisar el inventario antes de continuar.';
+                    $datos['boton_continuar'] = '';
                     // si el inventario es menor al requerido, se marca como insuficiente
 
-                } elseif ($compo['inventario_total_granel'] < ($compo['peso_total_requerido'] - ($compo['cantidad_por_bolsa'] / 2))) {
+                } elseif ($compo['inventario_total_granel'] < ($compo['peso_total_requerido'] + ($compo['cantidad_por_bolsa'] / 2))) {
                     $datos['embolsado'][$key]['inventario_insuficiente'] = 'advertencia';
                     $datos['embolsado'][$key]['clase'] = 'table-warning';
-                    $datos['embolsado'][$key]['mensaje'] = '* Es posible que la cantidad de gramos de ' . $compo['nombre_granel'] . ' en inventario no sea suficiente para ebolsar el producto.';
+                    $datos['embolsado'][$key]['mensaje'] = '* Es posible que la cantidad de gramos de ' . $compo['nombre_granel'] . ' en inventario no sea suficiente para embolsar el producto. Puede proceder con el embolsado, pero se recomienda revisar el inventario antes de continuar.';
                     $datos['boton_continuar'] = '';
                     //si el inventario es menor al requerido menos la mitad de la cantidad por bolsa, se marca como advertencia
                 } else {
@@ -127,6 +131,8 @@ class Embolsado extends BaseController
             // echo '<pre>';
             // print_r($datos['embolsado']);
             // echo '</pre>';
+            // echo '<br>';
+            // echo (int)$cantidad_productos_diferentes['peso'];
             // die();
             // echo '<pre>';
             // print_r($datos['composicion']);

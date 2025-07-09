@@ -12,6 +12,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Usuario</th>
                                 <th>Nombres</th>
                                 <th>Apellido Paterno</th>
                                 <th>Apellido Materno</th>
@@ -27,6 +28,7 @@
 
                                 <tr>
                                     <td><?= $usuario['id']; ?></td>
+                                    <td><?= $usuario['username']; ?></td>
                                     <td><?= $usuario['nombres']; ?></td>
                                     <td><?= $usuario['apellido_paterno']; ?></td>
                                     <td><?= $usuario['apellido_materno']; ?></td>
@@ -34,8 +36,8 @@
                                     <td><?= $usuario['telefono_emergencia']; ?></td>
                                     <td><?= $usuario['group']; ?></td>
                                     <td>
-                                        <a href="/dashboard/editarusuario" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
-                                        <a href="/dashboard/eliminarusuario" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                        <a href="/dashboard/editarusuario/<?= $usuario['id']; ?>" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
+                                        <a href="/dashboard/eliminarusuario/<?= $usuario['id']; ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                     </td>
                                 </tr>
 

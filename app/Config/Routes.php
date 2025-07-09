@@ -60,9 +60,12 @@ $routes->group('dashboard', function ($routes) {
 
     //
     $routes->add('vermasvendido', 'Dashboard\Dashboard::verMasVendido');
-
+    // inicio de manejo de usuarios
     $routes->add('verusuarios', 'Dashboard\Usuarios::verUsuarios');
     $routes->add('nuevousuario', 'Dashboard\Usuarios::nuevoUsuario');
+    $routes->add('editarusuario/(:num)', 'Dashboard\Usuarios::editarUsuario/$1');
+    // fin de manejo de usuarios
+
     $routes->add('vistaventashoyhoras', 'Dashboard\Vistas::vistaVentasHoyHoras');
 
     $routes->add('informediario', 'Dashboard\Vistas::informeDiario');

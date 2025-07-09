@@ -31,7 +31,7 @@
                                         <td><?= esc($compo['cantidad_por_bolsa']) ?></td>
                                         <td><?= $cantidad_embolsar; ?></td>
                                         <td>
-                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['cantidad_por_bolsa'] * $cantidad_embolsar) ?>" size="8" required readonly>
+                                            <input type="number" class="form-control" name="cantidad[<?= esc($compo['producto_granel_id']) ?>]" id="cantidad[<?= esc($compo['producto_granel_id']) ?>]" value="<?= esc($compo['peso_total_requerido']) ?>" size="8" required readonly>
                                         </td>
                                         <td><?= esc($compo['inventario_total_granel']) ?></td>
                                     </tr>
