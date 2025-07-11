@@ -13,7 +13,7 @@ class IngresosModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['numero_ingreso', 'producto_id', 'monto', 'cantidad', 'total', 'user_id', 'created_at'];
+    protected $allowedFields = ['numero_ingreso', 'producto_id', 'monto', 'cantidad', 'total', 'fecha_ingreso', 'user_id', 'created_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

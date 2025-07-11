@@ -8,7 +8,6 @@ use App\Models\MovimientosModel;
 use App\Models\VentasModel;
 use App\Models\IngresosModel;
 use App\Models\UtilModel;
-use CodeIgniter\Database\RawSql; // Importa RawSql para operaciones directas en SQL
 
 class Inventario extends BaseController
 {
@@ -78,129 +77,53 @@ class Inventario extends BaseController
         helper('form');
         $modelo_ingresos = new IngresosModel();
         $modelo_productos = new ProductosModel();
+        if ($this->request->getMethod() == 'POST') {
+            $rules = [
+                'numero_ingreso' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Categoría" es requerido',
+                    ]
+                ],
+                'producto_id' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Producto ID" es requerido',
+                    ]
+                ],
+                'monto' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Monto" es requerido',
+                    ]
+                ],
+                'cantidad' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Cantidad" es requerido',
+                    ]
+                ],
+                'total' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Total" es requerido',
+                    ]
+                ],
+                'user_id' => [],
+                'created_at' => [],
+            ];
 
-        // Solo procesar peticiones POST
-        if (strtolower($this->request->getMethod()) !== 'post') {
-            // Si no es POST, redirigir de vuelta o a una página de error
-            return redirect()->back()->with('error', 'Método no permitido para esta acción.');
+            $producto_id = $modelo_ingresos->orderBy('id', 'desc')->first();
+            $data = $this->request->getPost(array_keys($rules));
+            $data['total'] = $data['cantidad'] * $data['monto'];
+            if ($this->validateData($data, $rules)) {
+                $validData = $this->validator->getValidated();
+                $modelo_ingresos->insert($validData);
+                return redirect()->to('/dashboard/verinventario');
+            }
+            // return redirect()->to('/dashboard/new_link')->withInput();
+            //return redirect()->back()->withInput();
         }
-
-        // Definir las reglas de validación
-        $rules = [
-            'numero_ingreso' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'El campo "Categoría" es requerido',
-                ]
-            ],
-            'producto_id' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'El campo "Producto ID" es requerido',
-                ]
-            ],
-            'monto' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'El campo "Monto" es requerido',
-                ]
-            ],
-            'cantidad' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'El campo "Cantidad" es requerido',
-                ]
-            ],
-            'fecha_ingreso' => [ // NUEVO: Regla para la fecha del ingreso real
-                'rules' => 'required|valid_date', // Asegura que sea una fecha válida
-                'errors' => [
-                    'required' => 'La fecha de ingreso es requerida.',
-                    'valid_date' => 'La fecha de ingreso no es válida.'
-                ]
-            ],
-
-            // 'total' => [
-            //     'rules' => 'required',
-            //     'errors' => [
-            //         'required' => 'El campo "Total" es requerido',
-            //     ]
-            // ],
-            // 'user_id' => [],
-            // 'created_at' => [],
-        ];
-        // Obtener los datos del POST
-        $data = $this->request->getPost(array_keys($rules));
-
-        // Conectar a la base de datos para las transacciones
-        $db = \Config\Database::connect();
-        $db->transStart(); // *** INICIA LA TRANSACCIÓN ***
-
-        try {
-            // Validar los datos
-            if (!$this->validate($rules)) {
-                // Si la validación falla, guardar los errores en flashdata y redirigir con input
-                return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-            }
-
-            $validData = $this->validator->getValidated();
-
-            // Calcular el total (si no viene del frontend o para re-validar)
-            $validData['total'] = (float)$validData['cantidad'] * (float)$validData['monto'];
-            $validData['user_id'] = auth()->getUser()->id; // Asignar el ID del usuario autenticado
-            // 'created_at' se manejará automáticamente si el modelo tiene $useTimestamps = true
-
-            // --- PASO 1: Insertar el registro en la tabla de ingresos ---
-            $modelo_ingresos->insert($validData);
-
-            // --- PASO 2: Actualizar el campo cantidad_total en la tabla 'productos' ---
-            $productoId = (int)$validData['producto_id'];
-            $cantidadIngresada = (int)$validData['cantidad'];
-
-            // Verificar si el producto existe antes de intentar actualizar su stock
-            $productoExistente = $modelo_productos->find($productoId);
-            if (!$productoExistente) {
-                throw new \Exception('El producto con ID ' . $productoId . ' no existe.');
-            }
-
-            $modelo_productos->update($productoId, [
-                // Usa RawSql para realizar la operación matemática directamente en la DB
-                'cantidad_total' => new RawSql("cantidad_total + " . $cantidadIngresada)
-            ]);
-
-            $db->transComplete(); // *** COMPLETA LA TRANSACCIÓN (COMMIT o ROLLBACK automático) ***
-
-            // --- PASO 3: Verificar el estado final de la transacción ---
-            if ($db->transStatus() === FALSE) {
-                // Si transStatus es FALSE, significa que algo falló y la transacción fue revertida automáticamente.
-                log_message('error', 'Transacción de ingreso fallida: ' . $db->error()['message']);
-                return redirect()->back()->withInput()->with('error', 'Error en la base de datos al registrar el ingreso. La operación ha sido revertida.');
-            } else {
-                // La transacción fue exitosa
-                return redirect()->to('/dashboard/verinventario')->with('success', 'Ingreso registrado y stock actualizado correctamente.');
-            }
-        } catch (\Exception $e) {
-            // Si se lanza una excepción (ej. producto no existe, etc.)
-            $db->transRollback(); // *** REVierte la transacción explícitamente ***
-            log_message('error', 'Excepción durante la transacción de ingreso: ' . $e->getMessage());
-
-            // Para errores no de validación, redirigir con un mensaje de error general
-            // Si la excepción es de validación, los errores ya se pasaron con with('errors')
-            // Si es otra excepción, se pasa el mensaje de la excepción.
-            return redirect()->back()->withInput()->with('error', 'Ocurrió un error inesperado al procesar el ingreso: ' . $e->getMessage());
-        }
-
-        // el sql para actualizar la fecha de ingreso en la tabla ingresos con el valor de created_at
-        //UPDATE `ingresos` SET `fecha_ingreso` = `created_at`;
-
-        // $producto_id = $modelo_ingresos->orderBy('id', 'desc')->first();
-        // $data['total'] = $data['cantidad'] * $data['monto'];
-        // if ($this->validateData($data, $rules)) {
-        //     $validData = $this->validator->getValidated();
-        //     $modelo_ingresos->insert($validData);
-        //     return redirect()->to('/dashboard/verinventario');
-        // }
-        // return redirect()->to('/dashboard/new_link')->withInput();
-        //return redirect()->back()->withInput();
     }
     function verIngresos()
     {

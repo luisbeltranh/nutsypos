@@ -31,8 +31,8 @@
                                 <input type="text" class="form-control" name="costo" value="<?= $producto['costo'] ?>" readonly="readonly">
                             </div>
                             <div class="form-group">
-                                <label for="costo">Fecha de Ingreso</label>
-                                <input type="datetime-local" class="form-control" name="created_at" value="<?= date('Y-m-d\TH:i:s') ?>">
+                                <label for="fecha_ingreso">Fecha de Ingreso</label>
+                                <input type="datetime-local" class="form-control" name="fecha_ingreso" value="<?= old('fecha_ingreso', date('Y-m-d')) ?>">
                             </div>
 
                         <?php
@@ -40,18 +40,18 @@
                         ?>
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>
-                                                    <?php
-                        if ($is_admin) {
-                        ?>
-                            <input type="number" class="form-control" name="cantidad" autofocus>
-
-                        <?php
-                        } else{
+                            <?php
+                            if ($is_admin) {
                             ?>
-                            <input type="number" class="form-control" name="cantidad" autofocus min="0">
-<?php
-                        }
-                        ?>
+                                <input type="number" class="form-control" name="cantidad" autofocus>
+
+                            <?php
+                            } else {
+                            ?>
+                                <input type="number" class="form-control" name="cantidad" autofocus min="0">
+                            <?php
+                            }
+                            ?>
 
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">

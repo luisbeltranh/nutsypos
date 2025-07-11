@@ -12,7 +12,6 @@ use App\Models\UtilModel;
 use App\Models\GastosModel;
 use App\Models\FormasPagoModel;
 use App\Models\CierreposModel;
-use CodeIgniter\Database\RawSql; // Importa RawSql para operaciones directas en SQL
 
 class Dashboard extends BaseController
 {
@@ -231,146 +230,28 @@ class Dashboard extends BaseController
     }
     function ventaProducto($forma_pago_id = null)
     {
-        helper('form'); // Asegúrate de que este helper esté cargado si lo necesitas
-        $usuarioId = auth()->getUser()->id; // Obtiene el ID del usuario autenticado
-
+        helper('form');
+        $usuario['id'] = auth()->getUser()->id;
         $modeloProductos = new ProductosModel();
-        $modeloVentas = new VentasModel(); // Este modelo debe apuntar a tu tabla de detalle_ventas (ej. 'ventas')
+        $modeloVentas = new VentasModel();
 
-        // --- DEBUG: Log del método de la petición ---
-        log_message('debug', 'Request method received in ventaProducto: ' . $this->request->getMethod());
-
-        // Solo procesar peticiones POST
-        if (strtolower($this->request->getMethod()) !== 'post') { // Convertir a minúsculas para una comparación robusta
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Método no permitido. Solo se aceptan peticiones POST.'
-            ])->setStatusCode(405); // Método no permitido
-        }
-
-        // Decodificar los datos JSON enviados desde el frontend
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        // Verificar si hay artículos para vender
-        if (empty($data)) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'No hay artículos en la venta para procesar.'
-            ])->setStatusCode(400); // Bad Request
-        }
-
-        $db = \Config\Database::connect();
-        $db->transStart(); // *** INICIA LA TRANSACCIÓN ***
-
-        try {
-            $ventaBatch = []; // Array para el insertBatch de la tabla de ventas (detalle_ventas)
-            $productosAActualizar = []; // Array para almacenar productos y cantidades a descontar
-
-            // --- PASO 1: Pre-verificación de stock para todos los artículos ---
-            // Esto se hace antes de cualquier operación de DB para asegurar que todo el pedido es válido
+        if ($this->request->getMethod() == 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $indice = 0;
             foreach ($data as $valor) {
-                $productoId = (int)$valor['id'];
-                $cantidadVendida = (int)$valor['cantidad'];
-
-                // Buscar el producto para obtener su stock actual
-                $productoActual = $modeloProductos->find($productoId);
-
-                // Si el producto no existe o el stock es insuficiente, lanzar una excepción
-                if (!$productoActual || $productoActual['cantidad_total'] < $cantidadVendida) {
-                    throw new \Exception('Stock insuficiente para el producto: ' . ($productoActual['nombre'] ?? 'ID ' . $productoId) . '. Cantidad disponible: ' . ($productoActual['cantidad_total'] ?? 0) . 'g, Cantidad solicitada: ' . $cantidadVendida . 'g.');
-                }
-                // Acumular la cantidad a descontar por producto (por si un mismo producto aparece varias veces)
-                $productosAActualizar[$productoId] = ($productosAActualizar[$productoId] ?? 0) + $cantidadVendida;
+                $venta[$indice]['producto_id'] = $valor['id'];
+                $venta[$indice]['numero_venta'] = $valor['numero_venta'];
+                $venta[$indice]['monto'] = $valor['precio_venta'];
+                $venta[$indice]['cantidad'] = $valor['cantidad'];
+                $venta[$indice]['total'] = $valor['precio_venta'] * $valor['cantidad'];
+                $venta[$indice]['forma_pago_id'] = $forma_pago_id;
+                $venta[$indice]['user_id'] = $usuario['id'];
+                $indice++;
             }
+            $modeloVentas->insertBatch($venta);
 
-            // --- PASO 2: Preparar y registrar los detalles de la venta ---
-            // Asumo que 'numero_venta' se genera en el frontend o es un campo de agrupación.
-            // Si necesitas un ID de venta principal, deberías insertarlo aquí y obtener el insertID.
-            $numeroVenta = date('YmdHis') . rand(1000, 9999); // Ejemplo: Generar un número de venta simple
-
-            foreach ($data as $valor) {
-                $productoId = (int)$valor['id'];
-                $cantidadVendida = (int)$valor['cantidad'];
-                $precioUnitario = (float)$valor['precio_venta'];
-
-                $ventaBatch[] = [
-                    'producto_id'   => $productoId,
-                    'numero_venta'  => $numeroVenta, // Usar el número de venta generado
-                    'monto'         => $precioUnitario, // Precio unitario del producto
-                    'cantidad'      => $cantidadVendida,
-                    'total'         => $precioUnitario * $cantidadVendida, // Total por línea de producto
-                    'forma_pago_id' => $forma_pago_id,
-                    'user_id'       => $usuarioId,
-                    'fecha_venta'   => date('Y-m-d H:i:s'), // Fecha y hora actual de la venta
-                    // ... añade aquí otros campos que tengas en tu tabla de ventas/detalle_ventas
-                ];
-            }
-
-            // Insertar todos los detalles de la venta en lote
-            $modeloVentas->insertBatch($ventaBatch);
-
-            // --- PASO 3: Descontar el stock de los productos en la tabla 'productos' ---
-            foreach ($productosAActualizar as $productoId => $cantidadADescontar) {
-                $modeloProductos->update($productoId, [
-                    // Usa RawSql para realizar la operación matemática directamente en la DB
-                    'cantidad_total' => new RawSql("cantidad_total - " . $cantidadADescontar)
-                ]);
-            }
-
-            $db->transComplete(); // *** COMPLETA LA TRANSACCIÓN (COMMIT o ROLLBACK automático) ***
-
-            // --- PASO 4: Verificar el estado final de la transacción ---
-            if ($db->transStatus() === FALSE) {
-                // Si transStatus es FALSE, significa que algo falló y la transacción fue revertida automáticamente.
-                // Esto podría ser por una restricción de DB, un deadlock, etc.
-                log_message('error', 'Transacción de venta fallida: ' . $db->error()['message']);
-                return $this->response->setJSON([
-                    'status' => 'error',
-                    'message' => 'Error en la base de datos al procesar la venta. La operación ha sido revertida.'
-                ])->setStatusCode(500); // Internal Server Error
-            } else {
-                // La transacción fue exitosa
-                return $this->response->setJSON([
-                    'status' => 'success',
-                    'message' => 'Venta registrada y stock actualizado correctamente.'
-                ])->setStatusCode(200); // OK
-            }
-        } catch (\Exception $e) {
-            // Si se lanza una excepción (ej. stock insuficiente, error de validación, etc.)
-            $db->transRollback(); // *** REVierte la transacción explícitamente ***
-            log_message('error', 'Excepción durante la transacción de venta: ' . $e->getMessage());
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Error al procesar la venta: ' . $e->getMessage()
-            ])->setStatusCode(400); // Bad Request (o 500 si es un error inesperado del servidor)
+            // print_r($data);
         }
-
-
-
-
-        // helper('form');
-        // $usuario['id'] = auth()->getUser()->id;
-        // $modeloProductos = new ProductosModel();
-        // $modeloVentas = new VentasModel();
-
-        // if ($this->request->getMethod() == 'POST') {
-        //     $data = json_decode(file_get_contents('php://input'), true);
-        //     $indice = 0;
-        //     foreach ($data as $valor) {
-        //         $venta[$indice]['producto_id'] = $valor['id'];
-        //         $venta[$indice]['numero_venta'] = $valor['numero_venta'];
-        //         $venta[$indice]['monto'] = $valor['precio_venta'];
-        //         $venta[$indice]['cantidad'] = $valor['cantidad'];
-        //         $venta[$indice]['total'] = $valor['precio_venta'] * $valor['cantidad'];
-        //         $venta[$indice]['forma_pago_id'] = $forma_pago_id;
-        //         $venta[$indice]['user_id'] = $usuario['id'];
-        //         $indice++;
-        //     }
-        //     $modeloVentas->insertBatch($venta);
-
-        //     // print_r($data);
-        // }
-
     }
     function verVentas()
     {
