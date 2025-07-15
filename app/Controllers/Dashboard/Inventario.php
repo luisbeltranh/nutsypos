@@ -8,6 +8,7 @@ use App\Models\MovimientosModel;
 use App\Models\VentasModel;
 use App\Models\IngresosModel;
 use App\Models\UtilModel;
+use App\Models\IngresosGranelModel;
 
 class Inventario extends BaseController
 {
@@ -144,6 +145,35 @@ class Inventario extends BaseController
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/ver_ingresos');
+        echo view('dashboard/templates/footer');
+    }
+    public function verIngresosGranel()
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $modelo_ingreso_granel = new IngresosGranelModel();
+        $ingresos = $modelo_ingreso_granel->select('numero_ingreso, producto_id, productos_granel.nombre, cantidad, monto, total, users.username, ingresos_granel.created_at')
+        ->join('users', 'users.id = ingresos_granel.user_id')
+        ->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_id')
+        ->orderBy('created_at', 'DESC')
+        ->findAll();
+        // echo "<pre>";
+        // print_r($ingresos);
+        // echo "</pre>";
+        // die();
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ver Ingresos";
+        $datos['menu_activo'] = "veringresos";
+        $datos['ingresos'] = $ingresos;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_ingresos_granel');
         echo view('dashboard/templates/footer');
     }
     function conteoInventario()

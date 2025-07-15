@@ -42,6 +42,8 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verinventariogranel/(:alpha)', 'Dashboard\Granel::index/$1');
     $routes->add('agregaringresogranel/(:num)', 'Dashboard\Granel::formIngresogranel/$1'); //si se usa
     $routes->add('guardaringresogranel', 'Dashboard\Granel::guardarIngresogranel');
+    $routes->add('veringresosgranel', 'Dashboard\Inventario::verIngresosGranel');
+
     // fin de manejo de productos a granel
 
     $routes->add('guardarembolsadogranel', 'Dashboard\Granel::guardarEmbolsadoGranel');

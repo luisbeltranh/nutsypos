@@ -117,6 +117,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'veringresos' ? '#' : base_url('dashboard/veringresos'); ?>" class="nav-link <?php echo $menu_activo == 'veringresos' ? 'active' : ''; ?>">
+                            <i class="nav-icon bi bi-bar-chart-line"></i>
+                            <p>Ver Ingresos Granel</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="<?php echo $menu_activo == 'vistaventashoyhoras' ? '#' : base_url('dashboard/vistaventashoyhoras'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
                             <i class="nav-icon bi bi-bar-chart-line"></i>
                             <p>Ventas Horas</p>
