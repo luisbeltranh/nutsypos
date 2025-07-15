@@ -167,7 +167,7 @@ class Inventario extends BaseController
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Ver Ingresos";
-        $datos['menu_activo'] = "veringresos";
+        $datos['menu_activo'] = "veringresosgranel";
         $datos['ingresos'] = $ingresos;
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');

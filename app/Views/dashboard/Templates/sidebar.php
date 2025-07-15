@@ -117,7 +117,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?php echo $menu_activo == 'veringresos' ? '#' : base_url('dashboard/veringresos'); ?>" class="nav-link <?php echo $menu_activo == 'veringresos' ? 'active' : ''; ?>">
+                        <a href="<?php echo $menu_activo == 'veringresosgranel' ? '#' : base_url('dashboard/veringresosgranel'); ?>" class="nav-link <?php echo $menu_activo == 'veringresosgranel' ? 'active' : ''; ?>">
                             <i class="nav-icon bi bi-bar-chart-line"></i>
                             <p>Ver Ingresos Granel</p>
                         </a>
