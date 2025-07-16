@@ -9,6 +9,7 @@ use App\Models\VentasModel;
 use App\Models\IngresosModel;
 use App\Models\UtilModel;
 use App\Models\IngresosGranelModel;
+use CodeIgniter\Database\RawSql;
 
 class Inventario extends BaseController
 {
@@ -104,26 +105,95 @@ class Inventario extends BaseController
                         'required' => 'El campo "Cantidad" es requerido',
                     ]
                 ],
-                'total' => [
+                'tipo_movimiento' => [
                     'rules' => 'required',
                     'errors' => [
-                        'required' => 'El campo "Total" es requerido',
+                        'required' => 'El campo "Tipo de Movimiento" es requerido',
                     ]
                 ],
+                'comentario' => [],
                 'user_id' => [],
                 'created_at' => [],
             ];
 
-            $producto_id = $modelo_ingresos->orderBy('id', 'desc')->first();
+            // Obtener los datos del POST
+            // Asegúrate de que tu formulario HTML tenga un campo 'fecha_ingreso' con el formato 'YYYY-MM-DD HH:MM:SS'
             $data = $this->request->getPost(array_keys($rules));
-            $data['total'] = $data['cantidad'] * $data['monto'];
-            if ($this->validateData($data, $rules)) {
+
+            $db = \Config\Database::connect();
+            $db->transStart(); // *** INICIA LA TRANSACCIÓN ***
+            try {
+                // Validar los datos
+                if (!$this->validate($rules)) {
+                    // Si la validación falla, guardar los errores en flashdata y redirigir con input
+                    return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+                }
+
                 $validData = $this->validator->getValidated();
+
+                // Calcular el total (cantidad * monto unitario)
+                $validData['total'] = (float)$validData['cantidad'] * (float)$validData['monto'];
+                $validData['user_id'] = auth()->getUser()->id; // Asignar el ID del usuario autenticado
+
+                // --- PASO 1: Insertar el registro en la tabla de ingresos ---
+                // El modelo IngresosModel (si tiene $useTimestamps = true) gestionará created_at y updated_at
                 $modelo_ingresos->insert($validData);
-                return redirect()->to('/dashboard/verinventario');
+
+                // --- PASO 2: Actualizar el campo cantidad_total en la tabla 'productos' ---
+                $productoId = (int)$validData['producto_id'];
+                $cantidadMovimiento = (int)$validData['cantidad']; // Esta cantidad puede ser positiva o negativa
+
+                // Verificar si el producto existe antes de intentar actualizar su stock
+                $productoExistente = $modelo_productos->find($productoId);
+                if (!$productoExistente) {
+                    throw new \Exception('El producto con ID ' . $productoId . ' no existe en el inventario.');
+                }
+
+                // Si el movimiento es una salida (cantidad negativa), verificar que haya suficiente stock
+                if ($cantidadMovimiento < 0) {
+                    // Asegurarse de que el stock no se vuelva negativo si no está permitido
+                    if (($productoExistente['cantidad_total'] + $cantidadMovimiento) < 0) {
+                        throw new \Exception('Stock insuficiente para realizar la salida de ' . abs($cantidadMovimiento) . ' unidades del producto ' . $productoExistente['nombre'] . '. Stock actual: ' . $productoExistente['cantidad_total'] . 'g.');
+                    }
+                }
+
+                $modelo_productos->update($productoId, [
+                    // Usa RawSql para realizar la operación matemática directamente en la DB.
+                    // La cantidadMovimiento ya puede ser positiva o negativa.
+                    'cantidad_total' => new RawSql("cantidad_total + " . $cantidadMovimiento)
+                ]);
+
+                $db->transComplete(); // *** COMPLETA LA TRANSACCIÓN (COMMIT o ROLLBACK automático) ***
+
+                // --- PASO 3: Verificar el estado final de la transacción ---
+                if ($db->transStatus() === FALSE) {
+                    // Si transStatus es FALSE, significa que algo falló y la transacción fue revertida automáticamente.
+                    log_message('error', 'Transacción de ingreso fallida: ' . $db->error()['message']);
+                    return redirect()->back()->withInput()->with('error', 'Error en la base de datos al registrar el ingreso. La operación ha sido revertida.');
+                } else {
+                    // La transacción fue exitosa
+                    return redirect()->to('/dashboard/verinventario')->with('success', 'Movimiento de inventario registrado y stock actualizado correctamente.');
+                }
+            } catch (\Exception $e) {
+                // Si se lanza una excepción (ej. validación fallida, producto no existe, stock insuficiente, etc.)
+                $db->transRollback(); // *** REVierte la transacción explícitamente ***
+                log_message('error', 'Excepción durante la transacción de ingreso: ' . $e->getMessage());
+
+                // Si la excepción es de validación, los errores ya se pasaron con with('errors')
+                // Si es otra excepción (como "Stock insuficiente" o "Producto no existe"), se pasa el mensaje de la excepción.
+                return redirect()->back()->withInput()->with('error', 'Ocurrió un error al procesar el movimiento: ' . $e->getMessage());
             }
-            // return redirect()->to('/dashboard/new_link')->withInput();
-            //return redirect()->back()->withInput();
+
+
+
+            // $producto_id = $modelo_ingresos->orderBy('id', 'desc')->first();
+            // $data = $this->request->getPost(array_keys($rules));
+            // $data['total'] = $data['cantidad'] * $data['monto'];
+            // if ($this->validateData($data, $rules)) {
+            //     $validData = $this->validator->getValidated();
+            //     $modelo_ingresos->insert($validData);
+            //     return redirect()->to('/dashboard/verinventario');
+            // }
         }
     }
     function verIngresos()
@@ -155,10 +225,10 @@ class Inventario extends BaseController
         }
         $modelo_ingreso_granel = new IngresosGranelModel();
         $ingresos = $modelo_ingreso_granel->select('numero_ingreso, producto_id, productos_granel.nombre, cantidad, monto, total, users.username, ingresos_granel.created_at')
-        ->join('users', 'users.id = ingresos_granel.user_id')
-        ->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_id')
-        ->orderBy('created_at', 'DESC')
-        ->findAll();
+            ->join('users', 'users.id = ingresos_granel.user_id')
+            ->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_id')
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
         // echo "<pre>";
         // print_r($ingresos);
         // echo "</pre>";

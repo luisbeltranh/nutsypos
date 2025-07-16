@@ -38,25 +38,57 @@
                         <?php
                         }
                         ?>
+
+                        <div class="form-group">
+                            <label for="cantidad">Tipo de Movimiento</label>
+                            <?php
+                            if ($is_admin) {
+                            ?>
+                                <select name="tipo_movimiento" id="tipo_movimiento" class="form-control">
+                                    <option value="compra">Compra (Ingreso regular de productos comprados)</option>
+                                    <option value="embolsado">Embolsado (Ingreso de productos embolsados)</option>
+                                    <option value="ajuste_sobrante">Ajuste Sobrante (Corrección de inventario por conteo físico - sobrante)</option>
+                                    <option value="ajuste_faltante">Ajuste Faltante (Corrección de inventario por conteo físico - faltante)</option>
+                                    <option value="transferencia_salida">Transferencia Salida (Envío de productos a otro local)</option>
+                                    <option value="devolucion_cliente">Devolucion Cliente (Producto devuelto por un cliente)</option>
+                                    <option value="devolucion_proveedor">Devolucion Proveedor (Producto devuelto al proveedor)</option>
+                                    <option value="merma">Merma (Producto dañado, vencido, perdido)</option>
+                                </select>
+
+
+                            <?php
+                            } else {
+                            ?>
+                                <input type="text" class="form-control" name="tipo_movimiento" value="compra" readonly="readonly">
+                            <?php
+                            }
+                            ?>
+                        </div>
+
+
                         <div class="form-group">
                             <label for="cantidad">Cantidad</label>
-                                                    <?php
-                        if ($is_admin) {
-                        ?>
-                            <input type="number" class="form-control" name="cantidad" autofocus>
-
-                        <?php
-                        } else{
+                            <?php
+                            if ($is_admin) {
                             ?>
-                            <input type="number" class="form-control" name="cantidad" autofocus min="0">
-<?php
-                        }
-                        ?>
+                                <input type="number" class="form-control" name="cantidad" autofocus>
+
+                            <?php
+                            } else {
+                            ?>
+                                <input type="number" class="form-control" name="cantidad" autofocus min="0">
+                            <?php
+                            }
+                            ?>
 
                             <input type="hidden" name="user_id" value="<?= $idUsuario ?>">
                             <input type="hidden" name="producto_id" value="<?= $producto['id'] ?>">
                             <input type="hidden" name="monto" value="<?= $producto['costo'] ?>">
                             <input type="hidden" name="numero_ingreso" value="<?= $numero_ingreso ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="comentario">Comentario</label>
+                            <input type="text" class="form-control" name="comentario" placeholder="Ingrese un comentario opcional">
                         </div>
                     </div>
                     <div class="card-footer">
