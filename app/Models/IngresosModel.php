@@ -13,7 +13,7 @@ class IngresosModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['numero_ingreso', 'producto_id', 'monto', 'cantidad', 'total', 'tipo_ingreso', 'comentario', 'user_id', 'created_at'];
+    protected $allowedFields = ['numero_ingreso', 'producto_id', 'monto', 'cantidad', 'total', 'tipo_ingreso', 'comentario', 'fecha_ingreso', 'user_id'];
 
     // Valores posibles para tipo_movimiento (ejemplos):
     //      COMPRA (Ingreso regular de productos comprados)

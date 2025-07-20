@@ -38,17 +38,6 @@
                                 <p>Productos</p>
                             </a>
                         </li>
-                        <?php
-                        if ($is_admin) {
-                        ?>
-                            <li class="nav-item">
-                                <a href="<?php echo $menu_activo == 'nuevo_producto' ? '#' : base_url('dashboard/nuevoproducto'); ?>" class="nav-link <?php echo $menu_activo == 'nuevo_producto' ? 'active' : ''; ?>"> <i class="nav-icon bi bi-columns-gap"></i>
-                                    <p>Nuevo Producto</p>
-                                </a>
-                            </li>
-                        <?php
-                        }
-                        ?>
                         <li class="nav-item">
                             <a href="<?php echo $menu_activo == 'ver_inventario' ? '#' : base_url('dashboard/verinventario'); ?>" class="nav-link <?php echo $menu_activo == 'ver_inventario' ? 'active' : ''; ?>">
                                 <i class="nav-icon bi bi-columns-gap"></i>
@@ -88,6 +77,26 @@
                         <p>Embolsar</p>
                     </a>
                 </li>
+                <?php
+                if ($is_admin) {
+                ?>
+
+                    <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'conteo-inventario' ? '#' : base_url('dashboard/conteo-inventario'); ?>" class="nav-link <?php echo $menu_activo == 'conteo-inventario' ? 'active' : ''; ?>">
+                            <i class="nav-icon bi bi-bag-plus"></i>
+                            <p>Ajuste Inventario</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?php echo $menu_activo == 'conteo-inventario-granel' ? '#' : base_url('dashboard/conteo-inventario-granel'); ?>" class="nav-link <?php echo $menu_activo == 'conteo-inventario-granel' ? 'active' : ''; ?>">
+                            <i class="nav-icon bi bi-bag-plus"></i>
+                            <p>Ajuste Granel</p>
+                        </a>
+                    </li>
+                <?php
+                }
+                ?>
+
                 <li class="nav-header">Reportes</li>
                 <li class="nav-item">
                     <a href="<?php echo $menu_activo == 'verventas' ? '#' : base_url('dashboard/verventas'); ?>" class="nav-link <?php echo $menu_activo == 'verventas' ? 'active' : ''; ?>">
@@ -180,7 +189,6 @@
                 <?php
                 }
                 ?>
-
             </ul> <!--end::Sidebar Menu-->
         </nav>
     </div> <!--end::Sidebar Wrapper-->

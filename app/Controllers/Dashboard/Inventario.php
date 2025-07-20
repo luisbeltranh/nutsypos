@@ -273,14 +273,14 @@ class Inventario extends BaseController
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
         $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ventas.updated_at, producto_embolsado')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, productos.costo, precio_venta, ventas.updated_at, producto_embolsado')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
         // echo "<pre>";
         // print_r($ventas);
         // echo "</pre>";
         // die();
         $ventas_array = $this->sumarArray($ventas, -1);
         $modelo_ingresos = new IngresosModel();
-        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, costo, precio_venta, ingresos.updated_at, producto_embolsado')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, productos.costo, precio_venta, ingresos.updated_at, producto_embolsado')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
         $ingresos_array = $this->sumarArray($ingresos, 1);
         $total_array = array_merge_recursive($ventas_array, $ingresos_array);
         $suma_total = $this->sumarArray($total_array, 1);

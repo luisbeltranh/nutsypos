@@ -2,6 +2,8 @@
 
 namespace App\Controllers\Dashboard;
 
+use App\Libraries\EmbolsadoLibrary;
+
 use App\Controllers\BaseController;
 use App\Models\ComposicionEmbolsadosModel;
 use App\Models\EmbolsadosModel;
@@ -61,20 +63,41 @@ class Embolsado extends BaseController
         $modelo_producto = new ProductosModel();
         $modelo_utilitario = new UtilModel();
         if ($this->request->getMethod() == 'POST') {
+
+            // si confirmar es = true, se procede a guardar el embolsado
             if ($this->request->getPost('confirmar') == 'true') {
+                $embolsadoLib = new EmbolsadoLibrary();
                 $cantidad = $this->request->getPost('cantidad');
                 $cantidad_productos = $this->request->getPost('cantidad_bolsas_producidas');
                 $datos_embolsado['producto_id'] = $producto_id;
                 $datos_embolsado['composicion'] = $cantidad;
                 $datos_embolsado['cantidad_embolsar'] = $cantidad_productos;
                 $datos_embolsado['user_id'] = auth()->getUser()->id;
-                if ($modelo_utilitario->guardaEmbolsado($datos_embolsado)) {
-                    $session->setFlashdata('exito', 'Se ha registrado el embolsado correctamente.');
-                    return redirect()->to(base_url('dashboard/verembolsados'));
+                $datos_embolsado['fecha_embolsado'] = date('Y-m-d H:i:s');
+                $datos_embolsado['comentario_embolsado'] = 'Embolsado de producto';
+                // echo '<pre>';
+                // print_r($datos_embolsado);
+                // echo '</pre>';
+                // die();
+
+                // --- Llamar a la función guardaEmbolsado de tu librería ---
+                $exito = $embolsadoLib->guardaEmbolsado($datos_embolsado);
+
+                if ($exito) {
+                    // Si la función devuelve true (éxito de la transacción)
+                    return redirect()->to('/dashboard/verinventario')->with('success', 'Embolsado registrado exitosamente.');
                 } else {
-                    $session->setFlashdata('error', 'No se ha podido registrar el embolsado.');
-                    return redirect()->to(base_url('dashboard/verembolsados'));
+                    // Si la función devuelve false (fallo de la transacción, ya logueado en la librería)
+                    return redirect()->back()->withInput()->with('error', 'No se pudo completar el embolsado. Verifique los datos o consulte los logs para más detalles.');
                 }
+
+                // if ($modelo_utilitario->guardaEmbolsado($datos_embolsado)) {
+                //     $session->setFlashdata('exito', 'Se ha registrado el embolsado correctamente.');
+                //     return redirect()->to(base_url('dashboard/verembolsados'));
+                // } else {
+                //     $session->setFlashdata('error', 'No se ha podido registrar el embolsado.');
+                //     return redirect()->to(base_url('dashboard/verembolsados'));
+                // }
 
                 // foreach ($cantidad as $key => $can) {
                 //     echo 'Producto Granel ID = ' . $key . ' -> Cantidad [kg]= -' . $can;

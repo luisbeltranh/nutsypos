@@ -72,7 +72,34 @@ $routes->group('dashboard', function ($routes) {
 
     $routes->add('informediario', 'Dashboard\Vistas::informeDiario');
 
-    $routes->add('conteoinventario', 'Dashboard\Inventario::conteoInventario');
+    // Inicio conteo manual de inventario
+
+    $routes->group('conteo-inventario', function ($routes) {
+        $routes->get('/', 'Dashboard\ConteoInventario::index'); // Muestra el historial
+        $routes->get('formularioConteo', 'Dashboard\ConteoInventario::formularioConteo'); // Muestra el formulario
+        $routes->post('guardarConteoTemporal', 'Dashboard\ConteoInventario::guardarConteoTemporal');
+        $routes->post('eliminarConteoTemporal', 'Dashboard\ConteoInventario::eliminarConteoTemporal');
+        $routes->get('finalizarAjuste', 'Dashboard\ConteoInventario::finalizarAjuste');
+        $routes->get('resultadoAjuste/(:num)', 'Dashboard\ConteoInventario::resultadoAjuste/$1');
+        $routes->post('ajaxObtenerTabla', 'Dashboard\ConteoInventario::ajaxObtenerTabla');
+    });
+    // Fin conteo manual de inventario
+
+    // **NUEVO: Grupo para transferencias**
+    $routes->group('transferencias', function ($routes) {
+        $routes->get('salida/(:num)', 'Dashboard\Transferencias::salida/$1');
+        $routes->post('procesarSalida', 'Dashboard\Transferencias::procesarSalida');
+    });
+
+    // **NUEVO: Grupo para conteo de inventario a granel**
+    $routes->group('conteo-inventario-granel', function ($routes) {
+        $routes->get('/', 'Dashboard\ConteoInventarioGranel::index');
+        $routes->get('formularioConteo', 'Dashboard\ConteoInventarioGranel::formularioConteo');
+        $routes->post('guardarConteoTemporal', 'Dashboard\ConteoInventarioGranel::guardarConteoTemporal');
+        $routes->post('eliminarConteoTemporal', 'Dashboard\ConteoInventarioGranel::eliminarConteoTemporal');
+        $routes->get('finalizarAjuste', 'Dashboard\ConteoInventarioGranel::finalizarAjuste');
+        $routes->get('resultadoAjuste/(:num)', 'Dashboard\ConteoInventarioGranel::resultadoAjuste/$1');
+    });
 
 
     $routes->add('cerrarpos', 'Dashboard\Dashboard::cerrarPos');

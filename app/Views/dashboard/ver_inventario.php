@@ -50,17 +50,25 @@
                                     <?php
                                     }
                                     ?>
-                                        <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
-                                            <a href="/dashboard/agregaringreso/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
-                                            <?php
-                                            if ($producto['producto_embolsado'] == 1) {
-                                            ?>
-                                                <a href="/dashboard/nuevo_embolsar/<?= $producto['producto_id'] ?>" class="btn btn-warning"><i class="bi bi-bag-plus"></i></a>
-                                            <?php
-                                            }
-                                            ?>
+                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
+                                        <a href="/dashboard/agregaringreso/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
+                                        <?php
+                                        if ($is_admin) {
+                                        ?>
+                                            <a href="/dashboard/transferencias/salida/<?= $producto['producto_id'] ?>" class="btn btn-danger"><i class="bi bi-truck" title="Registrar Transferencia"></i></a>
+                                        <?php
+                                        }
+                                        ?>
 
-                                        </td>
+                                        <?php
+                                        if ($producto['producto_embolsado'] == 1) {
+                                        ?>
+                                            <a href="/dashboard/nuevo_embolsar/<?= $producto['producto_id'] ?>" class="btn btn-warning"><i class="bi bi-bag-plus"></i></a>
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </td>
 
                                 </tr>
 

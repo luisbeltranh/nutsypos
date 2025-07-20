@@ -13108,6 +13108,7 @@ textarea.form-control-lg {
   padding-left: 0.5rem;
   scrollbar-color: var(--bs-secondary-bg) transparent;
   scrollbar-width: thin;
+  height: 100vh;
 }
 .sidebar-wrapper::-webkit-scrollbar-thumb {
   background-color: var(--bs-secondary-bg);

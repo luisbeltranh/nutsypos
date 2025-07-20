@@ -13,7 +13,7 @@ class IngresosGranelModel extends Model
     protected $returnType     = 'array';
     protected $useSoftDeletes = true;
 
-    protected $allowedFields = ['numero_ingreso', 'producto_id', 'monto', 'cantidad', 'total', 'user_id'];
+    protected $allowedFields = ['numero_ingreso', 'producto_id', 'monto', 'cantidad', 'total', 'tipo_movimiento', 'comentario', 'fecha_ingreso', 'user_id'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
