@@ -43,7 +43,7 @@
                                 <label>ARQUEO DE CAJA</label>
                                 <div class="col-md-6">
                                     <label for="efectivo_arqueo">EFECTIVO EN CAJA - CONTEO MANUAL</label>
-                                    <input type="number" class="form-control" name="efectivo_arqueo">
+                                    <input type="number" class="form-control" name="efectivo_arqueo" step="0.1">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="total_efectivo">EFECTIVO EN CAJA - REGISTRO SISTEMA</label>

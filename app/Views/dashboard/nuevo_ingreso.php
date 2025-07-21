@@ -32,7 +32,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="costo">Fecha de Ingreso</label>
-                                <input type="datetime-local" class="form-control" name="created_at" value="<?= date('Y-m-d\TH:i:s') ?>">
+                                <input type="datetime-local" class="form-control" name="created_at" value="<?= date('Y-m-d\TH:i') ?>">
+                                <!-- quitar los segundos para no tener problemas en ios -->
                             </div>
 
                         <?php
