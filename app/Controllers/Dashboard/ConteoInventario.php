@@ -94,7 +94,7 @@ class ConteoInventario extends BaseController
     private function _getPreparedProductData()
     {
         $userId = auth()->id();
-        $productos = $this->productoModel->findAll();
+        $productos = $this->productoModel->orderBy('categoria ASC, nombre ASC')->findAll();
         $conteosTemporales = $this->conteoInventarioModel->where('user_id', $userId)->findAll();
 
         $mapaConteos = [];
