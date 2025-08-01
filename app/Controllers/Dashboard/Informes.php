@@ -16,6 +16,8 @@ use App\Models\VentasGranelModel;
 use App\Models\UtilModel;
 use App\Models\GastosModel;
 use CodeIgniter\I18n\Time;
+use App\Models\Informesmodels;
+
 
 class Informes extends BaseController
 {
@@ -57,6 +59,8 @@ class Informes extends BaseController
         if (auth()->getUser()->inGroup('admin')) {
             $datos['is_admin'] = true;
         }
+        $modelo_informes = new Informesmodels();
+        $datos['informe'] = $modelo_informes->ventasTotales($fecha . ' 00:00:00', $fecha . ' 23:59:59');
         $datos['estaLogeado'] = auth()->loggedIn();
         $datos['nombreUsuario'] = auth()->getUser()->username;
         $datos['idUsuario'] = auth()->getUser()->id;
