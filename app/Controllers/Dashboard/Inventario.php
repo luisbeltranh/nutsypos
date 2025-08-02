@@ -111,6 +111,7 @@ class Inventario extends BaseController
                         'required' => 'El campo "Tipo de Movimiento" es requerido',
                     ]
                 ],
+                'fecha_ingreso' =>[],
                 'comentario' => [],
                 'user_id' => [],
                 'created_at' => [],
@@ -135,6 +136,9 @@ class Inventario extends BaseController
                 $validData['total'] = (float)$validData['cantidad'] * (float)$validData['monto'];
                 $validData['user_id'] = auth()->getUser()->id; // Asignar el ID del usuario autenticado
 
+                // $fecha_objeto = new \DateTime($validData['fecha_ingreso']);
+                // $validData['fecha_ingreso'] = $fecha_objeto->format('Y-m-d H:i:s'); // Formatear la fecha al formato esperado por la base de datos
+                
                 // --- PASO 1: Insertar el registro en la tabla de ingresos ---
                 // El modelo IngresosModel (si tiene $useTimestamps = true) gestionará created_at y updated_at
                 $modelo_ingresos->insert($validData);
