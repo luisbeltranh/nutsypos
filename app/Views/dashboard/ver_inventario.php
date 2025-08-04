@@ -52,7 +52,7 @@
                                     ?>
                                     <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
                                         <a href="/dashboard/agregaringreso/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
-                                            <a href="/dashboard/transferencias/salida/<?= $producto['producto_id'] ?>" class="btn btn-danger"><i class="bi bi-truck" title="Registrar Transferencia"></i></a>
+                                        <a href="/dashboard/transferencias/salida/<?= $producto['producto_id'] ?>" class="btn btn-danger"><i class="bi bi-truck" title="Registrar Transferencia"></i></a>
 
                                         <?php
                                         if ($producto['producto_embolsado'] == 1) {
