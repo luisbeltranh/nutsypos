@@ -118,15 +118,15 @@ class Informesmodels extends Model
             ->orWhere('ventas.created_at <=', $fecha_fin)
             ->groupBy('productos.id')
             ->findAll();
-        return $resultado;             
+        return $resultado;
     }
-        }
+
     function ingresosGranel($fecha_inicio, $fecha_fin)
     {
         $modelo_ingresos_granel = new IngresosGranelModel();
         $resultado = $modelo_ingresos_granel
             ->select('productos_granel.nombre AS producto_granel_nombre, cantidad')
-            ->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_granel_id')
+            ->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_id')
             ->where('ingresos_granel.created_at >=', $fecha_inicio)
             ->where('ingresos_granel.created_at <=', $fecha_fin)
             ->findAll();
