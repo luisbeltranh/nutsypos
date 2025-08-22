@@ -36,6 +36,7 @@ class Informesmodels extends Model
         $datos['inventario_bajo'] = $this->inventarioBajo();
         $datos['listado_productos_embolsados'] = $this->listadoProductosEmbolsados($fecha_inicio, $fecha_fin);
         $datos['ingreso_productos'] = $this->ingresoProductos($fecha_inicio, $fecha_fin);
+        $datos['ingresos_granel'] = $this->ingresosGranel($fecha_inicio, $fecha_fin);
         return $datos;
     }
     // esta funcion devuelve la suma de las ventas por producto ordenadas de mas vendidos a menos vendidos
@@ -99,6 +100,17 @@ class Informesmodels extends Model
             ->where('ingresos.created_at >=', $fecha_inicio)
             ->where('ingresos.created_at <=', $fecha_fin)
             ->orderBy('tipo_ingreso', 'ASC')
+            ->findAll();
+        return $resultado;
+    }
+    function ingresosGranel($fecha_inicio, $fecha_fin)
+    {
+        $modelo_ingresos_granel = new IngresosGranelModel();
+        $resultado = $modelo_ingresos_granel
+            ->select('productos_granel.nombre AS producto_granel_nombre, cantidad')
+            ->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_granel_id')
+            ->where('ingresos_granel.created_at >=', $fecha_inicio)
+            ->where('ingresos_granel.created_at <=', $fecha_fin)
             ->findAll();
         return $resultado;
     }
