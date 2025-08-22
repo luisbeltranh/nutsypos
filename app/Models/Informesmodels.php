@@ -37,6 +37,7 @@ class Informesmodels extends Model
         $datos['listado_productos_embolsados'] = $this->listadoProductosEmbolsados($fecha_inicio, $fecha_fin);
         $datos['ingreso_productos'] = $this->ingresoProductos($fecha_inicio, $fecha_fin);
         $datos['ingresos_granel'] = $this->ingresosGranel($fecha_inicio, $fecha_fin);
+        $datos['productos_ingresos_ventas'] = $this->productosIngresosVentas($fecha_inicio, $fecha_fin);
         return $datos;
     }
     // esta funcion devuelve la suma de las ventas por producto ordenadas de mas vendidos a menos vendidos
@@ -103,6 +104,23 @@ class Informesmodels extends Model
             ->findAll();
         return $resultado;
     }
+    // esta funcion devuelve un array con todos los productos, total de ingresos del producto y total de ventas del producto en el rango de fechas
+    function productosIngresosVentas($fecha_inicio, $fecha_fin)
+    {
+        $modelo_productos = new ProductosModel();
+        $resultado = $modelo_productos
+            ->select('productos.nombre AS producto_nombre, SUM(ingresos.cantidad) AS total_ingresos, SUM(ventas.cantidad) AS total_ventas')
+            ->join('ingresos', 'ingresos.producto_id = productos.id', 'left')
+            ->join('ventas', 'ventas.producto_id = productos.id', 'left')
+            ->where('ingresos.created_at >=', $fecha_inicio)
+            ->where('ingresos.created_at <=', $fecha_fin)
+            ->orWhere('ventas.created_at >=', $fecha_inicio)
+            ->orWhere('ventas.created_at <=', $fecha_fin)
+            ->groupBy('productos.id')
+            ->findAll();
+        return $resultado;             
+    }
+        }
     function ingresosGranel($fecha_inicio, $fecha_fin)
     {
         $modelo_ingresos_granel = new IngresosGranelModel();

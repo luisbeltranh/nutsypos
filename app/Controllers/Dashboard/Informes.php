@@ -73,7 +73,7 @@ class Informes extends BaseController
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
         echo '<pre>';
-        echo 'index - Ver a Granel';
+        echo 'Reporte Diario';
         echo '<br>';
         print_r($datos);
         echo '</pre>';
