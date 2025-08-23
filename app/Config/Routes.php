@@ -57,7 +57,7 @@ $routes->group('dashboard', function ($routes) {
     // fin de proceso de embolsado
 
     // Inicio informes
-    $routes->add('reportediario', 'dashboard\Informes::reporteDiario');
+    $routes->add('reportediario', 'Dashboard\Informes::reporteDiario');
     // Fin informes
 
     //

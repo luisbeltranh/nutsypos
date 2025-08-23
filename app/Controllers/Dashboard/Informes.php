@@ -18,7 +18,6 @@ use App\Models\GastosModel;
 use CodeIgniter\I18n\Time;
 use App\Models\Informesmodels;
 
-
 class Informes extends BaseController
 {
     function index($ordenar = null) //verInventarioGRanel
@@ -52,13 +51,20 @@ class Informes extends BaseController
     }
     public function reporteDiario($fecha = null)
     {
-        if ($fecha == null) {
-            $fecha = date('Y-m-d');
+        helper('form');
+        $fecha = date('Y-m-d');
+        if ($this->request->getMethod() == 'POST') {
+            $data = $this->request->getPost('fecha');
+            $fecha = date('Y-m-d', strtotime($data));
         }
+
         $datos['is_admin'] = false;
-        if (auth()->getUser()->inGroup('admin')) {
-            $datos['is_admin'] = true;
+        if (!auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = false;
+            return redirect()->to(base_url() . '/dashboard');
         }
+        $datos['is_admin'] = true;
+
         $modelo_informes = new Informesmodels();
         $datos['informe'] = $modelo_informes->ventasTotales($fecha . ' 00:00:00', $fecha . ' 23:59:59');
         $datos['estaLogeado'] = auth()->loggedIn();
@@ -66,17 +72,16 @@ class Informes extends BaseController
         $datos['idUsuario'] = auth()->getUser()->id;
         $datos['titulo_breadcrumbs'] = "Informe Diario Resumido";
         $datos['menu_activo'] = "reportediario";
+        $datos['fecha_hoy'] = date('Y-m-d');
+        $fecha_informe = Time::parse($fecha);
+        $datos['fecha_informe'] = $fecha_informe->toLocalizedString("EEEE d 'de' MMMM 'de' Y");
         $modelo_ventas = new VentasModel();
         $datos['ventas'] = $modelo_ventas->obtenerVentas($fecha . ' 00:00:00', $fecha . ' 23:59:59');
         echo view('dashboard/templates/head', $datos);
         echo view('dashboard/templates/topmenu');
         echo view('dashboard/templates/sidebar');
         echo view('dashboard/templates/breadcrumbs');
-        echo '<pre>';
-        echo 'Reporte Diario';
-        echo '<br>';
-        print_r($datos);
-        echo '</pre>';
+        echo view('dashboard/reporte_diario');
         echo view('dashboard/templates/footer');
     }
 }
