@@ -104,6 +104,25 @@
                         <p>Ver Ventas</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'veringresos' ? '#' : base_url('dashboard/veringresos'); ?>" class="nav-link <?php echo $menu_activo == 'veringresos' ? 'active' : ''; ?>">
+                        <i class="nav-icon bi bi-bar-chart-line"></i>
+                        <p>Ver Ingresos.</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'veringresosgranel' ? '#' : base_url('dashboard/veringresosgranel'); ?>" class="nav-link <?php echo $menu_activo == 'veringresosgranel' ? 'active' : ''; ?>">
+                        <i class="nav-icon bi bi-bar-chart-line"></i>
+                        <p>Ver Ingresos Granel</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'vistaventashoyhoras' ? '#' : base_url('dashboard/verventasdetalladas'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
+                        <i class="nav-icon bi bi-bar-chart-line"></i>
+                        <p>Ventas Detalladas</p>
+                    </a>
+                </li>
+
                 <?php
                 if ($is_admin) {
                 ?>
@@ -120,32 +139,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?php echo $menu_activo == 'veringresos' ? '#' : base_url('dashboard/veringresos'); ?>" class="nav-link <?php echo $menu_activo == 'veringresos' ? 'active' : ''; ?>">
-                            <i class="nav-icon bi bi-bar-chart-line"></i>
-                            <p>Ver Ingresos.</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?php echo $menu_activo == 'veringresosgranel' ? '#' : base_url('dashboard/veringresosgranel'); ?>" class="nav-link <?php echo $menu_activo == 'veringresosgranel' ? 'active' : ''; ?>">
-                            <i class="nav-icon bi bi-bar-chart-line"></i>
-                            <p>Ver Ingresos Granel</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a href="<?php echo $menu_activo == 'vistaventashoyhoras' ? '#' : base_url('dashboard/vistaventashoyhoras'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
                             <i class="nav-icon bi bi-bar-chart-line"></i>
                             <p>Ventas Horas</p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="<?php echo $menu_activo == 'vistaventashoyhoras' ? '#' : base_url('dashboard/verventasdetalladas'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
-                            <i class="nav-icon bi bi-bar-chart-line"></i>
-                            <p>Ventas Detalladas</p>
-                        </a>
-                    </li>
                 <?php
                 }
                 ?>
+
                 <li class="nav-header">Tienda</li>
 
                 <li class="nav-item">

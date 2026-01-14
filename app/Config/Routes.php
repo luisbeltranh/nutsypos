@@ -23,6 +23,9 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
     $routes->add('veringresos', 'Dashboard\Inventario::verIngresos');
+    $routes->add('eliminarventa/(:num)', 'Dashboard\Dashboard::eliminarVenta/$1');
+    $routes->add('eliminaringresounidad/(:num)', 'Dashboard\Inventario::eliminarIngresounidad/$1');
+
 
     // Inicio de manejo de gastos
     $routes->add('nuevogasto', 'Dashboard\Dashboard::nuevoGasto');

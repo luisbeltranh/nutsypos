@@ -22,7 +22,7 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th>Fecha</th>
+                                <th>Venta Id</th>
                                 <th>Producto</th>
                                 <th>Cantidad</th>
                                 <th>Precio</th>
@@ -37,7 +37,6 @@
                                 <?php
                                 }
                                 ?>
-                                <th>Venta Id</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,7 +51,7 @@
                             ?>
 
                                 <tr class="<?= $color_actual ?>">
-                                    <td><?= $venta['fecha_venta']; ?></td>
+                                    <td><?= $venta['numero_venta']; ?></td>
                                     <td><?= $venta['producto_nombre']; ?></td>
                                     <td><?= $venta['cantidad']; ?></td>
                                     <td><?= $venta['monto']; ?></td>
@@ -67,8 +66,6 @@
                                     <?php
                                     }
                                     ?>
-                                    <td><?= $venta['numero_venta'] ?></td>
-                                    <td><a href="/dashboard/eliminarventa/<?= $venta['id_venta'] ?>" onclick="return confirm('Esta seguro que quiere borrar la venta del producto '+'<?= $venta['producto_nombre'] ?>'+' x '+'<?= $venta['cantidad'] ?>'+'?');" class="btn btn-danger"><i class="bi bi-trash"></i></a></td>
 
                                 </tr>
 
@@ -83,6 +80,7 @@
                                 <td><?= $venta_forma_total[1]; ?></td>
                                 <td><?= $venta_forma_nombre[2]; ?></td>
                                 <td><?= $venta_forma_total[2]; ?></td>
+
                                 <?php
                                 if ($is_admin) {
                                 ?>

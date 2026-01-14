@@ -20,6 +20,7 @@
                                 <th>Categoría</th>
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
+                                <th>Minimo</th>
                                 <?php
                                 if ($is_admin) {
                                 ?>
@@ -37,20 +38,21 @@
                             ?>
 
                                 <tr>
-                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['producto_id']; ?></td>
-                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['categoria']; ?></td>
-                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['nombre']; ?></td>
-                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['cantidad']; ?></td>
+                                    <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>><?= $producto['producto_id']; ?></td>
+                                    <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>><?= $producto['categoria']; ?></td>
+                                    <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>><?= $producto['nombre']; ?></td>
+                                    <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>><?= $producto['cantidad']; ?></td>
+                                    <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>><?= $producto['minimo']; ?></td>
                                     <?php
                                     if ($is_admin) {
                                     ?>
-                                        <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['costo']; ?></td>
-                                        <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>><?= $producto['total']; ?></td>
+                                        <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>><?= $producto['costo']; ?></td>
+                                        <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>><?= $producto['total']; ?></td>
 
                                     <?php
                                     }
                                     ?>
-                                    <td <?php echo ($producto['cantidad'] < 6) ? 'class="bg-danger"' : '';  ?>>
+                                    <td <?php echo ($producto['cantidad'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>>
                                         <a href="/dashboard/agregaringreso/<?= $producto['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
                                         <a href="/dashboard/transferencias/salida/<?= $producto['producto_id'] ?>" class="btn btn-danger"><i class="bi bi-truck" title="Registrar Transferencia"></i></a>
 

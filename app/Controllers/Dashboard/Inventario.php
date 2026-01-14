@@ -111,7 +111,7 @@ class Inventario extends BaseController
                         'required' => 'El campo "Tipo de Movimiento" es requerido',
                     ]
                 ],
-                'fecha_ingreso' =>[],
+                'fecha_ingreso' => [],
                 'comentario' => [],
                 'user_id' => [],
                 'created_at' => [],
@@ -138,7 +138,7 @@ class Inventario extends BaseController
 
                 // $fecha_objeto = new \DateTime($validData['fecha_ingreso']);
                 // $validData['fecha_ingreso'] = $fecha_objeto->format('Y-m-d H:i:s'); // Formatear la fecha al formato esperado por la base de datos
-                
+
                 // --- PASO 1: Insertar el registro en la tabla de ingresos ---
                 // El modelo IngresosModel (si tiene $useTimestamps = true) gestionará created_at y updated_at
                 $modelo_ingresos->insert($validData);
@@ -221,6 +221,45 @@ class Inventario extends BaseController
         echo view('dashboard/ver_ingresos');
         echo view('dashboard/templates/footer');
     }
+    function eliminaringresounidad($id_ingreso)
+    {
+        $modelo_ingresos = new IngresosModel();
+        $modelo_productos = new ProductosModel();
+        // $modelo_ingresos->delete($id_ingreso);
+        // return redirect()->to('/dashboard/verinventario')->with('success', 'Movimiento de inventario eliminado correctamente.');    
+        $ingreso = $modelo_ingresos->find($id_ingreso);
+        $producto = $modelo_productos->find($ingreso['producto_id']);
+        // print_r($ingreso);
+        // echo "<br>";
+        // print_r($producto);
+        // die();
+        $db = \Config\Database::connect();
+        $db->transStart(); // *** INICIA LA TRANSACCIÓN ***         
+        try {
+            // Actualizar el stock del producto (restar la cantidad del ingreso eliminado)
+            $modelo_productos->update($ingreso['producto_id'], [
+                'cantidad_total' => new RawSql("cantidad_total - " . $ingreso['cantidad'])
+            ]);
+
+            // Eliminar el ingreso
+            $modelo_ingresos->delete($id_ingreso);
+
+            $db->transComplete(); // *** COMPLETA LA TRANSACCIÓN (COMMIT o ROLLBACK automático) ***
+            if ($db->transStatus() === FALSE) {
+                // Si transStatus es FALSE, significa que algo falló y la transacción fue revertida automáticamente.
+                log_message('error', 'Transacción de eliminación de ingreso fallida: ' . $db->error()['message']);
+                return redirect()->back()->withInput()->with('error', 'Error en la base de datos al eliminar el ingreso. La operación ha sido revertida.');
+            } else {
+                // La transacción fue exitosa
+                return redirect()->to('/dashboard/verinventario')->with('success', 'Movimiento de inventario eliminado correctamente.');
+            }
+        } catch (\Exception $e) {
+            // Si se lanza una excepción (ej. error en la base de datos)
+            $db->transRollback(); // *** REVierte la transacción explícitamente ***
+            log_message('error', 'Excepción durante la transacción de eliminación de ingreso: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Ocurrió un error al eliminar el ingreso: ' . $e->getMessage());
+        }
+    }
     public function verIngresosGranel()
     {
         $datos['is_admin'] = false;
@@ -276,16 +315,23 @@ class Inventario extends BaseController
     {
         $modelo_productos = new ProductosModel();
         $productos = $modelo_productos->findAll();
+
         $modelo_ventas = new VentasModel();
-        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, productos.costo, precio_venta, ventas.updated_at, producto_embolsado')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        $ventas = $modelo_ventas->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, productos.minimo, monto, productos.costo, precio_venta, ventas.updated_at, producto_embolsado')->join('productos', 'productos.id = ventas.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        $ventas_array = $this->sumarArray($ventas, -1);
         // echo "<pre>";
         // print_r($ventas);
         // echo "</pre>";
         // die();
-        $ventas_array = $this->sumarArray($ventas, -1);
+
         $modelo_ingresos = new IngresosModel();
-        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, productos.costo, precio_venta, ingresos.updated_at, producto_embolsado')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
+        $ingresos = $modelo_ingresos->select('producto_id, cantidad, nombre, descripcion, categoria, tamano, monto, productos.minimo, productos.costo, precio_venta, ingresos.updated_at, producto_embolsado')->join('productos', 'productos.id = ingresos.producto_id')->orderBy('categoria, nombre')->where('productos.deleted_at', null)->findAll();
         $ingresos_array = $this->sumarArray($ingresos, 1);
+        // echo "<pre>";
+        // print_r($ventas_array);
+        // echo "</pre>";
+        // die();
+
         $total_array = array_merge_recursive($ventas_array, $ingresos_array);
         $suma_total = $this->sumarArray($total_array, 1);
         // seleccionamos la columna categoria de nuestro array multidimensional
@@ -308,14 +354,14 @@ class Inventario extends BaseController
         //array_multisort($array_cantidad, $suma_total);
         return $suma_total;
 ?>
-        <pre>
+        <!-- <pre> -->
         <?php
         // print_r($suma_total);
 
 
         // echo 'ventas_array';
         // print_r($ventas_array);
-        //echo '<hr>';
+        // echo '<hr>';
         // echo 'ingresos_array';
         //print_r($suma_total);
         // echo '<hr>';
@@ -329,9 +375,9 @@ class Inventario extends BaseController
         // print_r($suma_total);
         // echo '<hr>';
         ?>
-        </pre>
+        <!-- </pre> -->
 <?php
-        //        die();
+        // die();
     }
     function sumarArray($array_datos, $factor)
     {
@@ -344,6 +390,7 @@ class Inventario extends BaseController
             $result[$element['producto_id']]['nombre'][] = $element['nombre'];
             $result[$element['producto_id']]['tamano'][] = $element['tamano'];
             $result[$element['producto_id']]['monto'][] = $element['monto'];
+            $result[$element['producto_id']]['minimo'][] = $element['minimo'];
             $result[$element['producto_id']]['costo'][] = $element['costo'];
             $result[$element['producto_id']]['cantidad'][] = $element['cantidad'];
             $result[$element['producto_id']]['total'][] = $element['cantidad'] * $element['costo'];
@@ -359,6 +406,7 @@ class Inventario extends BaseController
             $datos[$inter]['tamano'] = $vector['tamano'][0];
             $datos[$inter]['cantidad'] = $factor * array_sum($vector['cantidad']);
             $datos[$inter]['monto'] = array_sum($vector['monto']) / count($vector['monto']);
+            $datos[$inter]['minimo'] = $vector['minimo'][0];
             $datos[$inter]['costo'] = array_sum($vector['costo']) / count($vector['costo']);
             $datos[$inter]['total'] = number_format(array_sum($vector['total']), 2);
             $datos[$inter]['producto_embolsado'] = $vector['producto_embolsado'][0];

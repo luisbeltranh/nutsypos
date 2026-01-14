@@ -49,7 +49,7 @@
                                     <td><?= $ingreso['created_at']; ?></td>
 
                                     <td>
-                                        <a href="/dashboard/agregaringreso/<?= $ingreso['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
+                                        <a href="/dashboard/eliminaringresounidad/<?= $ingreso['id'] ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a>
                                     </td>
 
                                 </tr>

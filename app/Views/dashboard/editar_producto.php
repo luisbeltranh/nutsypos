@@ -37,6 +37,10 @@
                             <input type="text" class="form-control" name="tamano_bolsa" value="<?= $producto['tamano_bolsa'] ?>">
                         </div>
                         <div class="form-group">
+                            <label for="minimo">Minimo</label>
+                            <input type="text" class="form-control" name="minimo" value="<?= $producto['minimo'] ?>">
+                        </div>
+                        <div class="form-group">
                             <label for="cantidad">Cantidad</label>
                             <input type="text" class="form-control" name="cantidad_total" value="<?= $producto['cantidad_total'] ?>" readonly>
                         </div>

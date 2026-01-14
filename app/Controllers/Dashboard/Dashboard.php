@@ -498,6 +498,12 @@ class Dashboard extends BaseController
                         'required' => 'El campo "Descripcion" es requerido',
                     ]
                 ],
+                'minimo' => [
+                    'rules' => 'required',
+                    'errors' => [
+                        'required' => 'El campo "Minimo" es requerido',
+                    ]
+                ],
                 'costo' => [
                     'rules' => 'required',
                     'errors' => [
@@ -594,7 +600,7 @@ class Dashboard extends BaseController
             $fecha_inicio = date('Y-m-d 00:00:01', strtotime($data['fecha_inicio']));
             $fecha_fin = date('Y-m-d 23:59:59', strtotime($data['fecha_fin']));
         }
-        $ventas = $modelo->select('ventas.id, numero_venta, producto_id, monto, cantidad, total, ventas.user_id, ventas.created_at AS venta_creada,ventas.updated_at, productos.id, categoria, nombre, tamano, costo, precio_venta, productos.created_at, productos.updated_at ')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->join('productos', 'productos.id = ventas.producto_id')->orderBy('ventas.created_at')->findAll();
+        $ventas = $modelo->select('ventas.id, numero_venta, producto_id, monto, cantidad, total, ventas.user_id, ventas.created_at AS venta_creada,ventas.updated_at, productos.id, categoria, nombre, tamano, productos.costo, precio_venta, productos.created_at, productos.updated_at ')->where('ventas.created_at BETWEEN "' . $fecha_inicio . '" AND "' . $fecha_fin . '"')->join('productos', 'productos.id = ventas.producto_id')->orderBy('ventas.created_at')->findAll();
 
         // echo '<pre>';
         // print_r($ventas);
@@ -777,6 +783,39 @@ class Dashboard extends BaseController
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/nuevo_gasto');
         echo view('dashboard/templates/footer');
+    }
+    function eliminarVenta($venta_id)
+    {
+        $modelo_productos = new ProductosModel();
+        $modelo_ventas = new VentasModel();
+        $venta = $modelo_ventas->find($venta_id);
+        $producto = $modelo_productos->find($venta['producto_id']);
+        //Actualizar el inventario sumando la cantidad del producto que se elimino de la venta
+        $db = \Config\Database::connect();
+        $db->transStart(); // *** INICIA LA TRANSACCIÓN ***
+        try {
+            $modelo_productos->update($producto['id'], [
+                // Usa RawSql para realizar la operación matemática directamente en la DB
+                'cantidad_total' => new RawSql("cantidad_total + " . $venta['cantidad'])
+            ]);
+            //Eliminar la venta
+            $modelo_ventas->delete($venta_id);
+
+            $db->transComplete(); // *** COMPLETA LA TRANSACCIÓN (COMMIT o ROLLBACK automático) ***
+            if ($db->transStatus() === FALSE) {
+                // Si transStatus es FALSE, significa que algo falló y la transacción fue revertida automáticamente.
+                log_message('error', 'Transacción de eliminación de venta fallida: ' . $db->error()['message']);
+                return redirect()->to('/dashboard/verventasdetalladas')->with('error', 'Error al eliminar la venta. La operación ha sido revertida.');
+            } else {
+                // La transacción fue exitosa
+                return redirect()->to('/dashboard/verventasdetalladas')->with('success', 'Venta eliminada y stock actualizado correctamente.');
+            }
+        } catch (\Exception $e) {
+            // Si se lanza una excepción (ej. error de validación, etc.)
+            $db->transRollback(); // *** REVierte la transacción explícitamente ***
+            log_message('error', 'Excepción durante la transacción de eliminación de venta: ' . $e->getMessage());
+            return redirect()->to('/dashboard/verventasdetalladas')->with('error', 'Error al eliminar la venta: ' . $e->getMessage());
+        }
     }
 
     function cerrarPos()
