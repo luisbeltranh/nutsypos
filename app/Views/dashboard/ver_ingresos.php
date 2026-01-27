@@ -49,7 +49,8 @@
                                     <td><?= $ingreso['created_at']; ?></td>
 
                                     <td>
-                                        <a href="/dashboard/eliminaringresounidad/<?= $ingreso['id'] ?>" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                                        <a href="/dashboard/eliminaringresounidad/<?= $ingreso['id'] ?>" onclick="return confirm('Esta seguro que quiere borrar el ingreso del producto '+'<?= $ingreso['nombre'] ?>'+' x '+'<?= $ingreso['cantidad'] ?>'+'?');" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+
                                     </td>
 
                                 </tr>

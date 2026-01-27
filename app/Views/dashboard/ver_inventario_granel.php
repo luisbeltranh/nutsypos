@@ -58,9 +58,9 @@
                                     <?php
                                     }
                                     ?>
-                                        <td <?php echo ($producto['cantidad_total'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>>
-                                            <a href="/dashboard/agregaringresogranel/<?= $producto['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
-                                        </td>
+                                    <td <?php echo ($producto['cantidad_total'] < $producto['minimo']) ? 'class="bg-danger"' : '';  ?>>
+                                        <a href="/dashboard/agregaringresogranel/<?= $producto['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
+                                    </td>
 
 
 

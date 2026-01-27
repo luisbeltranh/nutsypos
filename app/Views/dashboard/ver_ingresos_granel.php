@@ -49,7 +49,8 @@
                                     <td><?= $ingreso['created_at']; ?></td>
 
                                     <td>
-                                        <a href="#<?= $ingreso['producto_id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
+                                        <a href="/dashboard/eliminaringresogranel/<?= $ingreso['ingreso_id'] ?>" onclick="return confirm('Esta seguro que quiere borrar el ingreso del producto '+'<?= $ingreso['nombre'] ?>'+' x '+'<?= $ingreso['cantidad'] ?>'+'?');" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+
                                     </td>
 
                                 </tr>

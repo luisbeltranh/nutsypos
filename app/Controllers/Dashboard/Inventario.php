@@ -9,6 +9,7 @@ use App\Models\VentasModel;
 use App\Models\IngresosModel;
 use App\Models\UtilModel;
 use App\Models\IngresosGranelModel;
+use App\Models\ProductosGranelModel;
 use CodeIgniter\Database\RawSql;
 
 class Inventario extends BaseController
@@ -267,7 +268,7 @@ class Inventario extends BaseController
             $datos['is_admin'] = true;
         }
         $modelo_ingreso_granel = new IngresosGranelModel();
-        $ingresos = $modelo_ingreso_granel->select('numero_ingreso, producto_id, productos_granel.nombre, cantidad, monto, total, users.username, ingresos_granel.created_at')
+        $ingresos = $modelo_ingreso_granel->select('ingresos_granel.id AS ingreso_id, numero_ingreso, producto_id, productos_granel.nombre, cantidad, monto, total, users.username, ingresos_granel.created_at')
             ->join('users', 'users.id = ingresos_granel.user_id')
             ->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_id')
             ->orderBy('created_at', 'DESC')
@@ -288,6 +289,46 @@ class Inventario extends BaseController
         echo view('dashboard/templates/breadcrumbs');
         echo view('dashboard/ver_ingresos_granel');
         echo view('dashboard/templates/footer');
+    }
+    function eliminarIngresogranel($id_ingreso)
+    {
+        $modelo_ingresos = new IngresosGranelModel();
+        $ingreso = $modelo_ingresos->find($id_ingreso);
+        if (!$ingreso) {
+            return redirect()->back()->with('error', 'Ingreso no encontrado.');
+        }
+        $modelo_productos = new ProductosGranelModel();
+        $producto = $modelo_productos->find($ingreso['producto_id']);
+        // print_r($ingreso);
+        // echo "<br>";
+        // print_r($producto);
+        // die();
+        $db = \Config\Database::connect();
+        $db->transStart(); // *** INICIA LA TRANSACCIÓN ***         
+        try {
+            // Actualizar el stock del producto (restar la cantidad del ingreso eliminado)
+            $modelo_productos->update($ingreso['producto_id'], [
+                'cantidad_total' => new RawSql("cantidad_total - " . $ingreso['cantidad'])
+            ]);
+
+            // Eliminar el ingreso
+            $modelo_ingresos->delete($id_ingreso);
+
+            $db->transComplete(); // *** COMPLETA LA TRANSACCIÓN (COMMIT o ROLLBACK automático) ***
+            if ($db->transStatus() === FALSE) {
+                // Si transStatus es FALSE, significa que algo falló y la transacción fue revertida automáticamente.
+                log_message('error', 'Transacción de eliminación de ingreso fallida: ' . $db->error()['message']);
+                return redirect()->back()->withInput()->with('error', 'Error en la base de datos al eliminar el ingreso. La operación ha sido revertida.');
+            } else {
+                // La transacción fue exitosa
+                return redirect()->to('/dashboard/verinventariogranel')->with('success', 'Movimiento de inventario eliminado correctamente.');
+            }
+        } catch (\Exception $e) {
+            // Si se lanza una excepción (ej. error en la base de datos)
+            $db->transRollback(); // *** REVierte la transacción explícitamente ***
+            log_message('error', 'Excepción durante la transacción de eliminación de ingreso: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Ocurrió un error al eliminar el ingreso: ' . $e->getMessage());
+        }
     }
     function conteoInventario()
     {
