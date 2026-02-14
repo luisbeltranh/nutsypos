@@ -22,6 +22,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verinventario/(:alpha)', 'Dashboard\Inventario::index/$1');
     $routes->add('guardaringreso', 'Dashboard\Inventario::guardarIngreso');
     $routes->add('agregaringreso/(:num)', 'Dashboard\Inventario::formIngreso/$1');
+    $routes->add('ingresoexitoso/(:num)', 'Dashboard\Inventario::ingresoExitoso/$1');
     $routes->add('veringresos', 'Dashboard\Inventario::verIngresos');
     $routes->add('eliminarventa/(:num)', 'Dashboard\Dashboard::eliminarVenta/$1');
     $routes->add('eliminaringresounidad/(:num)', 'Dashboard\Inventario::eliminarIngresounidad/$1');
@@ -45,6 +46,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verinventariogranel/(:alpha)', 'Dashboard\Granel::index/$1');
     $routes->add('agregaringresogranel/(:num)', 'Dashboard\Granel::formIngresogranel/$1'); //si se usa
     $routes->add('guardaringresogranel', 'Dashboard\Granel::guardarIngresogranel');
+    $routes->add('ingresogranelexitoso/(:num)', 'Dashboard\Granel::ingresoGranelExitoso/$1');
     $routes->add('veringresosgranel', 'Dashboard\Inventario::verIngresosGranel');
     $routes->add('eliminaringresogranel/(:num)', 'Dashboard\Inventario::eliminarIngresogranel/$1');
 
@@ -58,6 +60,7 @@ $routes->group('dashboard', function ($routes) {
     $routes->add('verembolsados', 'Dashboard\Embolsado::index');
     $routes->add('nuevo_embolsar/(:num)', 'Dashboard\Embolsado::nuevoEmbolsar/$1');
     $routes->add('obtener_composicion/(:num)', 'dashboard\Embolsado::obtenerComposicion/$1');
+    $routes->add('embolsadoexitoso/(:num)', 'Dashboard\Embolsado::embolsadoExitoso/$1');
     // fin de proceso de embolsado
 
     // Inicio informes

@@ -117,6 +117,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="<?php echo $menu_activo == 'verembolsados' ? '#' : base_url('dashboard/verembolsados'); ?>" class="nav-link <?php echo $menu_activo == 'verembolsados' ? 'active' : ''; ?>">
+                        <i class="nav-icon bi bi-bar-chart-line"></i>
+                        <p>Ver Embolsados</p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="<?php echo $menu_activo == 'vistaventashoyhoras' ? '#' : base_url('dashboard/verventasdetalladas'); ?>" class="nav-link <?php echo $menu_activo == 'verusuarios' ? 'active' : ''; ?>">
                         <i class="nav-icon bi bi-bar-chart-line"></i>
                         <p>Ventas Detalladas</p>

@@ -8,7 +8,7 @@
                             <?php
                             if ($is_admin) {
                             ?>
-                                <a class="btn btn-primary" href="/dashboard/nuevoproductogranel">Embolsar Productos</a>
+                                <a class="btn btn-primary" href="/dashboard/agregarembolsadogranel">Embolsar Productos</a>
                             <?php
                             }
                             ?>
@@ -45,9 +45,6 @@
                                         <?php
                                         if ($is_admin) {
                                         ?>
-                                            <a href="/dashboard/agregaringresogranel/<?= $embolsado['id'] ?>" class="btn btn-success"><i class="bi bi-clipboard2-plus"></i></a>
-                                            <a href="/dashboard/editarproductogranel/<?= $embolsado['id'] ?>" class="btn btn-primary"><i class="bi bi-pencil"></i></a>
-                                            <a href="/dashboard/eliminarproductogranel/<?= $embolsado['id'] ?>" class="btn btn-danger" onclick="return confirm('Realmente desea eliminar el producto: <?php echo $embolsado['id']; ?>')"><i class="bi bi-trash"></i></a>
                                         <?php
                                         }
                                         ?>

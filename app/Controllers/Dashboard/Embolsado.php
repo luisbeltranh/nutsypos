@@ -85,7 +85,7 @@ class Embolsado extends BaseController
 
                 if ($exito) {
                     // Si la función devuelve true (éxito de la transacción)
-                    return redirect()->to('/dashboard/verinventario')->with('success', 'Embolsado registrado exitosamente.');
+                    return redirect()->to('/dashboard/embolsadoexitoso/' . $exito)->with('success', 'Embolsado registrado exitosamente.');
                 } else {
                     // Si la función devuelve false (fallo de la transacción, ya logueado en la librería)
                     return redirect()->back()->withInput()->with('error', 'No se pudo completar el embolsado. Verifique los datos o consulte los logs para más detalles.');
@@ -207,6 +207,36 @@ class Embolsado extends BaseController
             echo view('dashboard/nuevo_embolsado');
             echo view('dashboard/templates/footer');
         }
+    }
+    function embolsadoExitoso($numero_embosaldo)
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $modelo_embolsados = new EmbolsadosModel();
+        $datos['embolsado_exitoso'] = $modelo_embolsados
+            ->select('embolsados.numero_embolsado, embolsados.cantidad_producto_embolsado, embolsados.created_at, productos.nombre AS producto_nombre')
+            ->where('embolsados.numero_embolsado', $numero_embosaldo)
+            ->join('productos', 'embolsados.producto_id = productos.id')
+            ->first();
+        echo '<pre>';
+        print_r($datos['embolsado_exitoso']);
+        echo '</pre>';
+        die();
+
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Embolsado Exitoso";
+        $datos['menu_activo'] = "dashboard";
+
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_embolsado_exitoso', $datos);
+        echo view('dashboard/templates/footer');
     }
     function obtenerComposicion($producto_id = null)
     {

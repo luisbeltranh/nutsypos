@@ -285,7 +285,8 @@ class Granel extends BaseController
                 $modelo_utilitario = new UtilModel();
                 if ($modelo_utilitario->guardarIngresoGranel($validData)) {
                     $session->setFlashdata('exito', 'Se ha registrado el embolsado correctamente.');
-                    return redirect()->to(base_url('dashboard/verinventariogranel'));
+                    //return redirect()->to(base_url('dashboard/verinventariogranel'));
+                    return redirect()->to(base_url('dashboard/ingresogranelexitoso/' . $validData['numero_ingreso']));
                 } else {
                     $session->setFlashdata('error', 'No se ha podido registrar el embolsado.');
                     return redirect()->to(base_url('dashboard/verinventariogranel'));
@@ -294,6 +295,34 @@ class Granel extends BaseController
             // return redirect()->to('/dashboard/new_link')->withInput();
             //return redirect()->back()->withInput();
         }
+    }
+    function ingresoGranelExitoso($numero_ingreso_granel)
+    {
+        $session = session();
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $modelo_ingreso_granel = new IngresosGranelModel();
+        $ingreso_granel_exitoso = $modelo_ingreso_granel->select('*')->where('numero_ingreso', $numero_ingreso_granel)->join('productos_granel', 'productos_granel.id = ingresos_granel.producto_id')->join('users', 'users.id = ingresos_granel.user_id')->first();
+        // echo $numero_ingreso_granel . "<br>";
+        // echo '<pre>';
+        // print_r($ingreso_granel_exitoso);
+        // echo '</pre>';
+        // die();
+
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ingreso a Granel Exitoso";
+        $datos['menu_activo'] = "ingresogranel";
+        $datos['ingreso_granel_exitoso'] = $ingreso_granel_exitoso;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_ingreso_granel_exitoso');
+        echo view('dashboard/templates/footer');
     }
     function verProductosGranel()
     {

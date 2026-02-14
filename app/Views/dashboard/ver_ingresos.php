@@ -9,7 +9,14 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th>Producto ID</th>
+                                <?php
+                                if ($is_admin) {
+                                ?>
+                                    <th>Producto ID</th>
+                                <?php
+                                }
+                                ?>
+
                                 <th>Número Ingreso</th>
                                 <th>Producto</th>
                                 <th>Cantidad</th>
@@ -33,7 +40,15 @@
                             ?>
 
                                 <tr>
-                                    <td><?= $ingreso['id']; ?></td>
+                                    <?php
+                                    if ($is_admin) {
+                                    ?>
+
+                                        <td><?= $ingreso['id']; ?></td>
+                                    <?php
+                                    }
+                                    ?>
+
                                     <td><?= $ingreso['numero_ingreso']; ?></td>
                                     <td><?= $ingreso['nombre']; ?></td>
                                     <td><?= $ingreso['cantidad']; ?></td>

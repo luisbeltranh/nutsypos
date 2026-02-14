@@ -48,7 +48,7 @@ class EmbolsadoLibrary
      * @throws \Exception Si ocurre un error de validación de datos de entrada o base de datos.
      */
 
-    public function guardaEmbolsado(array $data): bool
+    public function guardaEmbolsado(array $data): int|bool
     {
         // La conexión a la DB y los modelos ya están disponibles a través de $this->
         $this->db->transStart(); // *** INICIA LA TRANSACCIÓN ***
@@ -168,7 +168,9 @@ class EmbolsadoLibrary
                 return false; // Indica fallo
             } else {
                 // La transacción fue exitosa
-                return true; // Indica éxito
+                log_message('info', 'Transacción de embolsado completada con éxito. Número de embolsado: ' . $numeroEmbolsado);
+                //return true; // Indica éxito
+                return $numeroEmbolsado;
             }
         } catch (\Exception $e) {
             // Si se lanza una excepción (ej. datos de entrada inválidos, producto no existe, error de DB)

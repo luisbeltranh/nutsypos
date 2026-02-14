@@ -177,7 +177,7 @@ class Inventario extends BaseController
                     return redirect()->back()->withInput()->with('error', 'Error en la base de datos al registrar el ingreso. La operación ha sido revertida.');
                 } else {
                     // La transacción fue exitosa
-                    return redirect()->to('/dashboard/verinventario')->with('success', 'Movimiento de inventario registrado y stock actualizado correctamente.');
+                    return redirect()->to('/dashboard/ingresoexitoso/' . $validData['numero_ingreso'])->with('success', 'Movimiento de inventario registrado y stock actualizado correctamente.');
                 }
             } catch (\Exception $e) {
                 // Si se lanza una excepción (ej. validación fallida, producto no existe, stock insuficiente, etc.)
@@ -200,6 +200,33 @@ class Inventario extends BaseController
             //     return redirect()->to('/dashboard/verinventario');
             // }
         }
+    }
+    function ingresoExitoso($numero_ingreso)
+    {
+        $datos['is_admin'] = false;
+        if (auth()->getUser()->inGroup('admin')) {
+            $datos['is_admin'] = true;
+        }
+        $modelo_ingresos = new IngresosModel();
+        $ingreso_exitoso = $modelo_ingresos->select('*, ingresos.created_at AS fecha_ingreso')->where('numero_ingreso', $numero_ingreso)->join('users', 'users.id = ingresos.user_id')->join('productos', 'productos.id = ingresos.producto_id')->first();
+        // echo $numero_ingreso . "<br>";
+        // echo '<pre>';
+        // print_r($ingreso_exitoso);
+        // echo '</pre>';
+        // die();
+
+        $datos['estaLogeado'] = auth()->loggedIn();
+        $datos['nombreUsuario'] = auth()->getUser()->username;
+        $datos['idUsuario'] = auth()->getUser()->id;
+        $datos['titulo_breadcrumbs'] = "Ver Ingresos";
+        $datos['menu_activo'] = "veringresos";
+        $datos['ingreso_exitoso'] = $ingreso_exitoso;
+        echo view('dashboard/templates/head', $datos);
+        echo view('dashboard/templates/topmenu');
+        echo view('dashboard/templates/sidebar');
+        echo view('dashboard/templates/breadcrumbs');
+        echo view('dashboard/ver_ingreso_exitoso');
+        echo view('dashboard/templates/footer');
     }
     function verIngresos()
     {
